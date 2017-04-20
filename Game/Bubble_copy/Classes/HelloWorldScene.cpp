@@ -52,10 +52,10 @@ bool HelloWorld::init()
 	Light1->setPosition(Vec2(320, 600));
 
 	Light2 = Sprite::create("Images/Flash_001.png");
-	Light2->setPosition(Vec2(320, 600));
+	Light2->setPosition(Vec2(600, 750));
 
 	Light3 = Sprite::create("Images/Flash_002.png");
-	Light3->setPosition(Vec2(320, 600));
+	Light3->setPosition(Vec2(600, 700));
 
 	Base = Sprite::create("Images/Base.png");
 	Base->setPosition(Vec2(350, 275));
@@ -80,12 +80,14 @@ bool HelloWorld::init()
 
 	Star1 = Sprite::create("Images/Gold_Star.png");
 	Star1->setPosition(Vec2(320, 35));
+	Star1->setOpacity(100);
 
 	Star2 = Sprite::create("Images/Purple_Star.png");
 	Star2->setPosition(Vec2(600, 100));
+	Star2->setOpacity(100);
 
 	Star3 = Sprite::create("Images/Blue_Star.png");
-	Star3->setPosition(Vec2(100, 100));
+	Star3->setPosition(Vec2(100, 150));
 
 	Title = Sprite::create("Images/Bubble_Logo.png");
 	Title->setPosition(Vec2(320, 700));
@@ -120,7 +122,7 @@ bool HelloWorld::init()
 	this->addChild(Bubble3);
 	this->addChild(Bubble4);
 	this->addChild(Star1);
-	this->addChild(Star2);
+	this->addChild(Star2, 2);
 	this->addChild(Star3);
 	this->ActionRepeatForever(this);
 	pMenuItem1->addChild(mode);
@@ -150,19 +152,19 @@ void HelloWorld::ActionRepeatForever(Ref* pSender)
 	auto LAction1Back = LAction1Forward->reverse();
 	auto LAction1 = Sequence::create(LAction1Forward, LAction1Back, nullptr);
 
-	auto LAction2Forward = FadeOut::create(3.0f);
+	auto LAction2Forward = FadeOut::create(1.0f);
 	auto LAction2Back = LAction1Forward->reverse();
 	auto LAction2 = Sequence::create(LAction2Forward, LAction2Back, nullptr);
 
-	auto LAction3Forward = FadeOut::create(3.0f);
+	auto LAction3Forward = FadeOut::create(1.0f);
 	auto LAction3Back = LAction1Forward->reverse();
 	auto LAction3 = Sequence::create(LAction3Forward, LAction3Back, nullptr);
 
-	auto FAction1Forward = MoveBy::create(12, Vec2(800, 0));
+	auto FAction1Forward = MoveBy::create(12, Vec2(1000, 0));
 	auto FAction1Back = Place::create(Vec2(-200, 480));
 	auto FAction1 = Sequence::create(FAction1Forward, FAction1Back, nullptr);
 
-	auto FAction2Forward = MoveBy::create(8, Vec2(-800, 0));
+	auto FAction2Forward = MoveBy::create(8, Vec2(-1000, 0));
 	auto FAction2Back = Place::create(Vec2(800, 400));
 	auto FAction2 = Sequence::create(FAction2Forward, FAction2Back, nullptr);
 
@@ -191,7 +193,7 @@ void HelloWorld::ActionRepeatForever(Ref* pSender)
 	auto SAction2 = Sequence::create(SAction2Forward, SAction2Back, nullptr);
 
 	auto SAction3Forward = RotateBy::create(1.5, 360);
-	auto SAction3Back = Place::create(Vec2(100, 100));
+	auto SAction3Back = Place::create(Vec2(100, 150));
 	auto SAction3 = Sequence::create(SAction3Forward, SAction3Back, nullptr);
 
 	auto CBActionForward = RotateBy::create(1, 360);
@@ -213,6 +215,9 @@ void HelloWorld::ActionRepeatForever(Ref* pSender)
 	auto rep13 = RepeatForever::create(SAction2);
 	auto rep14 = RepeatForever::create(SAction3);
 	auto rep15 = RepeatForever::create(CBAction);
+	auto rep16 = RepeatForever::create(LAction2);
+	auto rep17 = RepeatForever::create(LAction3);
+
 
 	Base->runAction(rep1);
 	Title->runAction(rep2);
@@ -229,6 +234,8 @@ void HelloWorld::ActionRepeatForever(Ref* pSender)
 	Star2->runAction(rep13);
 	Star3->runAction(rep14);
 	CreateBase->runAction(rep15);
+	Light2->runAction(rep16);
+	Light3->runAction(rep17);
 }
 
 void HelloWorld::doClick1(Ref* pSender)
