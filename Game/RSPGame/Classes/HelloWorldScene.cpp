@@ -1,6 +1,5 @@
 ﻿#include "HelloWorldScene.h"
-#include "ctime"
-#include "cstdlib"
+
 
 USING_NS_CC;
 
@@ -20,348 +19,250 @@ bool HelloWorld::init()
     {
         return false;
     }
+
+	auto pBackGround = Sprite::create("Images/Background.png");
+
+	pBackGround->setPosition(Vec2(320, 480));
+
+	this->addChild(pBackGround);
+
+
+	auto pMenuItem1 = MenuItemImage::create(
+		"Images/Play_Button_01.png",
+		"Images/Play_Button_02.png",
+		CC_CALLBACK_1(HelloWorld::doClick1, this));
+
+	auto pMenuItem2 = MenuItemImage::create(
+		"Images/Create_Button_01.png",
+		"Images/Create_Button_02.png",
+		CC_CALLBACK_1(HelloWorld::doClick2, this));
+
+	auto mode = Sprite::create("Images/Vibration_ON.png");
+	auto play = Menu::create(pMenuItem1, nullptr);
+	auto Create = Menu::create(pMenuItem2, nullptr);
 	
-		auto pLabel1 = LabelTTF::create("Your Score: ", "Arial", 15);
+	TitleLight = Sprite::create("Images/Logo_Light.png");
+	TitleLight->setOpacity(100);
 
-		pLabel1->setPosition(Vec2(100, 280));
+	MainLight = Sprite::create("Images/Lighting_Background.png");
+	MainLight->setPosition(Vec2(320, 810));
 
-		pLabel1->setColor(Color3B::BLUE);
+	Light1 = Sprite::create("Images/All_Light.png");
+	Light1->setPosition(Vec2(320, 600));
 
-		this->addChild(pLabel1);
+	Light2 = Sprite::create("Images/Flash_001.png");
+	Light2->setPosition(Vec2(600, 750));
 
-		auto pLabel2 = LabelTTF::create("Coumputer Score: ", "Arial", 15);
+	Light3 = Sprite::create("Images/Flash_002.png");
+	Light3->setPosition(Vec2(600, 700));
 
-		pLabel2->setPosition(Vec2(320, 280));
+	Light4 = Sprite::create("Images/Lighting.png");
+	Light4->setPosition(Vec2(-130, 170));
 
-		pLabel2->setColor(Color3B::BLUE);
+	Light5 = Sprite::create("Images/Lighting2.png");
+	Light5->setPosition(Vec2(340, 100));
 
-		this->addChild(pLabel2);
+	Base = Sprite::create("Images/Base.png");
+	Base->setPosition(Vec2(350, 275));
 
-		// 스코어 (레이블)
-		////////////////////////////////////////////////
+	Fish1 = Sprite::create("Images/Fish_001.png");
+	Fish1->setPosition(Vec2(-30, 480));
 
-		auto pMenuItem1 = MenuItemFont::create(
-			"[ 가위 ] ",
-			CC_CALLBACK_1(HelloWorld::doClick, this));
-		pMenuItem1->setColor(Color3B::BLACK);
+	Fish2 = Sprite::create("Images/Fish_002.png");
+	Fish2->setPosition(Vec2(800, 430));
 
-		auto pMenuItem2 = MenuItemFont::create(
-			"[ 바위 ] ",
-			CC_CALLBACK_1(HelloWorld::doClick, this));
-		pMenuItem2->setColor(Color3B::BLACK);
+	Bubble1 = Sprite::create("Images/Title_Bubble_001.png");
+	Bubble1->setPosition(Vec2(320, -300));
 
-		auto pMenuItem3 = MenuItemFont::create(
-			"[ 보 ]",
-			CC_CALLBACK_1(HelloWorld::doClick, this));
-		pMenuItem3->setColor(Color3B::BLACK);
+	Bubble2 = Sprite::create("Images/Title_Bubble_002.png");
+	Bubble2->setPosition(Vec2(320, -300));
 
-		auto pMenu1Item4 = MenuItemFont::create(
-			"[ 다시하기 ]",
-			CC_CALLBACK_1(HelloWorld::doClick, this));
-		pMenu1Item4->setColor(Color3B::BLACK);
+	Bubble3 = Sprite::create("Images/Title_Bubble_003.png");
+	Bubble3->setPosition(Vec2(320, -300));
 
-		pMenuItem1->setTag(1);
-		pMenuItem2->setTag(2);
-		pMenuItem3->setTag(3);
-		pMenu1Item4->setTag(4);
+	Bubble4 = Sprite::create("Images/Title_Bubble_004.png");
+	Bubble4->setPosition(Vec2(320, -300));
 
-		auto pMenu = Menu::create(pMenuItem1, pMenuItem2, pMenuItem3, nullptr);
-		auto pMenu1 = Menu::create(pMenu1Item4, nullptr);
+	Star1 = Sprite::create("Images/Gold_Star.png");
+	Star1->setPosition(Vec2(320, 65));
+	Star1->setOpacity(100);
 
-		pMenu->alignItemsHorizontally();
+	Star2 = Sprite::create("Images/Purple_Star.png");
+	Star2->setPosition(Vec2(600, 100));
+	Star2->setOpacity(100);
 
-		pMenu->setPosition(Vec2(220, 100));
-		pMenu1->setPosition(Vec2(240, 50));
+	Star3 = Sprite::create("Images/Blue_Star.png");
+	Star3->setPosition(Vec2(100, 150));
 
-		this->addChild(pMenu);
-		this->addChild(pMenu1);
+	Title = Sprite::create("Images/Bubble_Logo.png");
+	Title->setPosition(Vec2(320, 700));
+	Size TitleSize;
+	TitleSize = Title->getContentSize();
+	TitleLight->setPosition(Vec2(300, 150));
 
-		
+	CreateBase = Sprite::create("Images/Create_base.png");
+	CreateBase->setPosition(Vec2(600, 40));
+	play->setPosition(Vec2(320, 300));
+	Create->setPosition(Vec2(600, 40));
 
-		// 사용자 클릭 (메뉴)
-		////////////////////////////////////////////////////////////
 	
-	
-	return true;
+	Size pMenuItem1Size;
+	pMenuItem1Size = pMenuItem1->getContentSize();
+	mode->setPosition(Vec2(pMenuItem1Size.width + 7, 3));
 
+	this->addChild(play, 20);
+	this->addChild(Create);
+	this->addChild(Base, 20);
+	this->addChild(CreateBase);
+	this->addChild(Title, 20);
+	Title->addChild(TitleLight);
+	this->addChild(MainLight, 1);
+	this->addChild(Light1, 1);
+	this->addChild(Light2, 1);
+	this->addChild(Light3, 1);
+	this->addChild(Light4, 1);
+	this->addChild(Light5, 1);
+	this->addChild(Fish1, 2);
+	this->addChild(Fish2, 2);
+	this->addChild(Bubble1);
+	this->addChild(Bubble2);
+	this->addChild(Bubble3);
+	this->addChild(Bubble4);
+	this->addChild(Star1);
+	this->addChild(Star2, 2);
+	this->addChild(Star3);
+	this->ActionRepeatForever(this);
+	pMenuItem1->addChild(mode);
+
+    return true;
 }
 
-void HelloWorld::doClick(Ref* pSender)
+void HelloWorld::ActionRepeatForever(Ref* pSender)
 {
-	auto tItem = (MenuItem *)pSender;
-	int i = tItem->getTag();
-	int com;
+	auto myActionForward = FadeOut::create(1.0f);
+	auto myActionBack = myActionForward->reverse();
+	auto myAction = Sequence::create(myActionForward, myActionBack, nullptr);
+
+	auto TitleActionForward = MoveBy::create(3, Vec2(0, 20));
+	auto TitleActionBack = TitleActionForward->reverse();
+	auto TitleAction = Sequence::create(TitleActionForward, TitleActionBack , nullptr);
+
+	auto TLActionForward = FadeOut::create(1.0f);
+	auto TLActionBack = TLActionForward->reverse();
+	auto TLAction = Sequence::create(TLActionForward, TLActionBack, nullptr);
+
+	auto MLActionForward = FadeOut::create(2.0f);
+	auto MLActionBack = MLActionForward->reverse();
+	auto MLAction = Sequence::create(MLActionForward, MLActionBack, nullptr);
+
+	auto LAction1Forward = FadeOut::create(3.0f);
+	auto LAction1Back = LAction1Forward->reverse();
+	auto LAction1 = Sequence::create(LAction1Forward, LAction1Back, nullptr);
+
+	auto LAction2Forward = FadeOut::create(1.0f);
+	auto LAction2Back = LAction2Forward->reverse();
+	auto LAction2 = Sequence::create(LAction2Forward, LAction2Back, nullptr);
+
+	auto LAction3Forward = FadeOut::create(1.0f);
+	auto LAction3Back = LAction3Forward->reverse();
+	auto LAction3 = Sequence::create(LAction3Forward, LAction3Back, nullptr);
+
+	auto LAction4Forward = FadeOut::create(2.0f);
+	auto LAction4Back = LAction4Forward->reverse();
+	auto LAction4 = Sequence::create(LAction4Forward, LAction4Back, nullptr);
+
+	auto LAction5Forward = FadeOut::create(2.0f);
+	auto LAction5Back = LAction5Forward->reverse();
+	auto LAction5 = Sequence::create(LAction5Forward, LAction5Back, nullptr);
+
+	auto FAction1Forward = MoveBy::create(12, Vec2(1000, 0));
+	auto FAction1Back = Place::create(Vec2(-200, 480));
+	auto FAction1 = Sequence::create(FAction1Forward, FAction1Back, nullptr);
+
+	auto FAction2Forward = MoveBy::create(8, Vec2(-1000, 0));
+	auto FAction2Back = Place::create(Vec2(800, 400));
+	auto FAction2 = Sequence::create(FAction2Forward, FAction2Back, nullptr);
+
+	auto BAction1Forward = MoveBy::create(2, Vec2(0, 2000));
+	auto BAction1Back = Place::create(Vec2(320, -300));
+	auto BAction1 = Sequence::create(BAction1Forward , BAction1Back, nullptr);
+
+	auto BAction2Forward = MoveBy::create(7, Vec2(0, 2000));
+	auto BAction2Back = Place::create(Vec2(320, -300));
+	auto BAction2 = Sequence::create(BAction2Forward, BAction2Back, nullptr);
+
+	auto BAction3Forward = MoveBy::create(8, Vec2(0, 2000));
+	auto BAction3Back = Place::create(Vec2(320, -300));
+	auto BAction3 = Sequence::create(BAction3Forward, BAction3Back, nullptr);
+
+	auto BAction4Forward = MoveBy::create(5, Vec2(0, 2000));
+	auto BAction4Back = Place::create(Vec2(320, -300));
+	auto BAction4 = Sequence::create(BAction4Forward, BAction4Back, nullptr);
+
+	auto SAction1Forward = RotateBy::create(0.5, 360);
+	auto SAction1Back = Place::create(Vec2(320, 65));
+	auto SAction1 = Sequence::create(SAction1Forward, SAction1Back, nullptr);
+
+	auto SAction2Forward = RotateBy::create(0.5, 360);
+	auto SAction2Back = Place::create(Vec2(600, 100));
+	auto SAction2 = Sequence::create(SAction2Forward, SAction2Back, nullptr);
+
+	auto SAction3Forward = RotateBy::create(1.5, 360);
+	auto SAction3Back = Place::create(Vec2(100, 150));
+	auto SAction3 = Sequence::create(SAction3Forward, SAction3Back, nullptr);
+
+	auto CBActionForward = RotateBy::create(1, 360);
+	auto CBActionBack = Place::create(Vec2(600, 40));
+	auto CBAction = Sequence::create(CBActionForward, CBActionBack, nullptr);
+
+	auto rep1 = RepeatForever::create(myAction);
+	auto rep2 = RepeatForever::create(TitleAction);
+	auto rep3 = RepeatForever::create(TLAction);
+	auto rep4 = RepeatForever::create(MLAction);
+	auto rep5 = RepeatForever::create(LAction1);
+	auto rep6 = RepeatForever::create(FAction1);
+	auto rep7 = RepeatForever::create(FAction2);
+	auto rep8 = RepeatForever::create(BAction1);
+	auto rep9 = RepeatForever::create(BAction2);
+	auto rep10 = RepeatForever::create(BAction3);
+	auto rep11 = RepeatForever::create(BAction4);
+	auto rep12 = RepeatForever::create(SAction1);
+	auto rep13 = RepeatForever::create(SAction2);
+	auto rep14 = RepeatForever::create(SAction3);
+	auto rep15 = RepeatForever::create(CBAction);
+	auto rep16 = RepeatForever::create(LAction2);
+	auto rep17 = RepeatForever::create(LAction3);
+	auto rep18 = RepeatForever::create(LAction4);
+	auto rep19 = RepeatForever::create(LAction5);
 
 
-		srand((int)time(NULL));
-		com = rand() % 3;
-		
-		
+	Base->runAction(rep1);
+	Title->runAction(rep2);
+	TitleLight->runAction(rep3);
+	MainLight->runAction(rep4);
+	Light1->runAction(rep5);
+	Fish1->runAction(rep6);
+	Fish2->runAction(rep7);
+	Bubble1->runAction(rep8);
+	Bubble2->runAction(rep9);
+	Bubble3->runAction(rep10);
+	Bubble4->runAction(rep11);
+	Star1->runAction(rep12);
+	Star2->runAction(rep13);
+	Star3->runAction(rep14);
+	CreateBase->runAction(rep15);
+	Light2->runAction(rep16);
+	Light3->runAction(rep17);
+	Light4->runAction(rep18);
+	Light5->runAction(rep19);
+}
 
-		if (com == 0)   
-		{
-			if (i == 1)
-			{
+void HelloWorld::doClick1(Ref* pSender)
+{
+	log("첫 번째 메뉴가 선택되었습니다.");
+}
 
-				auto pScissors = Sprite::create("Images/img1.png");
-				auto comScissors = Sprite::create("images/img1.png");
-				auto pResult1 = LabelTTF::create("비겼습니다.", "Arial", 30);
-			
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comScissors->setPosition(Vec2(320, 180));
-				comScissors->setTag(13);
-
-				pScissors->setPosition(Vec2(100, 180));
-				pScissors->setTag(11);
-				pScissors->setFlippedX(11);
-
-				pResult1->setPosition(Vec2(240, 250));
-				pResult1->setColor(Color3B::RED);
-				pResult1->setTag(12);
-
-				this->addChild(pScissors);
-				this->addChild(comScissors);
-				this->addChild(pResult1);
-
-			}
-			else if (i == 2)
-			{
-				auto pRock = Sprite::create("Images/img2.png");
-				auto comScissors = Sprite::create("images/img1.png");
-				auto pResult2 = LabelTTF::create("이겼습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comScissors->setPosition(Vec2(320, 180));
-				comScissors->setTag(13);
-
-				pRock->setPosition(Vec2(100, 180));
-				pRock->setTag(11);
-				pRock->setFlippedX(11);
-
-				pResult2->setPosition(Vec2(240, 250));
-				pResult2->setColor(Color3B::RED);
-				pResult2->setTag(12);
-
-				this->addChild(pRock);
-				this->addChild(comScissors);
-				this->addChild(pResult2);
-			}
-			else if (i == 3)
-			{
-				auto pPaper = Sprite::create("Images/img3.png");
-				auto comScissors = Sprite::create("images/img1.png");
-				auto pResult3 = LabelTTF::create("졌습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comScissors->setPosition(Vec2(320, 180));
-				comScissors->setTag(13);
-
-				pPaper->setPosition(Vec2(100, 180));
-				pPaper->setTag(11);
-				pPaper->setFlippedX(11);
-
-				pResult3->setPosition(Vec2(240, 250));
-				pResult3->setColor(Color3B::RED);
-				pResult3->setTag(12);
-
-				this->addChild(pPaper);
-				this->addChild(comScissors);
-				this->addChild(pResult3);
-			}
-			else if(i == 4)
-			{
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-			}
-		}
-
-		else if (com == 1)
-		{
-			if (i == 1)
-			{
-
-				auto pScissors = Sprite::create("Images/img1.png");
-				auto comRock = Sprite::create("Images/img2.png");
-				auto pResult1 = LabelTTF::create("졌습니다.", "Arial", 30);
-				
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comRock->setPosition(Vec2(320, 180));
-				comRock->setTag(13);
-
-				pScissors->setPosition(Vec2(100, 180));
-				pScissors->setTag(11);
-				pScissors->setFlippedX(11);
-
-				pResult1->setPosition(Vec2(240, 250));
-				pResult1->setColor(Color3B::RED);
-				pResult1->setTag(12);
-
-
-			
-				this->addChild(pScissors);
-				this->addChild(comRock);
-				this->addChild(pResult1);
-			}
-			else if (i == 2)
-			{
-				auto pRock = Sprite::create("Images/img2.png");
-				auto comRock = Sprite::create("Images/img2.png");
-				auto pResult2 = LabelTTF::create("비겼습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comRock->setPosition(Vec2(320, 180));
-				comRock->setTag(13);
-
-				pRock->setPosition(Vec2(100, 180));
-				pRock->setTag(11);
-				pRock->setFlippedX(11);
-
-				pResult2->setPosition(Vec2(240, 250));
-				pResult2->setColor(Color3B::RED);
-				pResult2->setTag(12);
-
-			
-				this->addChild(pRock);
-				this->addChild(comRock);
-				this->addChild(pResult2);
-			}
-			else if (i == 3)
-			{
-				auto pPaper = Sprite::create("Images/img3.png");
-				auto comRock = Sprite::create("Images/img2.png");
-				auto pResult3 = LabelTTF::create("이겼습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comRock->setPosition(Vec2(320, 180));
-				comRock->setTag(13);
-
-				pPaper->setPosition(Vec2(100, 180));
-				pPaper->setTag(11);
-				pPaper->setFlippedX(11);
-
-				pResult3->setPosition(Vec2(240, 250));
-				pResult3->setColor(Color3B::RED);
-				pResult3->setTag(12);
-
-
-				this->addChild(pPaper);
-				this->addChild(comRock);
-				this->addChild(pResult3);
-			}
-			else if (i == 4)
-			{
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-			}
-		}
-
-		else if (com == 2)
-		{
-			if (i == 1)
-			{
-
-				auto pScissors = Sprite::create("Images/img1.png");
-				auto comPaper = Sprite::create("Images/img3.png");
-				auto pResult1 = LabelTTF::create("이겼습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comPaper->setPosition(Vec2(320, 180));
-				comPaper->setTag(13);
-
-				pScissors->setPosition(Vec2(100, 180));
-				pScissors->setTag(11);
-				pScissors->setFlippedX(11);
-
-				pResult1->setPosition(Vec2(240, 250));
-				pResult1->setColor(Color3B::RED);
-				pResult1->setTag(12);
-
-				this->addChild(pScissors);
-				this->addChild(comPaper);
-				this->addChild(pResult1);
-			}
-			else if (i == 2)
-			{
-				auto pRock = Sprite::create("Images/img2.png");
-				auto comPaper = Sprite::create("Images/img3.png");
-				auto pResult2 = LabelTTF::create("졌습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comPaper->setPosition(Vec2(320, 180));
-				comPaper->setTag(13);
-
-				pRock->setPosition(Vec2(100, 180));
-				pRock->setTag(11);
-				pRock->setFlippedX(11);
-
-				pResult2->setPosition(Vec2(240, 250));
-				pResult2->setColor(Color3B::RED);
-				pResult2->setTag(12);
-				
-				this->addChild(pRock);
-				this->addChild(comPaper);
-				this->addChild(pResult2);
-			}
-			else if (i == 3)
-			{
-				auto pPaper = Sprite::create("Images/img3.png");
-				auto comPaper = Sprite::create("Images/img3.png");
-				auto pResult3 = LabelTTF::create("비겼습니다.", "Arial", 30);
-
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-
-				comPaper->setPosition(Vec2(320, 180));
-				comPaper->setTag(13);
-
-				pPaper->setPosition(Vec2(100, 180));
-				pPaper->setTag(11);
-				pPaper->setFlippedX(11);
-
-				pResult3->setPosition(Vec2(240, 250));
-				pResult3->setColor(Color3B::RED);
-				pResult3->setTag(12);
-
-
-				this->addChild(pPaper);
-				this->addChild(comPaper);
-				this->addChild(pResult3);
-				
-			}
-			else if (i == 4)
-			{
-				this->removeChildByTag(11, true);
-				this->removeChildByTag(12, true);
-				this->removeChildByTag(13, true);
-			}
-		}
-		
-	
+void HelloWorld::doClick2(Ref* pSender)
+{
+	log("두 번째 메뉴가 선택되었습니다.");
 }
