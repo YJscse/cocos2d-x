@@ -17,14 +17,15 @@ public:
         
     CREATE_FUNC(HelloWorld);
 
-	cocos2d::Sprite* texture;
+	virtual void onEnter();
+	virtual void onExit();
+	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
+	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+
 	cocos2d::Sprite* pMan;
-
-	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
-	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
-
-	int num;
+	bool bSelect;
+	float gRotation;
 };
-
 
 #endif // __HELLOWORLD_SCENE_H__
