@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="45" height="10" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="fixed-ortho-test2" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="228" columns="19">
+  <image source="fixed-ortho-test2.png" width="640" height="400"/>
+ </tileset>
+ <tileset firstgid="229" name="metaset" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="2" columns="2">
+  <image source="metaset.png" width="67" height="34"/>
+  <tile id="0">
+   <properties>
+    <property name="Cliff" value="YES"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Wall" value="YES"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Background" width="45" height="10">
+  <data encoding="base64" compression="zlib">
+   eJzzZWBg8B3Fo5hEzIiEaaWPGYiZoHig/TuKhz5mwYOJVUeJHnLs0ABidRwY2TyYGD715Oghxw5S7ae2HnLsAAA6mW/D
+  </data>
+ </layer>
+ <layer name="Ground" width="45" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjALqgWdD0I6nSJhWesixYxTQBwAA65IJ2g==
+  </data>
+ </layer>
+</map>

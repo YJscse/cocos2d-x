@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="32" tileheight="32" nextobjectid="2">
+ <tileset firstgid="1" name="TestDesert" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="48" columns="8">
+  <image source="tmw_desert_spacing.png" width="265" height="199"/>
+ </tileset>
+ <tileset firstgid="49" name="Meta" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="2" columns="2">
+  <image source="metaset.png" width="67" height="34"/>
+  <tile id="0">
+   <properties>
+    <property name="Wall" value="YES"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Items" value="YES"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Background" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJylzmsHgDAUgOFVdBFd6UqWKBX9/5/XGSdmTttJHx67v9YLIQbNCKYfZmO94CgZuL2VIIk11dvBgXM1nng/BBEhdvSUi9jLQE4oGD3T5uh9+ZfEXgNaQofnHvA16m1g6bkkxNv0pWfz3OP2uEpQGWpwA0a9Fec=
+  </data>
+ </layer>
+ <layer name="MetaInfo" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJwzZGBgMETDlACQfiM0PowmhHGZh49Pjjp0NxED8KkjJ8woDWdy7SDFv+hxQ6l5xIoRk0bQ0xkpbsHlPmwYAJpYCoo=
+  </data>
+ </layer>
+ <objectgroup name="Objects">
+  <object id="1" name="SpawnPoint" x="80" y="176"/>
+ </objectgroup>
+ <layer name="Items" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYKA+kKeBmaNgFKADeqQzAGXwAD8=
+  </data>
+ </layer>
+</map>
