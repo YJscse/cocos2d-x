@@ -18,20 +18,22 @@ public:
     CREATE_FUNC(HelloWorld);
 
 	cocos2d::Size         winSize;
-	cocos2d::Sprite*      Sister;
-	cocos2d::Vec2         SisterPosition;
+	cocos2d::Vec2         dragonPosition;
+	cocos2d::Sprite*      dragon;
 	cocos2d::TMXTiledMap* tmap;
 	cocos2d::TMXLayer*    background;
-	cocos2d::TMXLayer*    Ground;
+	cocos2d::TMXLayer*    items;
+	cocos2d::TMXLayer*    metainfo;
 
-	void setSisterPosition(float f);
-	void moveBackground(float f);
-	void createSister();
+	virtual void onEnter();
+	virtual void onExit();
+	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+
+	void createDragon();
+	void setViewpointCenter(cocos2d::Vec2 position);
 	cocos2d::Vec2 tileCoordForPosition(cocos2d::Vec2 position);
-
-	float xValue;
-	int count;
-	int num;
+	void setPlayerPosition(cocos2d::Vec2 position);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

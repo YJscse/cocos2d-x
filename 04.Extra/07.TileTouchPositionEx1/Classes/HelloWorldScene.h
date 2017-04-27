@@ -17,21 +17,13 @@ public:
         
     CREATE_FUNC(HelloWorld);
 
-	cocos2d::Size         winSize;
-	cocos2d::Sprite*      Sister;
-	cocos2d::Vec2         SisterPosition;
-	cocos2d::TMXTiledMap* tmap;
-	cocos2d::TMXLayer*    background;
-	cocos2d::TMXLayer*    Ground;
+	cocos2d::TMXTiledMap*  map;
+	cocos2d::Vec2*         pos;
 
-	void setSisterPosition(float f);
-	void moveBackground(float f);
-	void createSister();
-	cocos2d::Vec2 tileCoordForPosition(cocos2d::Vec2 position);
-
-	float xValue;
-	int count;
-	int num;
+	virtual void onEnter();
+	virtual void onExit();
+	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	cocos2d::Vec2 touchToXY(cocos2d::Vec2 touch);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

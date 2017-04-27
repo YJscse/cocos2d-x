@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="45" height="10" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="45" height="10" tilewidth="32" tileheight="32" nextobjectid="5">
  <tileset firstgid="1" name="fixed-ortho-test2" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="228" columns="19">
   <image source="fixed-ortho-test2.png" width="640" height="400"/>
  </tileset>
@@ -23,7 +23,10 @@
  </layer>
  <layer name="Ground" width="45" height="10">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjALqgWdD0I6nSJhWesixYxTQBwAA65IJ2g==
+   eJxjYBgFo2AUjIKRDZ4iYVrpIceOUUAfAABpvggO
   </data>
  </layer>
+ <objectgroup name="Objects">
+  <object id="4" name="SpawnPoint" x="144" y="225"/>
+ </objectgroup>
 </map>

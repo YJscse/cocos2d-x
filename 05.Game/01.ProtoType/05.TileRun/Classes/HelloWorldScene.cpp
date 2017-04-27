@@ -28,41 +28,71 @@ bool HelloWorld::init()
 	Ground->setVisible(false);
 	this->addChild(tmap, 0, 11);
 
-	Sister = Sprite::create("Images/grossinis_sister1.png");
-	Sister->setPosition(120, 140);
-	Sister->setScale(0.7f);
+	auto objects = tmap->getObjectGroup("Objects");
 
-	this->addChild(Sister);
-	this->schedule(schedule_selector(HelloWorld::moveBackground), 0.01f);
+	ValueMap& spawnPoint = objects->getObject("SpawnPoint");
+
+	int x = spawnPoint["x"].asInt();
+	int y = spawnPoint["y"].asInt();
+
+	SisterPosition = Vec2(x, y);
+	this->createSister();
 
 	xValue = -2;
+
+	this->schedule(schedule_selector(HelloWorld::moveBackground), 0.01f);  // moveBackground를 0.01초마다 소환
+	this->schedule(schedule_selector(HelloWorld::setSisterPosition), 0.01f);
+	
 
     return true;
 }
 
-//void HelloWorld::setPlayerPosition(Vec2 position)
-//{
-//	Vec2 tileCoord = this->(position);
-//
-//	// 현재 위치의 Tile GID 구하기
-//	int tileGid = this->Ground->getTileGIDAt(tileCoord);
-//
-//	if (tileGid)
-//	{
-//		Value properties = tmap->getPropertiesForGID(tileGid);
-//
-//		if (!properties.isNull())
-//		{
-//			std::string cliff = properties.asValueMap()["Cliff"].asString();
-//			if (cliff == "YES")
-//			{
-//				log("낭떠러지 입니다...");
-//				return;
-//			}
-//		}
-//	}
-//
-//}
+void HelloWorld::createSister()
+{
+	auto texture = Director::getInstance()->getTextureCache()->addImage("Images/grossinis_sister1.png");
+	Sister = Sprite::createWithTexture(texture, Rect(0, 0, 52, 139));
+	Sister->setAnchorPoint(Vec2(0.5f, 0.02f));
+	Sister->setPosition(SisterPosition);
+	Sister->setScale(0.5f);
+	this->addChild(Sister);
+}
+
+
+Vec2 HelloWorld::tileCoordForPosition(Vec2 position)
+{
+	position.x = position.x + count;
+
+	int x = position.x / tmap->getTileSize().width;
+	int y = ((tmap->getMapSize().height * tmap->getTileSize().height) - position.y) / tmap->getTileSize().height;
+
+	return Vec2(x, y);
+}
+
+void HelloWorld::setSisterPosition(float f)
+{
+	Vec2 tileCoord = this->tileCoordForPosition(SisterPosition);
+
+	// 현재 위치의 Tile GID 구하기
+	int tileGid = this->Ground->getTileGIDAt(tileCoord);
+
+	if (tileGid)
+	{
+		// 타일맵에서 GID에 해당하는 부분의 속성 읽어 오기
+		Value properties = tmap->getPropertiesForGID(tileGid);
+
+		if (!properties.isNull())
+		{
+			std::string cliff = properties.asValueMap()["Cliff"].asString();
+			if (cliff == "YES")
+			{
+				log("낭떠러지 입니다... %d", num);
+				num++;
+				return;
+			}
+		}
+	}
+
+}
 
 void HelloWorld::moveBackground(float f)
 {
@@ -70,7 +100,14 @@ void HelloWorld::moveBackground(float f)
 	{
 		tmap->setPosition(Vec2(0, 0));
 	}
-
+	
 	tmap->setPosition(Vec2(tmap->getPosition().x + xValue, tmap->getPosition().y));
+
+	count = count + 2;
+
+	if (count == 960)
+	{
+		count = 0;
+	}
 
 }
