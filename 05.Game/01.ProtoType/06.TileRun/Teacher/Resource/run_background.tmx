@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="10" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="ortho-test2" tilewidth="32" tileheight="32" spacing="2" margin="2">
+  <image source="ortho-test2.png" width="640" height="400"/>
+  <tile id="4">
+   <properties>
+    <property name="Wall" value="YES"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="Wall2" value="YES"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Background" width="40" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AU0BIwYsGjYHAADipgcsxiJRI7UwHDADY5NQrNBgBCQArt
+  </data>
+ </layer>
+</map>

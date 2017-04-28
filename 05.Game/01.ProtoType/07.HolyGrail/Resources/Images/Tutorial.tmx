@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" nextobjectid="10">
+ <tileset firstgid="1" name="tmw_desert_spacing" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="48" columns="8">
+  <image source="tmw_desert_spacing.png" width="265" height="199"/>
+ </tileset>
+ <tileset firstgid="49" name="Meta" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="10" columns="5">
+  <image source="metaset10way.png" width="166" height="67"/>
+  <tile id="1">
+   <properties>
+    <property name="Weapon" value="Sword"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="Weapon" value="Wand"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="Weapon" value="HolySword"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="Weapon" value="Key"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="Monster" value="Wolf"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="Monster" value="Jelly"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="Monster" value="Demon"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="Door" value="Door"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="Weapon" value="YES"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Background1" width="15" height="10">
+  <data encoding="base64" compression="zlib">
+   eJyTY2BgkBvFo5jKGADAHBGV
+  </data>
+ </layer>
+ <layer name="MetaInfo" width="15" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAdWEExDBhCaSMsas0I6KXEXhgwxyJmTAd7TbCIWdDBXkssYqZ0sJcUvQB07QZm
+  </data>
+ </layer>
+ <objectgroup name="Objects">
+  <object id="1" name="Hero" x="79" y="48"/>
+  <object id="2" name="Sword" x="144" y="48"/>
+  <object id="3" name="Wolf" x="304" y="48"/>
+  <object id="4" name="Jelly" x="144" y="113"/>
+  <object id="5" name="HolySword" x="144" y="177"/>
+  <object id="6" name="Door" x="144" y="240"/>
+  <object id="7" name="Wand" x="304" y="113"/>
+  <object id="8" name="Demon" x="304" y="177"/>
+  <object id="9" name="Key" x="304" y="240"/>
+ </objectgroup>
+ <layer name="Background2" width="15" height="10" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxTZ2BgUCcCy2HB6mhsbOpwmUNIPTF2IaslJIbLHGz+kkMzA5d6Qn7C5WZcduLyL7H2E9KLLWzwxRGhuMSnHgC3PRPn
+  </data>
+ </layer>
+</map>
