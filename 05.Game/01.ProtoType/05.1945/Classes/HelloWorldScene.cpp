@@ -108,8 +108,11 @@ bool HelloWorld::init()
 		life_[a].pushBack(life);//목숨 벡터에 넣어줌
 	}
 
-
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Music/mainMainMusic.mp3");
 	SimpleAudioEngine::getInstance()->playBackgroundMusic("Music/mainMainMusic.mp3", true);
+	SimpleAudioEngine::getInstance()->preloadEffect("Music/explodeEffect.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("Music/fireEffect.mp3");
+
 	return true;
 }
 
@@ -342,31 +345,29 @@ void HelloWorld::AddEnemy(const Vec2& position)
 
 void HelloWorld::Shooting(float time) //미사일 쏘기
 {
-	if (!player_) //플레이어 죽었을때 ?
+	if (!player_) 
 		return;
 
 	for (int a = 0; a < MAX_MISSILE; ++a)
 	{
 		auto missile = Sprite::create("Images/missile.png");
 
-		if (a == 0) //왼쪽 미사일 위치 할당
+		if (a == 0) 
 		{ 
-			//미사일 위치를 내 비행기 x 좌표 -16 , y좌표는 내좌표
 			missile->setPosition(Vec2(player_->getPosition().x - 16.f, player_->getPosition().y));
 		}
 
-		else if (a == 1)//오른쪽 미사일 위치 할당
+		else if (a == 1)
 		{
-			//미사일 위치를 내 비행기 x 좌표 +16 , y좌표는 내좌표
 			missile->setPosition(Vec2(player_->getPosition().x + 16.f, player_->getPosition().y));
 		}
-		//화면에 뿌리고
+
 		this->addChild(missile);
 
-		Size size = this->getContentSize();//화면의 사이즈 구하는거
-		auto move = MoveBy::create(0.75f, Vec2(0, size.height)); //화면 사이즈 높이 까지 무브
-		missile->runAction(move); //액션
-		missile_[a].pushBack(missile);//미사일 벡터에 넣어줌
+		Size size = this->getContentSize();
+		auto move = MoveBy::create(0.75f, Vec2(0, size.height)); 
+		missile->runAction(move);
+		missile_[a].pushBack(missile);
 	}
 	SimpleAudioEngine::getInstance()->playBackgroundMusic("Music/fireEffect.mp3", true);
 }
@@ -402,19 +403,16 @@ void HelloWorld::onExit()
 
 bool HelloWorld::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
-	//if (!player_)
+	if (!player_)
 
-	// return true;
+	 return true;
 
-	//Vec2 touchPoint = pTouch->getLocationInView();
+	auto touchPoint = Touch->getLocationInView();
+	auto touchGlPoint = Director::getInstance()->convertToGL(touchPoint);
 
-	//Vec2 touchGlPoint = Director::getInstance()->convertToGL(touchPoint);
+	auto playerPos = player_->getPosition();
+	distance_ = Vec2(playerPos.x - touchGlPoint.x, playerPos.y - touchGlPoint.y);
 
-	//Vec2 playerPos = player_->getPosition();
-
-	//distance_ = Vec2(playerPos.x - touchGlPoint.x, playerPos.y - touchGlPoint.y);
-
-	/*distance_ = Vec2(playerPos.x - touchGlPoint.x, playerPos.y);*/
 	return true;
 }
 

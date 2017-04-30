@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" nextobjectid="10">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" nextobjectid="36">
  <tileset firstgid="1" name="tmw_desert_spacing" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="48" columns="8">
   <image source="tmw_desert_spacing.png" width="265" height="199"/>
  </tileset>
@@ -56,12 +56,12 @@
    eJyTY2BgkBvFo5jKGADAHBGV
   </data>
  </layer>
- <layer name="MetaInfo" width="15" height="10">
+ <layer name="MetaInfo1" width="15" height="10">
   <data encoding="base64" compression="zlib">
    eJxjYCAdWEExDBhCaSMsas0I6KXEXhgwxyJmTAd7TbCIWdDBXkssYqZ0sJcUvQB07QZm
   </data>
  </layer>
- <objectgroup name="Objects">
+ <objectgroup name="Objects1">
   <object id="1" name="Hero" x="79" y="48"/>
   <object id="2" name="Sword" x="144" y="48"/>
   <object id="3" name="Wolf" x="304" y="48"/>
@@ -72,9 +72,4 @@
   <object id="8" name="Demon" x="304" y="177"/>
   <object id="9" name="Key" x="304" y="240"/>
  </objectgroup>
- <layer name="Background2" width="15" height="10" visible="0">
-  <data encoding="base64" compression="zlib">
-   eJxTZ2BgUCcCy2HB6mhsbOpwmUNIPTF2IaslJIbLHGz+kkMzA5d6Qn7C5WZcduLyL7H2E9KLLWzwxRGhuMSnHgC3PRPn
-  </data>
- </layer>
 </map>
