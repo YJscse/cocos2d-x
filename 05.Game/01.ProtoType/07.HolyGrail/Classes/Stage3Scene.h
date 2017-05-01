@@ -58,6 +58,7 @@ public:
 	Sprite*           Demon2;
 	Sprite*           Demon3;
 	Sprite*           Door;
+	Sprite*           Door1;
 	Sprite*           boxSword;
 	Sprite*           boxWand;
 	Sprite*           boxHolySword;
@@ -118,6 +119,7 @@ public:
 	void setHeroPosition(Vec2 position);
 	void heroMove(int num);
 	void Reset(Ref *pSender);
+	void doParticles();
 
 	int swordcount;
 	int wandcount;

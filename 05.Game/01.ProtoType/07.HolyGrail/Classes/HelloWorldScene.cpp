@@ -380,6 +380,8 @@ void HelloWorld::setHeroPosition(Vec2 position)
 	// 현재 위치의 Tile GID 구하기
 	int tileGid = this->metainfo->getTileGIDAt(tileCoord);
 
+	auto RemoveAction = FadeOut::create(1);
+
 	if (tileGid)
 	{
 		// 타일맵에서 GID에 해당하는 부분의 속성 읽어 오기
@@ -387,14 +389,22 @@ void HelloWorld::setHeroPosition(Vec2 position)
 
 		if (!properties.isNull())
 		{
+	
+
 			std::string item = properties.asValueMap()["Weapon"].asString();
+			if (item == "YES")
+			{
+				log("Wall...");
+				HeroFrames.clear();
+				return;
+			}
 			std::string monster = properties.asValueMap()["Monster"].asString();
 			std::string door = properties.asValueMap()["Door"].asString();
 			if (item == "Sword")
 			{
 				swordcount++;
 				this->metainfo->removeTileAt(tileCoord);
-				this->removeChild(Sword); 
+				Sword->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -402,18 +412,18 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				this->addChild(boxSword, 4);
 
 				log("Sword 아이템 획득, sword :%d", swordcount);
-				HeroFrames.clear();
 			}
 			else if (item == "Wand")
 			{
 				if (swordcount == 1 || holyswordcount == 1 || keycount == 1)
 				{
 					log("이미 아이템을 가지고 있습니다");
+					HeroFrames.clear();
 					return;
 				}
 				wandcount++;
 				this->metainfo->removeTileAt(tileCoord);
-				this->removeChild(Wand);
+				Wand->runAction(RemoveAction);
 
 				boxWand = Sprite::createWithSpriteFrameName("W_Mace008.png");
 				boxWand->setPosition(Vec2(450, 270));
@@ -421,19 +431,19 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				this->addChild(boxWand, 4);
 
 				log("Wand 아이템 획득, wand : %d", wandcount);
-				HeroFrames.clear();
 			}
 			else if (item == "HolySword")
 			{
 				if (swordcount == 1 || wandcount == 1 || keycount == 1)
 				{
 					log("이미 아이템을 가지고 있습니다");
+					HeroFrames.clear();
 					return;
 				}
 
 				holyswordcount++;
 				this->metainfo->removeTileAt(tileCoord);
-				this->removeChild(HolySword);
+				HolySword->runAction(RemoveAction);
 
 				boxHolySword = Sprite::createWithSpriteFrameName("W_Sword015.png");
 				boxHolySword->setPosition(Vec2(450, 270));
@@ -441,19 +451,21 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				this->addChild(boxHolySword, 4);
 
 				log("HolySword 아이템 획득 holyswrd : %d", holyswordcount);
-				HeroFrames.clear();
+	
 			}
 			else if (item == "Key")
 			{
 				if (swordcount == 1 || wandcount == 1 || holyswordcount == 1)
 				{
 					log("이미 아이템을 가지고 있습니다");
+					HeroFrames.clear();
 					return;
 				}
 
 				keycount++;
 				this->metainfo->removeTileAt(tileCoord);
-				this->removeChild(Key);
+				Key->runAction(RemoveAction);
+				this->removeChild(emitter);
 
 				boxKey = Sprite::createWithSpriteFrameName("I_Key02.png");
 				boxKey->setPosition(Vec2(450, 270));
@@ -461,28 +473,23 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				this->addChild(boxKey, 4);
 
 				log("Key 아이템 획득, key : %d", keycount);
-				HeroFrames.clear();
 			}
-			else if (item == "YES")
-			{
-				log("Wall...");
-				return;
-			}
-
-			if (door == "Door")
+	
+			else if (door == "Door")
 			{
 				if (keycount == 1)
 				{
 
-					Door = Sprite::createWithSpriteFrameName("I_Chest02.png");
-					Door->setPosition(DoorPosition);
-					Door->setScale(0.8);
-					this->addChild(Door);
+					Door1 = Sprite::createWithSpriteFrameName("I_Chest02.png");
+					Door1->setPosition(DoorPosition);
+					Door1->setScale(0.8);
+					this->addChild(Door1);
 
 					log("Stage2로 이동!!!");
 					auto pScene = Stage2Scene::createScene();
-					Director::getInstance()->replaceScene(pScene);
+					Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
 					this->removeChild(boxKey);
+					Door->setVisible(false);
 					keycount = 0;
 
 				}
@@ -499,12 +506,11 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo->removeTileAt(tileCoord);
-					this->removeChild(Wolf);
+					Wolf->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
 					swordcount = 0;
-					HeroFrames.clear();
 				}
 				else
 				{
@@ -519,12 +525,11 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				if (wandcount == 1)
 				{
 					this->metainfo->removeTileAt(tileCoord);
-					this->removeChild(Jelly);
+					Jelly->runAction(RemoveAction);
 					this->removeChild(boxWand);
 
 					log("슬라임 사냥!!");
 					wandcount = 0;
-					HeroFrames.clear();
 				}
 				else
 				{
@@ -538,12 +543,11 @@ void HelloWorld::setHeroPosition(Vec2 position)
 				if (holyswordcount == 1)
 				{
 					this->metainfo->removeTileAt(tileCoord);
-					this->removeChild(Demon);
+					Demon->runAction(RemoveAction);
 					this->removeChild(boxHolySword);
 
 					log("악마 사냥!!");
 					holyswordcount = 0;
-					HeroFrames.clear();
 				}
 				else
 				{
@@ -556,7 +560,7 @@ void HelloWorld::setHeroPosition(Vec2 position)
 		}
 	}
 	// 애니메이션 만들기
-	auto animation = Animation::createWithSpriteFrames(HeroFrames, 0.5f);
+	auto animation = Animation::createWithSpriteFrames(HeroFrames, 0.15f);
 	auto animate = Animate::create(animation);
 
 	Hero->runAction(animate);
@@ -565,9 +569,11 @@ void HelloWorld::setHeroPosition(Vec2 position)
 	HeroFrames.clear();
 }
 
+// 움직일때 구질구질하게 자꾸 뒤돌아보는것은 ↑ 애니메이션이 끝나기전에 움직여서 그런거임 그러니까 애니메이션이 작동하는 시간을 줄여주면
+// 쿨하게 앞만보고 걸어다닌다.
 void HelloWorld::heroMove(int num)
 {
-	char str[100] = { 0 };
+	char str[50] = { 0 };
 
 	if (num == 1) // 우측 이동
 	{

@@ -218,7 +218,7 @@ bool Stage3Scene::init()
 	this->createJelly();
 	this->createDemon();
 	this->createDoor();
-
+	this->doParticles();
 	return true;
 }
 
@@ -542,6 +542,8 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 	int tileGid2 = this->metainfo2->getTileGIDAt(tileCoord2);
 	int tileGid3 = this->metainfo3->getTileGIDAt(tileCoord3);
 
+	auto RemoveAction = FadeOut::create(1);
+
 	// meta1
 	if (tileGid)
 	{
@@ -561,7 +563,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				swordcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Sword1);
+				Sword1->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -579,7 +581,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				swordcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Sword2);
+				Sword2->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -597,7 +599,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				swordcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Sword3);
+				Sword3->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -615,7 +617,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				swordcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Sword4);
+				Sword4->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -633,7 +635,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				swordcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Sword5);
+				Sword5->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -651,7 +653,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				swordcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Sword6);
+				Sword6->runAction(RemoveAction);
 
 				boxSword = Sprite::createWithSpriteFrameName("W_Sword001.png");
 				boxSword->setPosition(Vec2(450, 270));
@@ -670,7 +672,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				wandcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Wand1);
+				Wand1->runAction(RemoveAction);
 
 				boxWand = Sprite::createWithSpriteFrameName("W_Mace008.png");
 				boxWand->setPosition(Vec2(450, 270));
@@ -688,7 +690,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				wandcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Wand2);
+				Wand2->runAction(RemoveAction);
 
 				boxWand = Sprite::createWithSpriteFrameName("W_Mace008.png");
 				boxWand->setPosition(Vec2(450, 270));
@@ -706,7 +708,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				}
 				wandcount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				this->removeChild(Wand3);
+				Wand3->runAction(RemoveAction);
 
 				boxWand = Sprite::createWithSpriteFrameName("W_Mace008.png");
 				boxWand->setPosition(Vec2(450, 270));
@@ -724,10 +726,10 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 					log("이미 아이템을 가지고 있습니다");
 					return;
 				}
-
 				keycount++;
 				this->metainfo1->removeTileAt(tileCoord);
-				Key->setVisible(false);
+				Key->runAction(RemoveAction);
+				this->removeChild(emitter);
 
 				boxKey = Sprite::createWithSpriteFrameName("I_Key02.png");
 				boxKey->setPosition(Vec2(450, 270));
@@ -759,7 +761,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 
 				holyswordcount++;
 				this->metainfo2->removeTileAt(tileCoord);
-				this->removeChild(HolySword1);
+				HolySword1->runAction(RemoveAction);
 
 				boxHolySword = Sprite::createWithSpriteFrameName("W_Sword015.png");
 				boxHolySword->setPosition(Vec2(450, 270));
@@ -778,7 +780,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 
 				holyswordcount++;
 				this->metainfo2->removeTileAt(tileCoord);
-				this->removeChild(HolySword2);
+				HolySword2->runAction(RemoveAction);
 
 				boxHolySword = Sprite::createWithSpriteFrameName("W_Sword015.png");
 				boxHolySword->setPosition(Vec2(450, 270));
@@ -797,7 +799,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 
 				holyswordcount++;
 				this->metainfo2->removeTileAt(tileCoord);
-				this->removeChild(HolySword3);
+				HolySword3->runAction(RemoveAction);
 
 				boxHolySword = Sprite::createWithSpriteFrameName("W_Sword015.png");
 				boxHolySword->setPosition(Vec2(450, 270));
@@ -816,7 +818,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 
 				holyswordcount++;
 				this->metainfo2->removeTileAt(tileCoord);
-				this->removeChild(HolySword4);
+				HolySword4->runAction(RemoveAction);
 
 				boxHolySword = Sprite::createWithSpriteFrameName("W_Sword015.png");
 				boxHolySword->setPosition(Vec2(450, 270));
@@ -830,7 +832,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo2->removeTileAt(tileCoord);
-					this->removeChild(Wolf1);
+					Wolf1->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -847,7 +849,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo2->removeTileAt(tileCoord);
-					this->removeChild(Wolf2);
+					Wolf2->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -864,7 +866,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo2->removeTileAt(tileCoord);
-					this->removeChild(Wolf3);
+					Wolf3->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -881,7 +883,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo2->removeTileAt(tileCoord);
-					this->removeChild(Wolf4);
+					Wolf4->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -898,7 +900,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo2->removeTileAt(tileCoord);
-					this->removeChild(Wolf5);
+					Wolf5->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -915,7 +917,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo2->removeTileAt(tileCoord);
-					Wolf6->setVisible(false);
+					Wolf6->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -942,7 +944,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (swordcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Wolf7);
+					Wolf7->runAction(RemoveAction);
 					this->removeChild(boxSword);
 
 					log("늑대 사냥!!");
@@ -960,7 +962,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (wandcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Jelly1);
+					Jelly1->runAction(RemoveAction);
 					this->removeChild(boxWand);
 
 					log("슬라임 사냥!!");
@@ -977,7 +979,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (wandcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Jelly2);
+					Jelly2->runAction(RemoveAction);
 					this->removeChild(boxWand);
 
 					log("슬라임 사냥!!");
@@ -994,7 +996,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (wandcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Jelly3);
+					Jelly3->runAction(RemoveAction);
 					this->removeChild(boxWand);
 
 					log("슬라임 사냥!!");
@@ -1011,7 +1013,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (wandcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Jelly4);
+					Jelly4->runAction(RemoveAction);
 					this->removeChild(boxWand);
 
 					log("슬라임 사냥!!");
@@ -1028,7 +1030,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (holyswordcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Demon1);
+					Demon1->runAction(RemoveAction);
 					this->removeChild(boxHolySword);
 
 					log("악마 사냥!!");
@@ -1045,7 +1047,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (holyswordcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					this->removeChild(Demon2);
+					Demon2->runAction(RemoveAction);
 					this->removeChild(boxHolySword);
 
 					log("악마 사냥!!");
@@ -1062,7 +1064,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 				if (holyswordcount == 1)
 				{
 					this->metainfo3->removeTileAt(tileCoord);
-					Demon3->setVisible(false);
+					Demon3->runAction(RemoveAction);
 					this->removeChild(boxHolySword);
 
 					log("악마 사냥!!");
@@ -1077,10 +1079,15 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 			//door
 			else if (monster == "Door")
 			{
-				log("Clear!!!");
-				auto pScene = Stage3Scene::createScene();
-				Director::getInstance()->replaceScene(pScene);
+				Door1 = Sprite::createWithSpriteFrameName("I_Chest02.png");
+				Door1->setPosition(DoorPosition);
+				Door1->setScale(0.8);
+				this->addChild(Door1);
 
+				this->removeChild(boxKey);
+				Door->setVisible(false);
+
+				log("Clear!!!");
 			}
 
 			if (monster == "Wall")
@@ -1091,7 +1098,7 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 		}
 	}
 	// 애니메이션 만들기
-	auto animation = Animation::createWithSpriteFrames(HeroFrames, 0.5f);
+	auto animation = Animation::createWithSpriteFrames(HeroFrames, 0.2f);
 	auto animate = Animate::create(animation);
 
 	Hero->runAction(animate);
@@ -1100,6 +1107,8 @@ void Stage3Scene::setHeroPosition(Vec2 position)
 	HeroFrames.clear();
 }
 
+// 움직일때 구질구질하게 자꾸 뒤돌아보는것은 ↑ 애니메이션이 끝나기전에 움직여서 그런거임 그러니까 애니메이션이 작동하는 시간을 줄여주면
+// 쿨하게 앞만보고 걸어다닌다.
 void Stage3Scene::heroMove(int num)
 {
 	char str[100] = { 0 };
@@ -1149,4 +1158,27 @@ void Stage3Scene::heroMove(int num)
 		pMove = MoveBy::create(0.3f, Vec2(0, -32));
 	}
 
+}
+
+void Stage3Scene::doParticles()
+{
+	ParticleSystem* particleTest = ParticleSnow::create();    // Images/stars.png
+
+	auto texture = Director::getInstance()->getTextureCache()->addImage("Images/stars.png");
+	particleTest->setTexture(texture);
+
+	if (particleTest != NULL)
+	{
+
+		// 파티클의 크기 조정
+		particleTest->setScale(1.0);
+
+		// 파티클의 지속 시간 조정 : -1 means 'forever'
+		// particleTest->setDuration(1.0);
+
+		// 파티클의 위치 조정
+		//particleTest->setPosition(Vec2(240, 160));
+
+		this->addChild(particleTest);
+	}
 }

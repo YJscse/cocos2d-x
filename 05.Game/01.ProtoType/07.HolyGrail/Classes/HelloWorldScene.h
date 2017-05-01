@@ -34,6 +34,7 @@ public:
 	Sprite*           Jelly;
 	Sprite*           Demon;
 	Sprite*           Door;
+	Sprite*           Door1;
 
 	Sprite*           boxSword;
 	Sprite*           boxWand;
@@ -57,7 +58,7 @@ public:
 	Vector<SpriteFrame*> DemonFrames;
 	Vector<SpriteFrame*> DoorFrames;
 	ParticleSystem *emitter;
-	
+
 	virtual void onEnter();
 	virtual void onExit();
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
