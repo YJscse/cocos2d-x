@@ -58,7 +58,7 @@ bool HelloWorld::init()
 void HelloWorld::showMole(float f)
 {
 
-    for (int i = 0; i<3; i++) {
+    for (int i = 0; i < 3; i++) {
 
         if (rand() % 3 == 0) {
             if (i == 0) {
