@@ -1,42 +1,42 @@
 ﻿#ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)             // 한글나오게 하는 헤더
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #pragma execution_character_set("utf-8")
 #endif
 
 #include "cocos2d.h"
-#include "cocos-ext.h"
 
-using namespace cocos2d;
+USING_NS_CC;
 
-class HelloWorld : public cocos2d::Layer
+class HelloWorld : public Layer
 {
 public:
-    static cocos2d::Scene* createScene();
+	static Scene* createScene();
 
-    virtual bool init();
-        
-    CREATE_FUNC(HelloWorld);
+	virtual bool init();
 
+	CREATE_FUNC(HelloWorld);
 
-	Vector<Sprite*> puzzle;
+	char str[10] = { 0 };
 
-	void createpuzzle();
 	void onEnter();
 	void onExit();
-	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	void Change(int num);
+	void Clear();
+
+	cocos2d::Vec2 ClearPos0;
+	cocos2d::Vec2 ClearPos1;
+	cocos2d::Vec2 ClearPos2;
+	cocos2d::Vec2 ClearPos3;
+	cocos2d::Vec2 ClearPos4;
+	cocos2d::Vec2 ClearPos5;
+	cocos2d::Vec2 ClearPos6;
+	cocos2d::Vec2 ClearPos7;
+
+	Vector<Sprite*> Puzzle;
+
+	bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
-
-
-/*
-
-cocos-ext.h 인클루드를 위해 참조 디렉터리 추가 :
-
-[프로젝트 - 우클릭 - 속성 - 구성 속성 - C/C++ - 일반 - 추가 포함 디렉터리]에
-
-$(EngineRoot) 추가
-*/
