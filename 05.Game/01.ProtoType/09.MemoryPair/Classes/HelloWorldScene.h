@@ -21,30 +21,11 @@ public:
         
     CREATE_FUNC(HelloWorld);
 
-	Sprite* sprite1;
-	Sprite* pair1;
-	Sprite* pair2;
-	Sprite* pair3;
-	Sprite* pair4;
-	Sprite* pair5;
-	Sprite* pair6;
-	Sprite* pair7;
-	Sprite* pair8;
-	Sprite* pair9;
-	Sprite* pair10;
-	Sprite* pair11;
-	Sprite* pair12;
-	Sprite* pair13;
-	Sprite* pair14;
-	Sprite* pair15;
-	Sprite* pair16;
-	Sprite* pair17;
-	Sprite* pair18;
-	Sprite* pair19;
-	Sprite* pair20;
-	Sprite * obj;
+	Sprite* cover[20];
+	Sprite* sprCard[20];
+	Sprite* obj;
 
-	Vec2 touchPoint;
+	Vec2 pos[20];
 	Vector<Sprite*> pair;
 	Vector<Sprite*> card1;
 	Vector<Sprite*> card2;
@@ -54,12 +35,16 @@ public:
 
 	bool onTouchBegan(Touch *touch, Event *event);
 	void onTouchEnded(Touch *touch, Event *event);
-	void Discover(int num);
-//	void createPair();
-	//void Clear();
+	//void Discover(int num);
+	void good(float f);
+	void bad(float fa);
 
 	int count;
-	
+	int pair1;
+	int pair2;
+	int over;
+	int num1;
+	int num2;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
