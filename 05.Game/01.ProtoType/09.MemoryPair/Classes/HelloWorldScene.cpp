@@ -1,6 +1,9 @@
 ﻿#include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
+
+using namespace CocosDenshion;
 
 Scene* HelloWorld::createScene()
 {
@@ -23,8 +26,6 @@ bool HelloWorld::init()
 	{
 		int column = i % 4;
 		int row = i / 4;
-
-		//		card1.at(i)->setPosition(Vec2(64 * column, 64 * row));
 
 		pos[i] = (Vec2(64 * column, 64 * row));
 	}
@@ -52,6 +53,16 @@ bool HelloWorld::init()
 
 	for (int i = 0; i < 20; i++)
 	{
+		boxCover[i] = Sprite::create("Images/box_normal.png");
+		boxCover[i]->setAnchorPoint(Vec2(0, 0));
+		boxCover[i]->setPosition(Vec2(pos[i]));
+		boxCover[i]->setScale(0.8f);
+		boxCover[i]->setVisible(false);
+		this->addChild(boxCover[i]);
+	}
+
+	for (int i = 0; i < 20; i++)
+	{
 		cover[i] = Sprite::create("Images/box_normal.png");
 		cover[i]->setAnchorPoint(Vec2(0, 0));
 		cover[i]->setPosition(Vec2(pos[i]));
@@ -72,20 +83,6 @@ bool HelloWorld::init()
 
 		//card1.pushBack(sprCard[j]);
 	}
-
-	/*for (int i = 0; i < 20; i++)
-	{
-		this->addChild(pair.at(i), 2);
-	}*/
-
-	//for (int i = 0; i < 20; i++)
-	//{
-	//	int column = i % 4;
-	//	int row = i / 4;
-
-	//	card1.at(i)->setPosition(Vec2(64 * column, 64 * row));
-	//	this->addChild(card1.at(i));
-	//}
 
     return true;
 }
@@ -109,13 +106,12 @@ void HelloWorld::onExit()
 
 bool HelloWorld::onTouchBegan(Touch *touch, Event *event)
 {
-	
 	if (count == 2)
 	{
 		log("기다려");
 		return true;
 	}
-
+	
 	auto touchPoint = touch->getLocation();
 
 
@@ -125,7 +121,14 @@ bool HelloWorld::onTouchBegan(Touch *touch, Event *event)
 
 		if (bTouch)
 		{
+			if (boxCover[i] == 0)
+			{
+				log("빈칸 누르지 마시게나");
+				return true;
+			}
 			count++;
+
+			SimpleAudioEngine::getInstance()->playEffect("Sounds/ding.wav");
 
 			cover[i]->setVisible(false);
 
@@ -147,7 +150,8 @@ bool HelloWorld::onTouchBegan(Touch *touch, Event *event)
 				count--;
 				log("금지");
 			}
-			if (sprCard[i]->getNumberOfRunningActions())
+
+			if (sprCard[i]->getNumberOfRunningActions() == 0)
 			{
 				auto move = RotateBy::create(0.1f, -5);
 				auto back = move->reverse();
@@ -160,19 +164,19 @@ bool HelloWorld::onTouchBegan(Touch *touch, Event *event)
 			{
 				schedule(schedule_selector(HelloWorld::good), 1.0f);
 				over = over + 2;
-				count = 0;
+
 				return true;
 			}
 			if (pair1 != pair2 && count == 2)
 			{
 				schedule(schedule_selector(HelloWorld::bad), 1.0f);
-				count = 0;
 
 				return true;
 
 			}
 		}
 	}
+
 	return true;
 }
 
@@ -192,26 +196,38 @@ void HelloWorld::good(float f)
 	cover[num1]->setVisible(false);
 	cover[num2]->setVisible(false);
 
+	boxCover[num1] = 0;
+	boxCover[num2] = 0;
 
-	//ParticleSystem* emitter1 = ParticleSystemQuad::create("Particles/Flower.plist");
+	ParticleSystem* emitter1 = ParticleSystemQuad::create("particle/Flower.plist");
 
-	//emitter1 = ParticleSystemQuad::create();
-	//emitter1->setPosition(pos1);
-	//emitter1->setScale(0.8f);
-	//emitter1->setDuration(0.1f);
-	//emitter1->setAutoRemoveOnFinish(true);
+	emitter1 = ParticleSystemQuad::create();
+	emitter1->setPosition(pos1);
+	emitter1->setScale(0.3f);
+	emitter1->setDuration(1.5f);
+	emitter1->setAutoRemoveOnFinish(true);
 
-	//this->addChild(emitter1);
+	this->addChild(emitter1);
 
-	//ParticleSystem* emitter2 = ParticleSystemQuad::create("Particles/Flower.plist");
+	ParticleSystem* emitter2 = ParticleSystemQuad::create("particle/Flower.plist");
 
-	//emitter2 = ParticleSystemQuad::create();
-	//emitter2->setPosition(pos1);
-	//emitter2->setScale(0.8f);
-	//emitter2->setDuration(0.1f);
-	//emitter2->setAutoRemoveOnFinish(true);
+	emitter2 = ParticleSystemQuad::create();
+	emitter2->setPosition(pos2);
+	emitter2->setScale(0.3f);
+	emitter2->setDuration(1.5f);
+	emitter2->setAutoRemoveOnFinish(true);
 
-	//this->addChild(emitter2);
+	this->addChild(emitter2);
+
+	if (over == 20)
+	{
+		SimpleAudioEngine::getInstance()->playEffect("Sounds/result.wav");
+
+		unschedule(schedule_selector(HelloWorld::good));
+	}
+
+	SimpleAudioEngine::getInstance()->playEffect("Sounds/del_block.wav");
+
 
 	count = 0;
 	unschedule(schedule_selector(HelloWorld::good));
@@ -221,6 +237,7 @@ void HelloWorld::bad(float fa)
 {
 	cover[num1]->setVisible(true);
 	cover[num2]->setVisible(true);
+
 
 	count = 0;
 	unschedule(schedule_selector(HelloWorld::bad));

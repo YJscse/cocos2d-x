@@ -23,12 +23,9 @@ public:
 
 	Sprite* cover[20];
 	Sprite* sprCard[20];
-	Sprite* obj;
+	Sprite* boxCover[20];
 
 	Vec2 pos[20];
-	Vector<Sprite*> pair;
-	Vector<Sprite*> card1;
-	Vector<Sprite*> card2;
 
 	void onEnter();
 	void onExit();
