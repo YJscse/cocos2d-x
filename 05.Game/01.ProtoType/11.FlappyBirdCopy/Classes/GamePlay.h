@@ -15,6 +15,7 @@
 using namespace cocos2d;
 
 class GamePlay : public cocos2d::Layer
+			   , public b2ContactListener
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -31,33 +32,54 @@ public:
 						 b2BodyType bodytype, 
 						 const char* spriteName, 
 						 int type);
-	b2Body* getBodyAtTab(Vec2 p);
+	//b2Body* getBodyAtTab(Vec2 p);
+
+	//void createRope(b2Body* bodyA, b2Vec2 anchorA, b2Body* bodyB, b2Vec2 anchorB, float32 sag);
 
 	Size winSize;
 	Texture2D* texture;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
+	b2BodyDef bodyDef1;
 
 	bool playerIsFlying;
 	bool bDrag;
 	bool bBallTouch;
 	b2Body* dragBody;
-	b2Body* myBird;
+
 	b2MouseJoint* mouseJoint;
 	b2Body* gbody;
+
 	float playerVelocity;
+	void tick(float dt);
 
 	virtual void onEnter();
-//	virtual void onExit();
+	virtual void onExit();
 	virtual bool onTouchBegan(Touch* touch, Event* event);
 	virtual void onTouchEnded(Touch* touch, Event* event);
 
+	void BeginContact(b2Contact *contact);
+
 //	void SceneTrans(float dt);
-	void createBird();
+	void moveBird();
 	void createGround();
+	void score();
+	void createPipe(float df);
+
 	Sprite* ready;
 	Sprite* howto;
+	Sprite* bird;
+	Sprite* ground;
 
+	b2Body* upPipe;
+	b2Body* downPipe;
+	b2Body* body;
+	b2Body* myBird;
+
+	LabelAtlas *Score;
+
+	Vector<Sprite*> highPipe;
+	Vector<Sprite*> lowPipe;
 protected:
 	void onDraw(const Mat4& transform, uint32_t flags);
 
