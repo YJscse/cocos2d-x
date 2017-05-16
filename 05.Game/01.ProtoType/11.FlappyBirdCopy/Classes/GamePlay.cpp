@@ -3,6 +3,8 @@
 
 USING_NS_CC;
 
+int bScore = 0;
+
 Scene* GamePlay::createScene()
 {
 	auto scene = Scene::create();
@@ -23,7 +25,7 @@ bool GamePlay::init()
 	// 윈도우 크기를 구한다.
 	winSize = Director::getInstance()->getWinSize();
 
-	texture = Director::getInstance()->getTextureCache()->addImage("number.png");
+	//texture = Director::getInstance()->getTextureCache()->addImage("number.png");
 
 	// 배경
 	Sprite* bg = Sprite::create("bg.png");
@@ -40,13 +42,12 @@ bool GamePlay::init()
 	howto->setPosition(Vec2(360, 600));
 	this->addChild(howto);
 
-	/*Score = LabelAtlas::create("0", "number.png", 67, 91, '0');
+	Score = LabelAtlas::create("0", "number.png", 68, 91, '0');
 	Score->setPosition(Vec2(360, 950));
-	this->addChild(Score, 4);*/
+	this->addChild(Score, 4);
 
 
 	this->createGround();
-	this->score();
 	this->moveBird();
 
 	srand((int)time(NULL));
@@ -55,16 +56,6 @@ bool GamePlay::init()
 
 
 	return true;
-}
-void GamePlay::score()
-{
-	for (int i = 0; i < 1; i++)
-	{
-		int row = i % 10;
-		Sprite* score = Sprite::createWithTexture(texture, Rect(67 * row, 0, 67 * (row + 1), 91));
-		score->setPosition(Vec2(360, 950));
-		this->addChild(score, 4);
-	}
 }
 
 bool GamePlay::createBox2dWorld(bool debug)
@@ -141,7 +132,7 @@ bool GamePlay::createBox2dWorld(bool debug)
 	b2Body* ground1 = this->addNewSprite(Vec2(220, 250), Size(60, 60), b2_staticBody, nullptr, 1);
 
 	// bird 바디
-	myBird = this->addNewSprite(Vec2(220, 620), Size(35, 35), b2_dynamicBody, "bird1", 0);
+	myBird = this->addNewSprite(Vec2(220, 620), Size(35, 35), b2_dynamicBody, "test", 0);
 
 	this->schedule(schedule_selector(GamePlay::createPipe), 2.0f);
 	
@@ -190,13 +181,15 @@ void GamePlay::moveBird()
 	animation->addSpriteFrameWithFile("bird3.png");
 
 	auto animate = Animate::create(animation);
-
 	auto rep2 = RepeatForever::create(animate);
-	bird->runAction(rep2->clone());
+
+	bird->runAction(rep2);
 }
 
 void GamePlay::createPipe(float df)
 {
+	wallCheck = true;
+
 	int toto = rand() % 500 + 300;
 
 	upPipe = this->addNewSprite(Vec2(winSize.width + 140, (winSize.height / 2 + toto) + 150), Size(50, 820 ), b2_kinematicBody, "pipe2", 2);
@@ -213,11 +206,14 @@ b2Body* GamePlay::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const
 
 	if (spriteName)
 	{
-		if (strcmp(spriteName, "bird1") == 0)
+		if (strcmp(spriteName, "test") == 0)
 		{
 			int idx = (CCRANDOM_0_1() > .5 ? 0 : 1);
 			int idy = (CCRANDOM_0_1() > .5 ? 0 : 1);
 
+			bird = Sprite::create("bird1.png");
+			bird->setPosition(Vec2(point));
+			this->addChild(bird);
 			bodyDef.userData = bird;
 		}
 		else if (strcmp(spriteName, "pipe1") == 0)
@@ -228,6 +224,7 @@ b2Body* GamePlay::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const
 
 			bodyDef.linearVelocity = b2Vec2(-9.0f, 0);
 			bodyDef.userData = pipe1;
+			lowPipe.pushBack(pipe1);
 		}
 		else if (strcmp(spriteName, "pipe2") == 0)
 		{
@@ -335,6 +332,24 @@ void GamePlay::tick(float dt)
 		}
 	}
 
+	if (wallCheck)
+	{
+		if (bird->getPosition().x > lowPipe.at(nowScore)->getPosition().x)
+		{
+			removeChild(Score);
+			nowScore++;
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "number.png", 68, 91, '0');
+			Score->setPosition(Vec2(360, 950));
+			this->addChild(Score, 3);
+			//scoreVector.pushBack(Score);
+		} 
+
+	}
+
+	
+
 	if (playerIsFlying)
 	{
 		myBird->ApplyLinearImpulse(b2Vec2(0, playerVelocity), myBird->GetWorldCenter(), true);
@@ -371,10 +386,6 @@ bool GamePlay::onTouchBegan(Touch* touch, Event* event)
 	{
 		removeChild(bird);
 
-		bird = Sprite::create("brid1.png");
-		bird->setPosition(Vec2(220, 640));
-		this->addChild(bird);
-
 		if (this->createBox2dWorld(true))
 		{
 			this->schedule(schedule_selector(GamePlay::tick));
@@ -382,11 +393,8 @@ bool GamePlay::onTouchBegan(Touch* touch, Event* event)
 	}
 
 	auto animation = Animation::create();
-	animation->setDelayPerUnit(0.05f);
+	animation->setDelayPerUnit(0.1f);
 
-	animation->addSpriteFrameWithFile("bird1.png");
-	animation->addSpriteFrameWithFile("bird2.png");
-	animation->addSpriteFrameWithFile("bird3.png");
 	animation->addSpriteFrameWithFile("bird1.png");
 	animation->addSpriteFrameWithFile("bird2.png");
 	animation->addSpriteFrameWithFile("bird3.png");
@@ -398,13 +406,78 @@ bool GamePlay::onTouchBegan(Touch* touch, Event* event)
 
 	bird->runAction(animate);
 
+	if (gameover == 1)
+	{
+		Rect rect = startButton->getBoundingBox();
+		Rect rect2 = gradeButton->getBoundingBox();
+
+		if (rect.containsPoint(touchPoint))
+		{
+			auto playMove = MoveBy::create(0.1f, Vec2(0, -10));
+			startButton->runAction(playMove);
+		}
+		else if (rect2.containsPoint(touchPoint))
+		{
+			auto gardeMove = MoveBy::create(0.1f, Vec2(0, -10));
+			gradeButton->runAction(gardeMove);
+		}
+	}
+
+	if (bBool)
+	{
+		bRotate = bRotate - 29;
+		bird->setRotation(bRotate);
+
+		if (bRotate < -30)
+		{
+			bBool = false;
+			
+		}
+		return true;
+	}
+
 	return true;
 }
 
 void GamePlay::onTouchEnded(Touch* touch, Event* event)
 {
+	auto touchPoint = touch->getLocation();
+
 	playerIsFlying = false;
 	playerVelocity = -20.0f;
+	
+	if (gameover == 1)
+	{
+		Rect rect = startButton->getBoundingBox();
+		Rect rect2 = gradeButton->getBoundingBox();
+
+		if (rect.containsPoint(touchPoint))
+		{
+			auto playMove = MoveBy::create(0.1f, Vec2(0, 10));
+			startButton->runAction(playMove);
+
+			auto pScene = GamePlay::createScene();
+			Director::getInstance()->replaceScene(TransitionFade::create(0.5f, pScene));
+		}
+		else if (rect2.containsPoint(touchPoint))
+		{
+			auto gardeMove = MoveBy::create(0.1f, Vec2(0, 10));
+			gradeButton->runAction(gardeMove);
+		}
+	}
+
+	if(bBool = false)
+	{
+		if (bRotate < 90)
+		{
+			bRotate = bRotate + 89;
+			bird->setRotation(bRotate);
+		}
+		else if (bRotate >= 90)
+		{
+			bird->setRotation(90);
+		}
+	}
 
 }
 
@@ -464,6 +537,8 @@ void GamePlay::BeginContact(b2Contact *contact)
 		Director::getInstance()->getActionManager()->pauseAllRunningActions();
 		this->unschedule(schedule_selector(GamePlay::createPipe));
 		this->unschedule(schedule_selector(GamePlay::tick));
+
+		this->gameOver();
 		log("aaa");
 
 	}
@@ -473,9 +548,133 @@ void GamePlay::BeginContact(b2Contact *contact)
 		this->unschedule(schedule_selector(GamePlay::createPipe));
 		this->unschedule(schedule_selector(GamePlay::tick));
 
+		this->gameOver();
 		log("bbb");
 	}
 }
 
+void GamePlay::gameOver()
+{
+	// 반짝이는 효과
+	Sprite* sprite = Sprite::create("base2.png");
+	sprite->setPosition(Vec2(360, 640));
+	sprite->setOpacity(0);
+	sprite->setScale(16.0f);
+	this->addChild(sprite);
 
+	auto overIn = FadeIn::create(0.05f);
+	auto overOut = FadeOut::create(0.05f);
+	auto seq = Sequence::create(overIn, overOut, nullptr);
+	sprite->runAction(seq);
+	auto scoreOut = FadeOut::create(0.05f);
+	Score->runAction(scoreOut);
+
+	// 게임오버 스프라이트
+	Sprite* overSprite = Sprite::create("gameover.png");
+	overSprite->setPosition(Vec2(360, 850));
+	this->addChild(overSprite);
+	auto overAction = FadeIn::create(2.0f);
+	overSprite->runAction(overAction);
+
+	// 점수판 
+	Sprite* baseSprite = Sprite::create("base.png");
+	baseSprite->setPosition(Vec2(360, 0));
+	this->addChild(baseSprite);
+	auto baseAction = MoveTo::create(0.6, Vec2(360, 640));
+	baseSprite->runAction(baseAction);
+
+	this->scheduleOnce(schedule_selector(GamePlay::baseScore), 1);
+
+	this->scheduleOnce(schedule_selector(GamePlay::createMenu), 1);
+	
+}
+void GamePlay::createMenu(float f)
+{
+	startButton = Sprite::create("start.png");
+	startButton->setPosition(Vec2(180, 340));
+	this->addChild(startButton);
+
+	gradeButton = Sprite::create("grade.png");
+	gradeButton->setPosition(Vec2(540, 340));
+	this->addChild(gradeButton);
+	
+	gameover++;
+
+}
+void GamePlay::baseScore(float f)
+{
+	float ni = 0;
+
+	if (nowScore != 0)
+	{
+		ni = 1 / nowScore;
+	}
+
+	smallScore = LabelAtlas::create("0", "number.png", 68, 91, '0');
+	smallScore->setPosition(Vec2(570, 650));
+	smallScore->setScale(0.5);
+	this->addChild(smallScore, 3);
+	this->schedule(schedule_selector(GamePlay::baseNowScore), ni);
+
+
+	sprintf(str, "%d", bScore);
+	bestScore = LabelAtlas::create(str, "number.png", 68, 91, '0');
+	bestScore->setPosition(Vec2(570, 650));
+	bestScore->setScale(0.5);
+	this->addChild(bestScore, 3);
+
+	if (nowScore > 20)
+	{
+		auto Gold = Sprite::create("yellow.png");
+		Gold->setPosition(Vec2(350, 600));
+		this->addChild(Gold, 3);
+	}
+	else if (nowScore > 10)
+	{
+		auto Silver = Sprite::create("gray.png");
+		Silver->setPosition(Vec2(350, 600));
+		this->addChild(Silver, 3);
+	}
+}
+
+void GamePlay::baseNowScore(float f)
+{
+	removeChild(smallScore);
+	sprintf(str, "%d", nScore);
+	smallScore = LabelAtlas::create(str, "number.png", 68, 91, '0');
+	smallScore->setPosition(Vec2(570, 650));
+	smallScore->setScale(0.5);
+
+	sprintf(str, "%d", bScore);
+	bestScore = LabelAtlas::create(str, "number.png", 68, 91, '0');
+	bestScore->setPosition(Vec2(570, 540));
+	bestScore->setScale(0.5);
+	this->addChild(bestScore, 3);
+
+	this->addChild(smallScore, 3);
+
+	if (nowScore == nScore)
+	{
+		if (nowScore > bScore)
+		{
+			removeChild(bestScore);
+
+			bScore = nowScore;
+			sprintf(str, "%d", bScore);
+			bestScore = LabelAtlas::create(str, "number.png", 68, 91, '0');
+			bestScore->setPosition(Vec2(570, 540));
+			bestScore->setScale(0.5);
+			this->addChild(bestScore, 3);
+
+			auto newBest = Sprite::create("new.png");
+			newBest->setPosition(Vec2(460, 720));
+			this->addChild(newBest, 3);
+		}
+
+		this->unschedule(schedule_selector(GamePlay::baseNowScore));
+
+	}
+
+	nScore++;
+}
 

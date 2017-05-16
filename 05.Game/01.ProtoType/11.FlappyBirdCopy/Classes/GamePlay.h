@@ -63,23 +63,39 @@ public:
 //	void SceneTrans(float dt);
 	void moveBird();
 	void createGround();
-	void score();
 	void createPipe(float df);
+	void gameOver();
+	void baseScore(float f);
+	void baseNowScore(float f);
+	void createMenu(float f);
+
+	int bRotate = 0;
+	int nowScore = 0;
+	int nScore = 0;
+	bool wallCheck;
+	bool bBool = true;
+	char str[50] = { 0 };
+	int gameover = 0;
 
 	Sprite* ready;
 	Sprite* howto;
 	Sprite* bird;
 	Sprite* ground;
+	Sprite* startButton;
+	Sprite* gradeButton;
 
 	b2Body* upPipe;
 	b2Body* downPipe;
 	b2Body* body;
 	b2Body* myBird;
 
-	LabelAtlas *Score;
+	LabelAtlas* Score;
+	LabelAtlas* smallScore;
+	LabelAtlas* bestScore;
 
 	Vector<Sprite*> highPipe;
 	Vector<Sprite*> lowPipe;
+	Vector<LabelAtlas*> scoreVector;
 protected:
 	void onDraw(const Mat4& transform, uint32_t flags);
 
