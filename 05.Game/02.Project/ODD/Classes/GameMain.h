@@ -29,9 +29,10 @@ public:
 	Sprite* sound;
 	Sprite* bgm;
 
-	Sprite* scoreBord;
-	Sprite* bgmBord;
-	Sprite* selectBord;
+	Sprite* stageBord;
+	Sprite* stage[9];
+
+	bool sselect = false;
 
 	virtual void onEnter();
 	virtual void onExit();

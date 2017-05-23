@@ -3,7 +3,7 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(3200, 4800);  // 이 크기에 맞춰서 setPosition을 하면된다.
+static cocos2d::Size designResolutionSize = cocos2d::Size(3600, 6400);  // 이 크기에 맞춰서 setPosition을 하면된다.
 
 AppDelegate::AppDelegate()
 {
@@ -28,7 +28,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::createWithRect("ResolutionEx", cocos2d::Rect(0, 0, 640, 960)); // 실제 출시할때는 이것을 주석 처리하고  
+        glview = GLViewImpl::createWithRect("ResolutionEx", cocos2d::Rect(0, 0, 320, 480)); // 실제 출시할때는 이것을 주석 처리하고  
  //      glview = GLViewImpl::create("ResolutionEx");                                       // 실제 출시할때는 이것을 주석 풀어라
         director->setOpenGLView(glview);
     }

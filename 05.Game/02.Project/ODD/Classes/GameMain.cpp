@@ -22,12 +22,12 @@ bool GameMain::init()
 
 	auto sound = Sprite::create("Images/sound_on.png");
 	sound->setScale(4.0f);
-	sound->setPosition(Vec2(winSize.width - 200, winSize.height / 20));
+	sound->setPosition(Vec2(winSize.width * 14/15, winSize.height / 10));
 	this->addChild(sound, 2);
 
 	auto bgm = Sprite::create("Images/bgm_on.png");
 	bgm->setScale(4.0f);
-	bgm->setPosition(Vec2(winSize.width * 4/5, winSize.height / 20));
+	bgm->setPosition(Vec2(winSize.width * 5/6, winSize.height / 10));
 	this->addChild(bgm, 2);
 
 	this->createBackground();
@@ -45,10 +45,10 @@ void GameMain::createBackground()
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(background);
 
-	auto left = MoveBy::create(2, Vec2(-150, 0));
-	auto down = MoveBy::create(2, Vec2(0, -150));
-	auto right = MoveBy::create(2, Vec2(150, 0));
-	auto up = MoveBy::create(2, Vec2(0, 150));
+	auto left = MoveBy::create(2, Vec2(-(winSize.width / 50), 0));
+	auto down = MoveBy::create(2, Vec2(0, -(winSize.height / 50)));
+	auto right = MoveBy::create(2, Vec2(winSize.width / 50, 0));
+	auto up = MoveBy::create(2, Vec2(0, winSize.height / 50));
 
 	auto seq = Sequence::create(left, down, right, up, nullptr);
 	auto rep = RepeatForever::create(seq);
@@ -59,7 +59,7 @@ void GameMain::createBackground()
 void GameMain::createTitle()
 {
 	title = Sprite::create("Images/title.png");
-	title->setPosition(Vec2(winSize.width / 2, winSize.height * 2 / 3 + 200));
+	title->setPosition(Vec2(winSize.width / 2, winSize.height * 3/4));
 	title->setScale(12.0f);
 	title->setOpacity(0);
 	this->addChild(title);
@@ -110,6 +110,37 @@ void GameMain::createScore()
 	score->runAction(seq);
 }
 
+void GameMain::selectStage()
+{
+	stageBord = Sprite::create("Images/stage_bord.png");
+	stageBord->setPosition(Vec2(winSize.width / 2, winSize.height / 2 + 150));
+	stageBord->setScale(3.0f);
+	this->addChild(stageBord);
+
+	auto stageSelect = Sprite::create("stageImages/select.png");
+	stageSelect->setPosition(Vec2(370, 590));
+	stageBord->addChild(stageSelect);
+
+	auto move = MoveBy::create(2, Vec2(0, 20));
+	auto back = move->reverse();
+	auto seq = Sequence::create(move, back, nullptr);
+	auto rep = RepeatForever::create(seq);
+	stageSelect->runAction(rep);
+
+	for (int j = 0; j < 9; j++)
+	{
+		int column = j % 3 + 1;
+		int row = j / 3;
+		char str[50] = { 0 };
+		sprintf(str, "stageImages/stage%d.png", j + 1);
+		stage[j] = Sprite::create(str);
+		stage[j]->setPosition(Vec2(winSize.width * 2/9 + (column * 500), winSize.height * 3/5 - (row * 500)));
+		stage[j]->setScale(5);
+		this->addChild(stage[j]);
+		log("column : %d, row : %d", column, row);
+	}
+}
+
 bool GameMain::onTouchBegan(Touch* touch, Event* event)
 {
 	auto touchPoint = touch->getLocation();
@@ -117,14 +148,12 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 	Rect rect = play->getBoundingBox();
 	Rect rect2 = score->getBoundingBox();
 
-	if (rect.containsPoint(touchPoint))
+	if (rect.containsPoint(touchPoint) && sselect == false)
 	{
 		auto playMove = MoveBy::create(0.1f, Vec2(0, -10));
-		play->runAction(playMove);
-
-		this->selectStage();
+		play->runAction(playMove);	
 	}
-	else if (rect2.containsPoint(touchPoint))
+	else if (rect2.containsPoint(touchPoint) && sselect == false)
 	{
 		auto scoreMove = MoveBy::create(0.1f, Vec2(0, -10));
 		score->runAction(scoreMove);
@@ -139,28 +168,78 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 
 	Rect rect = play->getBoundingBox();
 	Rect rect2 = score->getBoundingBox();
+	
 
-	if (rect.containsPoint(touchPoint))
+	if (rect.containsPoint(touchPoint) && sselect == false)
 	{
 		auto playMove = MoveBy::create(0.1f, Vec2(0, 10));
 		play->runAction(playMove);
 
-		auto pScene = Stage1::createScene();
-		Director::getInstance()->replaceScene(TransitionFade::create(0.5f, pScene));
+		sselect = true;
+		this->selectStage();
+
+//		auto pScene = StageSelect::createScene();
+//		Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1 ,pScene));
 	}
-	else if (rect2.containsPoint(touchPoint))
+	else if (rect2.containsPoint(touchPoint) && sselect == false)
 	{
 		auto scoreMove = MoveBy::create(0.1f, Vec2(0, 10));
 		score->runAction(scoreMove);
 	}
+	else if (sselect)
+	{
 
+		Rect stage1 = stage[0]->getBoundingBox();
+		Rect stage2 = stage[1]->getBoundingBox();
+		Rect stage3 = stage[2]->getBoundingBox();
+		Rect stage4 = stage[3]->getBoundingBox();
+		Rect stage5 = stage[4]->getBoundingBox();
+		Rect stage6 = stage[5]->getBoundingBox();
+		Rect stage7 = stage[6]->getBoundingBox();
+		Rect stage8 = stage[7]->getBoundingBox();
+		Rect stage9 = stage[8]->getBoundingBox();
 
-}
-
-void GameMain::selectStage()
-{
+		if (stage1.containsPoint(touchPoint))
+		{
+			log("aaa");
+		}
+		else if (stage2.containsPoint(touchPoint))
+		{
+			log("aaa");
+		}
+		else if (stage3.containsPoint(touchPoint))
+		{
+			log("aaa");
+		}
+		else if (stage4.containsPoint(touchPoint))
+		{
+			log("aaa");
+		}
+		else if (stage5.containsPoint(touchPoint))
+		{
+			log("stage5");
+		}
+		else if (stage6.containsPoint(touchPoint))
+		{
+			log("stage6");
+		}
+		else if (stage7.containsPoint(touchPoint))
+		{
+			log("stage7");
+		}
+		else if (stage8.containsPoint(touchPoint))
+		{
+			log("stage8");
+		}
+		else if (stage9.containsPoint(touchPoint))
+		{
+			log("stage9");
+		}
+			
+	}
 	
 }
+
 void GameMain::onEnter()
 {
 	Layer::onEnter();
