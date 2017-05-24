@@ -28,6 +28,7 @@ public:
 	Sprite* background;
 	Sprite* sound;
 	Sprite* bgm;
+	Sprite* home;
 
 	Sprite* stageBord;
 	Sprite* stage[9];

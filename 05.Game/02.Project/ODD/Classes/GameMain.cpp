@@ -21,12 +21,12 @@ bool GameMain::init()
 
 
 	auto sound = Sprite::create("Images/sound_on.png");
-	sound->setScale(4.0f);
+	sound->setScale(0.7f);
 	sound->setPosition(Vec2(winSize.width * 14/15, winSize.height / 10));
 	this->addChild(sound, 2);
 
 	auto bgm = Sprite::create("Images/bgm_on.png");
-	bgm->setScale(4.0f);
+	bgm->setScale(0.7f);
 	bgm->setPosition(Vec2(winSize.width * 5/6, winSize.height / 10));
 	this->addChild(bgm, 2);
 
@@ -41,7 +41,7 @@ bool GameMain::init()
 void GameMain::createBackground()
 {
 	background = Sprite::create("Images/Main_background.png");
-	background->setScale(5.0f);
+	background->setScale(1.3f);
 	background->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	this->addChild(background);
 
@@ -60,7 +60,7 @@ void GameMain::createTitle()
 {
 	title = Sprite::create("Images/title.png");
 	title->setPosition(Vec2(winSize.width / 2, winSize.height * 3/4));
-	title->setScale(12.0f);
+	title->setScale(2.5f);
 	title->setOpacity(0);
 	this->addChild(title);
 
@@ -80,7 +80,7 @@ void GameMain::createPlay()
 {
 	play = Sprite::create("Images/play.png");
 	play->setPosition(Vec2(0, -200));
-	play->setScale(6.0f);
+	//play->setScale(6.0f);
 	this->addChild(play);
 
 	auto move = Place::create(Vec2(winSize.width / 2, winSize.height / 2));
@@ -101,7 +101,7 @@ void GameMain::createScore()
 {
 	score = Sprite::create("Images/score.png");
 	score->setPosition(Vec2(winSize.width / 2, winSize.height + 200));
-	score->setScale(3.0f);
+	score->setScale(0.7f);
 	this->addChild(score);
 
 	auto move = MoveBy::create(0.5f, Vec2(0, -winSize.height * 3/4));
@@ -113,12 +113,13 @@ void GameMain::createScore()
 void GameMain::selectStage()
 {
 	stageBord = Sprite::create("Images/stage_bord.png");
-	stageBord->setPosition(Vec2(winSize.width / 2, winSize.height / 2 + 150));
-	stageBord->setScale(3.0f);
+	stageBord->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	//stageBord->setScale(3.0f);
 	this->addChild(stageBord);
 
 	auto stageSelect = Sprite::create("stageImages/select.png");
-	stageSelect->setPosition(Vec2(370, 590));
+	stageSelect->setPosition(Vec2(250, 350));
+	stageSelect->setScale(0.7f);
 	stageBord->addChild(stageSelect);
 
 	auto move = MoveBy::create(2, Vec2(0, 20));
@@ -134,11 +135,15 @@ void GameMain::selectStage()
 		char str[50] = { 0 };
 		sprintf(str, "stageImages/stage%d.png", j + 1);
 		stage[j] = Sprite::create(str);
-		stage[j]->setPosition(Vec2(winSize.width * 2/9 + (column * 500), winSize.height * 3/5 - (row * 500)));
-		stage[j]->setScale(5);
+		stage[j]->setPosition(Vec2(winSize.width * 2/9 + (column * 100), winSize.height * 4/7 - (row * 100)));
+		stage[j]->setScale(0.8f);
 		this->addChild(stage[j]);
 		log("column : %d, row : %d", column, row);
 	}
+
+	home = Sprite::create("Images/home.png");
+	home->setPosition(Vec2(winSize.width / 4, winSize.height / 4));
+	this->addChild(home);
 }
 
 bool GameMain::onTouchBegan(Touch* touch, Event* event)
@@ -198,17 +203,28 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 		Rect stage7 = stage[6]->getBoundingBox();
 		Rect stage8 = stage[7]->getBoundingBox();
 		Rect stage9 = stage[8]->getBoundingBox();
+		Rect homeButton = home->getBoundingBox();
 
-		if (stage1.containsPoint(touchPoint))
+		if (homeButton.containsPoint(touchPoint))
 		{
+			
+		}
+		else if (stage1.containsPoint(touchPoint))
+		{
+			auto pScene = Stage1::createScene();
+			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
 			log("aaa");
 		}
 		else if (stage2.containsPoint(touchPoint))
 		{
+			auto pScene = Stage1::createScene();
+			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
 			log("aaa");
 		}
 		else if (stage3.containsPoint(touchPoint))
 		{
+			auto pScene = Stage1::createScene();
+			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
 			log("aaa");
 		}
 		else if (stage4.containsPoint(touchPoint))

@@ -3,7 +3,7 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(3600, 6400);  // 이 크기에 맞춰서 setPosition을 하면된다.
+static cocos2d::Size designResolutionSize = cocos2d::Size(720, 1280);  // 이 크기에 맞춰서 setPosition을 하면된다.
 
 AppDelegate::AppDelegate()
 {
