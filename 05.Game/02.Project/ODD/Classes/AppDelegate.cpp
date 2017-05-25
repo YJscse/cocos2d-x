@@ -28,7 +28,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::createWithRect("ResolutionEx", cocos2d::Rect(0, 0, 320, 480)); // 실제 출시할때는 이것을 주석 처리하고  
+        glview = GLViewImpl::createWithRect("ResolutionEx", cocos2d::Rect(0, 0, 720, 1280)); // 실제 출시할때는 이것을 주석 처리하고  
  //      glview = GLViewImpl::create("ResolutionEx");                                       // 실제 출시할때는 이것을 주석 풀어라
         director->setOpenGLView(glview);
     }

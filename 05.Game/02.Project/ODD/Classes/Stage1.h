@@ -65,6 +65,9 @@ public:
 
 	void moveBackGround(float f);
 	void createPlayer();
+	void createSpine();
+	void waySwich();
+	//void createWall();
 	void BeginContact(b2Contact *contact);
 	
 

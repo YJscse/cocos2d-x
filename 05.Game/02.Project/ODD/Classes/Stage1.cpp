@@ -29,7 +29,7 @@ bool Stage1::init()
 	bg->setScale(5);
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
-	//this->addChild(bg);
+	this->addChild(bg);
 
 	this->createPlayer();
 
@@ -94,7 +94,7 @@ bool Stage1::createBox2dWorld(bool debug)
 	groundEdge.Set(b2Vec2(0, winSize.height * 5 / PTM_RATIO), b2Vec2(winSize.width * 5 / PTM_RATIO, winSize.height * 5 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
-	// 아래쪽
+	// 오른쪽
 	groundEdge.Set(b2Vec2(winSize.width * 5 / PTM_RATIO, winSize.height * 5 / PTM_RATIO), b2Vec2(winSize.width * 5 / PTM_RATIO, 0));
 	groundBody->CreateFixture(&boxShapeDef);
 
@@ -104,16 +104,10 @@ bool Stage1::createBox2dWorld(bool debug)
 	// 마우스 조인트 바디를 생성해서 월드에 추가한다.
 	gbody = this->addNewSprite(Vec2(0, 0), Size(0, 0), b2_staticBody, nullptr, 0);
 
-	pManBody = this->addNewSprite(Vec2(350, 100), Size(40, 100), b2_dynamicBody, "test", 0);
+	pManBody = this->addNewSprite(Vec2(350, 50), Size(40, 100), b2_dynamicBody, "test", 0);
 
-	b2Body* rightWall = this->addNewSprite(Vec2(winSize.width * 5, 150), Size(1, 300), b2_kinematicBody, nullptr, 0);
-
-	b2Body* upWall = this->addNewSprite(Vec2(winSize.width * 5 - 150, winSize.height * 5), Size(300, 1), b2_kinematicBody, nullptr, 0);
-
-	b2Body* leftWall = this->addNewSprite(Vec2(0, winSize.height * 5 - 150), Size(1, 300), b2_kinematicBody, nullptr, 0);
-
-	b2Body* downWall = this->addNewSprite(Vec2(150, 0), Size(300, 1), b2_kinematicBody, nullptr, 0);
-
+	this->createSpine();
+	this->waySwich();
 	this->schedule(schedule_selector(Stage1::moveBackGround));
 
 	return true;
@@ -126,6 +120,40 @@ Stage1::~Stage1()
 	_world = nullptr;
 }
 
+
+void Stage1::createSpine()
+{
+
+	for (int i = 1; i < 3; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width / 2 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+	}
+
+	for (int i = 1; i < 3; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 2 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+	}
+
+	for (int i = 1; i < 8; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 3 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 4 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 5 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+	}
+}
+
+//void Stage1::createWall()
+//{
+//	this->addNewSprite(Vec2(winSize.width * 3, 100), Size());
+//}
 void Stage1::createPlayer()
 {
 	auto texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
@@ -154,6 +182,11 @@ void Stage1::createPlayer()
 
 void Stage1::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
+	if (!_world)
+	{
+		return;
+	}
+
 	Layer::draw(renderer, transform, flags);
 
 	_customCmd.init(_globalZOrder, transform, flags);
@@ -227,7 +260,7 @@ void Stage1::tick(float dt)
 
 			playerVelocity = playerVelocity + 0.09f;
 
-			if (playerVelocity > 30.0f)
+			if (playerVelocity > 80.0f)
 			{
 				playerIsFlying = false;
 				playerVelocity = 0.0f;
@@ -347,6 +380,7 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			sprite->setPosition(point);
 			this->addChild(sprite);
 
+			sprite->setTag(1);
 			bodyDef.userData = sprite;
 		}
 	}
@@ -413,7 +447,7 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 			log("%f .. %f", winSize.width, winSize.height);
 		}
 	}
-	playerVelocity = 29.9f;
+	playerVelocity = 79.9f;
 	playerIsFlying = true;
 
 	return true;
@@ -422,11 +456,16 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 void Stage1::onTouchEnded(Touch *touch, Event *event)
 {
 	playerIsFlying = false;
-	playerVelocity = -20.0f;
+	playerVelocity = -30.0f;
 }
 
 void Stage1::onDraw(const Mat4 &transform, uint32_t flags)
 {
+	if (!_world)
+	{
+		return;
+	}
+
 	Director* director = Director::getInstance();
 	CCASSERT(nullptr != director, "Director is null when seting matrix stack");
 	director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
@@ -442,8 +481,7 @@ void Stage1::onDraw(const Mat4 &transform, uint32_t flags)
 void Stage1::moveBackGround(float f)
 {
 	this->runAction(Follow::create(pMan, 
-		Rect(-winSize.width * 1/5, -winSize.height * 1/5, 
-		720 * 5 + winSize.width * 2/5, 1280 * 5 + winSize.height * 2/5)));
+		Rect(-winSize.width * 1/5, -winSize.height * 1/5, winSize.width * 7 + winSize.width * 2/5, winSize.height * 7 + winSize.height * 2/5)));
 }
 
 void Stage1::BeginContact(b2Contact *contact)
@@ -485,4 +523,33 @@ void Stage1::BeginContact(b2Contact *contact)
 		}
 		log("contact");
 	}
+	else if (bodyA->GetType() == b2_dynamicBody && bodyB->GetType() == b2_staticBody)
+	{
+		if (bodyB->GetUserData() != nullptr)
+		{
+			Sprite* spriteData = (Sprite *)bodyB->GetUserData();
+			int nTag = spriteData->getTag();
+
+			if (nTag == 1)
+			{
+				log("contact %d", nTag);
+			}
+			else if (nTag == 2)
+			{
+				log("contact2 %d", nTag);
+			}
+		}
+
+	}
+}
+
+void Stage1::waySwich()
+{
+	b2Body* rightWall = this->addNewSprite(Vec2(winSize.width * 7, 150), Size(1, 300), b2_kinematicBody, nullptr, 0);
+
+	b2Body* upWall = this->addNewSprite(Vec2(winSize.width * 7 - 150, winSize.height * 7), Size(300, 1), b2_kinematicBody, nullptr, 0);
+
+	b2Body* leftWall = this->addNewSprite(Vec2(0, winSize.height * 7 - 150), Size(1, 300), b2_kinematicBody, nullptr, 0);
+
+	b2Body* downWall = this->addNewSprite(Vec2(150, 0), Size(300, 1), b2_kinematicBody, nullptr, 0);	
 }
