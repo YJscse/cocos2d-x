@@ -58,6 +58,7 @@ public:
 	float playerVelocity;
 	bool playerIsFlying;
 
+	bool jumpBool = false;
 	bool rBool = true;
 	bool uBool = false;
 	bool lBool = false;
@@ -67,8 +68,12 @@ public:
 	void createPlayer();
 	void createSpine();
 	void waySwich();
-	//void createWall();
+	void createWall();
 	void BeginContact(b2Contact *contact);
+
+	std::vector<b2Body*> delVec;
+
+	void gameOver();
 	
 
 protected:

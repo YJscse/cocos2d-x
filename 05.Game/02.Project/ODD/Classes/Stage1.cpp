@@ -26,12 +26,14 @@ bool Stage1::init()
 	texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
 
 	bg = Sprite::create("Images/stage1_background.png");
-	bg->setScale(5);
+	bg->setScale(7);
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
 
 	this->createPlayer();
+
+	delVec.clear();
 
 	return true;
 }
@@ -83,19 +85,19 @@ bool Stage1::createBox2dWorld(bool debug)
 	// 그리고 바디(groundBody)에 모양(groundEdge)을 고정시킨다.
 
 	// 아래쪽
-	groundEdge.Set(b2Vec2(0, 0), b2Vec2(winSize.width * 5 / PTM_RATIO, 0));
+	groundEdge.Set(b2Vec2(0, 0), b2Vec2(winSize.width * 7 / PTM_RATIO, 0));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	// 왼쪽
-	groundEdge.Set(b2Vec2(0, 0), b2Vec2(0, winSize.height * 5 / PTM_RATIO));
+	groundEdge.Set(b2Vec2(0, 0), b2Vec2(0, winSize.height * 7 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	// 위쪽
-	groundEdge.Set(b2Vec2(0, winSize.height * 5 / PTM_RATIO), b2Vec2(winSize.width * 5 / PTM_RATIO, winSize.height * 5 / PTM_RATIO));
+	groundEdge.Set(b2Vec2(0, winSize.height * 7 / PTM_RATIO), b2Vec2(winSize.width * 7 / PTM_RATIO, winSize.height * 7 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	// 오른쪽
-	groundEdge.Set(b2Vec2(winSize.width * 5 / PTM_RATIO, winSize.height * 5 / PTM_RATIO), b2Vec2(winSize.width * 5 / PTM_RATIO, 0));
+	groundEdge.Set(b2Vec2(winSize.width * 7 / PTM_RATIO, winSize.height * 7 / PTM_RATIO), b2Vec2(winSize.width * 7 / PTM_RATIO, 0));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	// 월드 생성 끝 -----------------------------------------------------------
@@ -104,8 +106,9 @@ bool Stage1::createBox2dWorld(bool debug)
 	// 마우스 조인트 바디를 생성해서 월드에 추가한다.
 	gbody = this->addNewSprite(Vec2(0, 0), Size(0, 0), b2_staticBody, nullptr, 0);
 
-	pManBody = this->addNewSprite(Vec2(350, 50), Size(40, 100), b2_dynamicBody, "test", 0);
+	pManBody = this->addNewSprite(Vec2(350, 40), Size(40, 80), b2_dynamicBody, "test", 0);
 
+	this->createWall();
 	this->createSpine();
 	this->waySwich();
 	this->schedule(schedule_selector(Stage1::moveBackGround));
@@ -126,34 +129,35 @@ void Stage1::createSpine()
 
 	for (int i = 1; i < 3; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width / 2 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
 	}
 
-	for (int i = 1; i < 3; i++)
+	for (int i = 1; i < 15; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 2 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
-	}
-
-	for (int i = 1; i < 8; i++)
-	{
-		this->addNewSprite(Vec2(winSize.width * 3 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width * 3 + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
 	}
 
 	for (int i = 1; i < 5; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 4 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width * 4 + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
 	}
 
 	for (int i = 1; i < 5; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 5 + 24 * i, 12), Size(24, 24), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width * 5 + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
 	}
 }
 
-//void Stage1::createWall()
-//{
-//	this->addNewSprite(Vec2(winSize.width * 3, 100), Size());
-//}
+void Stage1::createWall()
+{
+	this->addNewSprite(Vec2(winSize.width * 3 + 168, 150), Size(336, 25), b2_staticBody, "wall", 0);
+
+	this->addNewSprite(Vec2(winSize.width * 2, 250), Size(50, 200), b2_staticBody, "wallV", 0);
+
+	this->addNewSprite(Vec2(winSize.width * 4, 250), Size(50, 200), b2_staticBody, "wallV", 0);
+
+}
+
 void Stage1::createPlayer()
 {
 	auto texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
@@ -171,27 +175,13 @@ void Stage1::createPlayer()
 	}
 
 	pMan = Sprite::createWithTexture(texture, Rect(0, 0, 256, 256));
-	pMan->setPosition(Vec2(150, 300));
+	pMan->setPosition(Vec2(350, 40));
 	this->addChild(pMan);
 
 	auto animate = Animate::create(animation);
 	auto rep = RepeatForever::create(animate);
 	pMan->setScale(0.5f);
 	pMan->runAction(rep);
-}
-
-void Stage1::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
-{
-	if (!_world)
-	{
-		return;
-	}
-
-	Layer::draw(renderer, transform, flags);
-
-	_customCmd.init(_globalZOrder, transform, flags);
-	_customCmd.func = CC_CALLBACK_0(Stage1::onDraw, this, transform, flags);
-	renderer->addCommand(&_customCmd);
 }
 
 void Stage1::onEnter()
@@ -213,20 +203,7 @@ void Stage1::onExit()
 }
 
 void Stage1::tick(float dt)
-{
-	// 물리적 위치를 이용해 그래픽 위치를 갱신한다.
-
-	// velocityIterations : 바디들을 정상적으로 이동시키기 위해 필요한 충돌들을
-	// 반복적으로 계산
-	// positionIterations : 조인트 분리와 겹침 현상을 줄이기 위해 바디의 위치를
-	// 반복적으로 적용
-	// 값이 클수록 정확한 연산이 가능하지만 성능이 떨어진다.
-
-	// 프로젝트 생성 시 기본값
-	//   int velocityIterations = 8;
-	//   int positionIterations = 1;
-
-	// 매뉴얼 상의 권장값
+{	
 	int velocityIterations = 8;
 	int positionIterations = 3;
 
@@ -260,7 +237,7 @@ void Stage1::tick(float dt)
 
 			playerVelocity = playerVelocity + 0.09f;
 
-			if (playerVelocity > 80.0f)
+			if (playerVelocity > 30.0f)
 			{
 				playerIsFlying = false;
 				playerVelocity = 0.0f;
@@ -278,7 +255,7 @@ void Stage1::tick(float dt)
 
 		if (playerIsFlying)
 		{
-			pManBody->ApplyLinearImpulse(b2Vec2(-playerVelocity, 0.3f), pManBody->GetWorldCenter(), true);
+			pManBody->ApplyLinearImpulse(b2Vec2(-playerVelocity, 0), pManBody->GetWorldCenter(), true);
 
 			playerVelocity = playerVelocity + 0.09f;
 
@@ -322,7 +299,7 @@ void Stage1::tick(float dt)
 
 		if (playerIsFlying)
 		{
-			pManBody->ApplyLinearImpulse(b2Vec2(playerVelocity, -0.3f), pManBody->GetWorldCenter(), true);
+			pManBody->ApplyLinearImpulse(b2Vec2(playerVelocity, 0), pManBody->GetWorldCenter(), true);
 
 			playerVelocity = playerVelocity + 0.09f;
 
@@ -346,9 +323,6 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 	{
 		if (strcmp(spriteName, "test") == 0)
 		{
-			int idx = (CCRANDOM_0_1() > .5 ? 0 : 1);
-			int idy = (CCRANDOM_0_1() > .5 ? 0 : 1);
-			//auto texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
 			auto animation = Animation::create();
 			animation->setDelayPerUnit(0.05f);
 
@@ -368,19 +342,41 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 
 			auto animate = Animate::create(animation);
 			auto rep = RepeatForever::create(animate);
+			pMan->setAnchorPoint(Vec2(0.5f, 0.4f));
 			pMan->setScale(0.5f);
 			pMan->runAction(rep);
 			
-			//bodyDef.linearVelocity = b2Vec2(10.0f, 0);
+			pMan->setTag(0);
 			bodyDef.userData = pMan;
 		}
-		else
+		else if (strcmp(spriteName, "barrier") == 0)
 		{
-			Sprite* sprite = Sprite::create(spriteName);
+			Sprite* sprite = Sprite::create("Images/spine.png");
 			sprite->setPosition(point);
+			sprite->setScale(1.5f);
 			this->addChild(sprite);
 
 			sprite->setTag(1);
+			bodyDef.userData = sprite;
+		}
+		else if (strcmp(spriteName, "wall") == 0)
+		{
+			Sprite* sprite = Sprite::create("Images/wallH.png");
+			sprite->setPosition(Vec2(point));
+			sprite->setScaleY(0.5f);
+			this->addChild(sprite);
+
+			sprite->setTag(2);
+			bodyDef.userData = sprite;
+		}
+		else if (strcmp(spriteName, "wallV") == 0)
+		{
+			Sprite* sprite = Sprite::create("Images/wallV.png");
+			//sprite->setAnchorPoint(Vec2(0.5, 0));
+			sprite->setPosition(Vec2(point));
+			this->addChild(sprite);
+
+			sprite->setTag(2);
 			bodyDef.userData = sprite;
 		}
 	}
@@ -436,9 +432,11 @@ b2Body* Stage1::getBodyAtTab(Vec2 p)
 bool Stage1::onTouchBegan(Touch* touch, Event* event)
 {
 	Vec2 touchPoint = touch->getLocation();
+
 	if (!_world)
 	{
 		removeChild(pMan);
+		playerVelocity = 0.0f;
 		// 월드 생성
 		if (this->createBox2dWorld(true))
 		{
@@ -447,16 +445,20 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 			log("%f .. %f", winSize.width, winSize.height);
 		}
 	}
-	playerVelocity = 79.9f;
-	playerIsFlying = true;
+	else if (jumpBool)
+	{
+		playerVelocity = 29.9f;
+		playerIsFlying = true;
+	}
 
+	jumpBool = true;
 	return true;
 }
 
 void Stage1::onTouchEnded(Touch *touch, Event *event)
 {
 	playerIsFlying = false;
-	playerVelocity = -30.0f;
+	playerVelocity = -60.0f;
 }
 
 void Stage1::onDraw(const Mat4 &transform, uint32_t flags)
@@ -478,10 +480,23 @@ void Stage1::onDraw(const Mat4 &transform, uint32_t flags)
 	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 }
 
+void Stage1::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
+	if (!_world)
+	{
+		return;
+	}
+
+	Layer::draw(renderer, transform, flags);
+
+	_customCmd.init(_globalZOrder, transform, flags);
+	_customCmd.func = CC_CALLBACK_0(Stage1::onDraw, this, transform, flags);
+	renderer->addCommand(&_customCmd);
+}
+
 void Stage1::moveBackGround(float f)
 {
-	this->runAction(Follow::create(pMan, 
-		Rect(-winSize.width * 1/5, -winSize.height * 1/5, winSize.width * 7 + winSize.width * 2/5, winSize.height * 7 + winSize.height * 2/5)));
+	this->runAction(Follow::create(pMan, Rect(0, 0, winSize.width * 7, winSize.height * 7)));
 }
 
 void Stage1::BeginContact(b2Contact *contact)
@@ -532,6 +547,8 @@ void Stage1::BeginContact(b2Contact *contact)
 
 			if (nTag == 1)
 			{
+				this->unschedule(schedule_selector(Stage1::tick));
+				this->gameOver();
 				log("contact %d", nTag);
 			}
 			else if (nTag == 2)
@@ -552,4 +569,14 @@ void Stage1::waySwich()
 	b2Body* leftWall = this->addNewSprite(Vec2(0, winSize.height * 7 - 150), Size(1, 300), b2_kinematicBody, nullptr, 0);
 
 	b2Body* downWall = this->addNewSprite(Vec2(150, 0), Size(300, 1), b2_kinematicBody, nullptr, 0);	
+}
+
+void Stage1::gameOver()
+{
+	auto bord = Sprite::create("Images/stage_bord.png");
+	if (rBool)
+	{
+		bord->setPosition(Vec2(pManBody->GetPosition().x, winSize.height / 14));
+	}
+	this->addChild(bord);
 }

@@ -22,12 +22,12 @@ bool GameMain::init()
 
 	auto sound = Sprite::create("Images/sound_on.png");
 	sound->setScale(0.7f);
-	sound->setPosition(Vec2(winSize.width * 14/15, winSize.height / 10));
+	sound->setPosition(Vec2(winSize.width * 14/15, winSize.height * 14/15));
 	this->addChild(sound, 2);
 
 	auto bgm = Sprite::create("Images/bgm_on.png");
 	bgm->setScale(0.7f);
-	bgm->setPosition(Vec2(winSize.width * 5/6, winSize.height / 10));
+	bgm->setPosition(Vec2(winSize.width * 12/15, winSize.height * 14/15));
 	this->addChild(bgm, 2);
 
 	this->createBackground();
@@ -100,8 +100,8 @@ void GameMain::createPlay()
 void GameMain::createScore()
 {
 	score = Sprite::create("Images/score.png");
-	score->setPosition(Vec2(winSize.width / 2, winSize.height + 200));
-	score->setScale(0.7f);
+	score->setPosition(Vec2(winSize.width / 2, winSize.height + 100));
+	score->setScale(0.5f);
 	this->addChild(score);
 
 	auto move = MoveBy::create(0.5f, Vec2(0, -winSize.height * 3/4));
@@ -118,8 +118,8 @@ void GameMain::selectStage()
 	this->addChild(stageBord);
 
 	auto stageSelect = Sprite::create("stageImages/select.png");
-	stageSelect->setPosition(Vec2(250, 350));
-	stageSelect->setScale(0.7f);
+	stageSelect->setPosition(Vec2(200, 350));
+	stageSelect->setScale(0.6f);
 	stageBord->addChild(stageSelect);
 
 	auto move = MoveBy::create(2, Vec2(0, 20));
@@ -142,7 +142,7 @@ void GameMain::selectStage()
 	}
 
 	home = Sprite::create("Images/home.png");
-	home->setPosition(Vec2(winSize.width / 4, winSize.height / 4));
+	home->setPosition(Vec2(winSize.width / 4, winSize.height / 3));
 	this->addChild(home);
 }
 
@@ -157,6 +157,13 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 	{
 		auto playMove = MoveBy::create(0.1f, Vec2(0, -10));
 		play->runAction(playMove);	
+		
+	/*	Rect rect3 = home->getBoundingBox();
+		if (rect3.containsPoint(touchPoint))
+		{
+			auto homeMove = MoveBy::create(0.1f, Vec2(0, 10));
+			home->runAction(homeMove);
+		}*/
 	}
 	else if (rect2.containsPoint(touchPoint) && sselect == false)
 	{
@@ -207,7 +214,13 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 
 		if (homeButton.containsPoint(touchPoint))
 		{
-			
+			removeChild(stageBord);
+			for (int i = 0; i < 9; i++)
+			{
+				removeChild(stage[i]);
+			}
+			removeChild(home);
+			sselect = false;
 		}
 		else if (stage1.containsPoint(touchPoint))
 		{
