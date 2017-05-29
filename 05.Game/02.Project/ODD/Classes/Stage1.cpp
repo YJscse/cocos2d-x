@@ -31,6 +31,22 @@ bool Stage1::init()
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
 
+	//LayerColor* mapLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
+	//mapLayer->setAnchorPoint(Vec2(0, 0));
+	//mapLayer->setPosition(Vec2(0, 0));
+	//this->addChild(mapLayer);
+
+	//auto pBack = Sprite::create("Images/minimap_back.png");
+	//pBack->setColor(Color3B::BLACK);
+	//pBack->setOpacity(50);
+	//pBack->setPosition(Vec2(400, 260));
+	//mapLayer->addChild(pBack);
+
+	//miniMap = RenderTexture::create(720, 1280, Texture2D::PixelFormat::RGBA8888);
+	//miniMap->retain();
+	//miniMap->setPosition(400, 260);
+	//miniMap->getSprite()->setScale(0.22f);
+	//mapLayer->addChild(miniMap);
 	this->createPlayer();
 
 	delVec.clear();
@@ -111,7 +127,7 @@ bool Stage1::createBox2dWorld(bool debug)
 	this->createWall();
 	this->createSpine();
 	this->waySwich();
-	this->schedule(schedule_selector(Stage1::moveBackGround));
+	this->schedule(schedule_selector(Stage1::movePlayer));
 
 	return true;
 }
@@ -122,7 +138,6 @@ Stage1::~Stage1()
 	delete _world;
 	_world = nullptr;
 }
-
 
 void Stage1::createSpine()
 {
@@ -198,7 +213,7 @@ void Stage1::onEnter()
 
 void Stage1::onExit()
 {
-	_eventDispatcher->removeAllEventListeners();
+	//_eventDispatcher->removeAllEventListeners();
 	Layer::onExit();
 }
 
@@ -294,6 +309,8 @@ void Stage1::tick(float dt)
 		b2Vec2 pos = pManBody->GetPosition();
 		float angle = 268.59f;
 		pManBody->SetTransform(pos, angle);
+
+		gBool = true;
 
 		pManBody->ApplyLinearImpulse(b2Vec2(0, -0.5f), pManBody->GetWorldCenter(), true);
 
@@ -431,7 +448,7 @@ b2Body* Stage1::getBodyAtTab(Vec2 p)
 
 bool Stage1::onTouchBegan(Touch* touch, Event* event)
 {
-	Vec2 touchPoint = touch->getLocation();
+	auto touchPoint = touch->getLocation();
 
 	if (!_world)
 	{
@@ -450,6 +467,25 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 		playerVelocity = 29.9f;
 		playerIsFlying = true;
 	}
+	log("num1 : %d", num);
+	if (num == 1)
+	{
+		log("num2: %d", num);
+		Rect rect = home->getBoundingBox();
+		Rect rect2 = replay->getBoundingBox();
+
+		if (rect.containsPoint(touchPoint))
+		{
+			auto homeMove = MoveBy::create(0.1f, Vec2(0, -10));
+			home->runAction(homeMove);
+			log("aa");
+		}
+		else if (rect2.containsPoint(touchPoint))
+		{
+			auto replayMove = MoveBy::create(0.1f, Vec2(0, -10));
+			replay->runAction(replayMove);
+		}
+	}
 
 	jumpBool = true;
 	return true;
@@ -459,6 +495,34 @@ void Stage1::onTouchEnded(Touch *touch, Event *event)
 {
 	playerIsFlying = false;
 	playerVelocity = -60.0f;
+
+	auto touchPoint = touch->getLocation();
+
+	if (num == 1)
+	{
+		log("num3: %d", num);
+		Rect rect = home->getBoundingBox();
+		Rect rect2 = replay->getBoundingBox();
+
+		if (rect.containsPoint(touchPoint))
+		{
+			auto homeMove = MoveBy::create(0.1f, Vec2(0, 10));
+			home->runAction(homeMove);
+
+			auto pScene = GameMain::createScene();
+			Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
+
+		}
+		else if (rect2.containsPoint(touchPoint))
+		{
+			auto replayMove = MoveBy::create(0.1f, Vec2(0, 10));
+			replay->runAction(replayMove);
+
+			auto pScene = Stage1::createScene();
+			Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
+		}
+	}
+
 }
 
 void Stage1::onDraw(const Mat4 &transform, uint32_t flags)
@@ -494,7 +558,7 @@ void Stage1::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 	renderer->addCommand(&_customCmd);
 }
 
-void Stage1::moveBackGround(float f)
+void Stage1::movePlayer(float f)
 {
 	this->runAction(Follow::create(pMan, Rect(0, 0, winSize.width * 7, winSize.height * 7)));
 }
@@ -516,7 +580,12 @@ void Stage1::BeginContact(b2Contact *contact)
 			_world->SetGravity(b2Vec2(30.0f, 0));
 			rBool = false;
 			uBool = true;
-
+			if (gBool)
+			{
+				this->unschedule(schedule_selector(Stage1::tick));
+				log("clear");
+			}
+			
 		}
 		else if (uBool)
 		{
@@ -549,7 +618,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			{
 				this->unschedule(schedule_selector(Stage1::tick));
 				this->gameOver();
-				log("contact %d", nTag);
+				//log("contact %d", nTag);
 			}
 			else if (nTag == 2)
 			{
@@ -573,10 +642,74 @@ void Stage1::waySwich()
 
 void Stage1::gameOver()
 {
-	auto bord = Sprite::create("Images/stage_bord.png");
+	// 반짝이는 효과
+	Sprite* sprite = Sprite::create("Images/base2.png");
+	sprite->setPosition(Vec2(360, 640));
+	sprite->setOpacity(0);
+	sprite->setScale(16.0f);
+	this->addChild(sprite);
+
+	auto bord = Sprite::create("gameOverImages/score_bord.png");
+	bord->setOpacity(0);
+	this->addChild(bord);
+
+	auto over = Sprite::create("gameOverImages/game_over.png");
+	over->setOpacity(0);
+	over->setPosition(Vec2(200, 600));
+	over->setScale(2);
+	bord->addChild(over);
+
+	auto score = Sprite::create("gameOverImages/score.png");
+	score->setPosition(Vec2(200, 200));
+	score->setScale(0.3f);
+	score->setOpacity(0);
+	bord->addChild(score);
+
+	auto bestScore = Sprite::create("gameOverImages/best_score.png");
+	bestScore->setPosition(Vec2(200, 350));
+	bestScore->setScale(0.5f);
+	bestScore->setOpacity(0);
+	bord->addChild(bestScore);
+
+	auto fadeIn1 = FadeIn::create(1.5f);
+	auto fadeIn2 = FadeIn::create(2.5f);
+
 	if (rBool)
 	{
-		bord->setPosition(Vec2(pManBody->GetPosition().x, winSize.height / 14));
+		bord->setPosition(Vec2(pManBody->GetPosition().x * 32, 400));
 	}
-	this->addChild(bord);
+
+	bord->runAction(fadeIn1);
+	over->runAction(fadeIn1->clone());
+	score->runAction(fadeIn2->clone());
+	bestScore->runAction(fadeIn2->clone());
+	
+	this->scheduleOnce(schedule_selector(Stage1::createMenu), 1);
+
+}
+
+void Stage1::createMenu(float f)
+{
+	replay = Sprite::create("gameOverImages/replay.png");
+	//replay->setPosition(Vec2(-100, 0));
+	replay->setOpacity(0);
+	this->addChild(replay);
+
+	home = Sprite::create("Images/home.png");
+	//home->setPosition(Vec2(-100, 0));
+	home->setOpacity(0);
+	this->addChild(home);
+
+	auto fadeIn2 = FadeIn::create(2.5f);
+
+	if (rBool)
+	{
+		replay->setPosition(Vec2(pManBody->GetPosition().x * 32 + 100, 170));
+		home->setPosition(Vec2(pManBody->GetPosition().x * 32 - 100, 170));
+	}
+
+	replay->runAction(fadeIn2);
+	home->runAction(fadeIn2);
+
+	num++;
 }

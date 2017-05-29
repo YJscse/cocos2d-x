@@ -14,7 +14,7 @@
 using namespace cocos2d;
 
 class Stage1 
-	: public cocos2d::Layer
+	: public Layer
 	, public b2ContactListener
 {
 public:
@@ -52,8 +52,12 @@ public:
 
 	Sprite* bg;
 	Sprite* pMan;
+	Sprite* replay;
+	Sprite* home;
 
 	b2Body* pManBody;
+
+	//RenderTexture* miniMap;
 
 	float playerVelocity;
 	bool playerIsFlying;
@@ -63,18 +67,23 @@ public:
 	bool uBool = false;
 	bool lBool = false;
 	bool dBool = false;
+	bool gBool = false;
+	bool overBool = false;
 
-	void moveBackGround(float f);
+	void movePlayer(float f);
 	void createPlayer();
 	void createSpine();
 	void waySwich();
 	void createWall();
 	void BeginContact(b2Contact *contact);
+	void gameOver();
+	void createMenu(float f);
 
+	int num;
 	std::vector<b2Body*> delVec;
 
-	void gameOver();
 	
+
 
 protected:
 	void onDraw(const Mat4& transform, uint32_t flags);

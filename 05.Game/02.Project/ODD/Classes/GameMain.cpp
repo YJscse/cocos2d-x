@@ -136,7 +136,7 @@ void GameMain::selectStage()
 		sprintf(str, "stageImages/stage%d.png", j + 1);
 		stage[j] = Sprite::create(str);
 		stage[j]->setPosition(Vec2(winSize.width * 2/9 + (column * 100), winSize.height * 4/7 - (row * 100)));
-		stage[j]->setScale(0.8f);
+		//stage[j]->setScale(0.8f);
 		this->addChild(stage[j]);
 		log("column : %d, row : %d", column, row);
 	}
@@ -158,12 +158,6 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 		auto playMove = MoveBy::create(0.1f, Vec2(0, -10));
 		play->runAction(playMove);	
 		
-	/*	Rect rect3 = home->getBoundingBox();
-		if (rect3.containsPoint(touchPoint))
-		{
-			auto homeMove = MoveBy::create(0.1f, Vec2(0, 10));
-			home->runAction(homeMove);
-		}*/
 	}
 	else if (rect2.containsPoint(touchPoint) && sselect == false)
 	{
@@ -275,16 +269,11 @@ void GameMain::onEnter()
 
 	// 싱글 터치 모드로 터치 리스너 등록
 	auto listener = EventListenerTouchOneByOne::create();
-	// Swallow touches only available in OneByOne mode.
-	// 핸들링된 터치 이벤트 array에서 지우겠다는 의미이다.
 	listener->setSwallowTouches(true);
 
 	listener->onTouchBegan = CC_CALLBACK_2(GameMain::onTouchBegan, this);
 	listener->onTouchEnded = CC_CALLBACK_2(GameMain::onTouchEnded, this);
-
-	// The priority of the touch listener is based on the draw order of sprite
-	// 터치 리스너의 우선순위를 (노드가) 화면에 그려진 순서대로 한다.
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);                 // 실제로 게임을 만들때는 onEnter에 넣지말고 init에 넣어라 onExit도 마찬가지!!!
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);        
 }
 
 void GameMain::onExit()
