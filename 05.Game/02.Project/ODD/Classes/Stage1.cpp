@@ -18,18 +18,23 @@ bool Stage1::init()
 	{
 		return false;
 	}
+
 	/////////////////////////////////////////////
 	// 윈도우 크기를 구한다.
 	winSize = Director::getInstance()->getWinSize();
 
 	// 이미지의 텍스처를 구한다.
 	texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
+	texture2 = Director::getInstance()->getTextureCache()->addImage("Images/fire_animation.png");
 
 	bg = Sprite::create("Images/stage1_background.png");
 	bg->setScale(7);
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
+
+	layer = Layer::create();
+	this->addChild(layer);
 
 	//LayerColor* mapLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
 	//mapLayer->setAnchorPoint(Vec2(0, 0));
@@ -125,8 +130,9 @@ bool Stage1::createBox2dWorld(bool debug)
 	pManBody = this->addNewSprite(Vec2(350, 40), Size(40, 80), b2_dynamicBody, "test", 0);
 
 	this->createWall();
-	this->createSpine();
+	this->createFire();
 	this->waySwich();
+	this->createItem();
 	this->schedule(schedule_selector(Stage1::movePlayer));
 
 	return true;
@@ -139,38 +145,44 @@ Stage1::~Stage1()
 	_world = nullptr;
 }
 
-void Stage1::createSpine()
+void Stage1::createFire()
 {
-
+	// 아래 장애물
 	for (int i = 1; i < 3; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width + 43.5 * i, 18), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 	}
 
-	for (int i = 1; i < 15; i++)
+	for (int i = 1; i < 10; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 3 + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
-	}
-
-	for (int i = 1; i < 5; i++)
-	{
-		this->addNewSprite(Vec2(winSize.width * 4 + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width * 3 + 43.5 * i, 18), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 	}
 
 	for (int i = 1; i < 5; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 5 + 24 * i, 18), Size(24, 36), b2_staticBody, "barrier", 0);
+		this->addNewSprite(Vec2(winSize.width * 5 + 43.5 * i, 18), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 	}
+
+	//오른쪽 장애물
+
+
+	
 }
 
 void Stage1::createWall()
 {
-	this->addNewSprite(Vec2(winSize.width * 3 + 168, 150), Size(336, 25), b2_staticBody, "wall", 0);
-
-	this->addNewSprite(Vec2(winSize.width * 2, 250), Size(50, 200), b2_staticBody, "wallV", 0);
-
+	// 아래 벽
 	this->addNewSprite(Vec2(winSize.width * 4, 250), Size(50, 200), b2_staticBody, "wallV", 0);
 
+	// 오른쪽 벽
+}
+
+void Stage1::createItem()
+{
+	shieldItem = this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height / 5),
+										Size(72, 72), b2_staticBody, "shield", 0);
+	b2Vec2 pos = shieldItem->GetPosition();
+	shieldItem->SetTransform(pos, 89.5f);
 }
 
 void Stage1::createPlayer()
@@ -190,7 +202,7 @@ void Stage1::createPlayer()
 	}
 
 	pMan = Sprite::createWithTexture(texture, Rect(0, 0, 256, 256));
-	pMan->setPosition(Vec2(350, 40));
+	pMan->setPosition(Vec2(350, 45));
 	this->addChild(pMan);
 
 	auto animate = Animate::create(animation);
@@ -236,7 +248,7 @@ void Stage1::tick(float dt)
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
-
+	
 	if (rBool)
 	{
 
@@ -257,6 +269,14 @@ void Stage1::tick(float dt)
 				playerIsFlying = false;
 				playerVelocity = 0.0f;
 			}
+		
+		}
+
+		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 중력이 계속해서 바뀌지않도록 하기위한 코드
+		if (pManBody->GetPosition().x > 70)
+		{
+			swichNum = 1;
 		}
 	}
 	else if (uBool)
@@ -280,6 +300,13 @@ void Stage1::tick(float dt)
 				playerVelocity = 0.0f;
 			}
 		}
+
+		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 중력이 계속해서 바뀌지않도록 하기위한 코드
+		if (pManBody->GetPosition().y > 70)
+		{
+			swichNum = 2;
+		}
 	}
 	else if (lBool)
 	{
@@ -302,6 +329,13 @@ void Stage1::tick(float dt)
 				playerVelocity = 0.0f;
 			}
 		}
+
+		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 중력이 계속해서 바뀌지않도록 하기위한 코드
+		if (pManBody->GetPosition().x < 70)
+		{
+			swichNum = 3;
+		}
 	}
 	else if (dBool)
 	{
@@ -309,8 +343,6 @@ void Stage1::tick(float dt)
 		b2Vec2 pos = pManBody->GetPosition();
 		float angle = 268.59f;
 		pManBody->SetTransform(pos, angle);
-
-		gBool = true;
 
 		pManBody->ApplyLinearImpulse(b2Vec2(0, -0.5f), pManBody->GetWorldCenter(), true);
 
@@ -326,7 +358,15 @@ void Stage1::tick(float dt)
 				playerVelocity = 0.0f;
 			}
 		}
+
+		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 중력이 계속해서 바뀌지않도록 하기위한 코드
+		if (pManBody->GetPosition().y < 70)
+		{
+			swichNum = 4;
+		}
 	}
+
 }
 
 b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const char* spriteName, int type)
@@ -366,19 +406,38 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			pMan->setTag(0);
 			bodyDef.userData = pMan;
 		}
-		else if (strcmp(spriteName, "barrier") == 0)
+		else if (strcmp(spriteName, "fire") == 0)
 		{
-			Sprite* sprite = Sprite::create("Images/spine.png");
-			sprite->setPosition(point);
-			sprite->setScale(1.5f);
-			this->addChild(sprite);
+			auto fire_animation = Animation::create();
+			fire_animation->setDelayPerUnit(0.07f);
 
-			sprite->setTag(1);
-			bodyDef.userData = sprite;
+			for (int i = 0; i < 5; i++)
+			{
+				int column = i % 8;
+				int row = i / 8;
+
+				fire_animation->addSpriteFrameWithTexture(
+					texture2,
+					Rect(i * 29, 0, 29, 65));
+			}
+
+			Sprite* fire = Sprite::createWithTexture(texture2, Rect(0, 0, 29, 65));
+
+			auto fire_animate = Animate::create(fire_animation);
+			auto rep = RepeatForever::create(fire_animate);
+			fire->setScale(1.5f);
+			fire->runAction(rep);
+			fire->setAnchorPoint(Vec2(0.5, 0.2));
+			fire->setPosition(Vec2(point));
+			this->addChild(fire);
+
+			fire->setTag(1);
+			bodyDef.userData = fire;
 		}
 		else if (strcmp(spriteName, "wall") == 0)
 		{
 			Sprite* sprite = Sprite::create("Images/wallH.png");
+			//sprite->setAnchorPoint(Vec2(0, 0.5));
 			sprite->setPosition(Vec2(point));
 			sprite->setScaleY(0.5f);
 			this->addChild(sprite);
@@ -394,6 +453,16 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			this->addChild(sprite);
 
 			sprite->setTag(2);
+			bodyDef.userData = sprite;
+		}
+		else if (strcmp(spriteName, "shield") == 0)
+		{
+			Sprite* sprite = Sprite::create("Images/shield.png");
+			sprite->setScale(3);
+			sprite->setPosition(Vec2(point));
+			this->addChild(sprite);
+
+			sprite->setTag(3);
 			bodyDef.userData = sprite;
 		}
 	}
@@ -420,7 +489,7 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 
 	// Define the dynamic body fixture.
 	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.0f;
+	fixtureDef.friction = 0.1f;
 	fixtureDef.restitution = 0.0f;
 
 	body->CreateFixture(&fixtureDef);
@@ -462,25 +531,45 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 			log("%f .. %f", winSize.width, winSize.height);
 		}
 	}
-	else if (jumpBool)
+	else if (jumpBool)  // 점프 한번만 가능하게끔
 	{
-		playerVelocity = 29.9f;
-		playerIsFlying = true;
+		if (rBool && pManBody->GetPosition().y < 1.3f)
+		{
+			playerVelocity = 29.9f;
+			playerIsFlying = true;
+		}
+		else if (uBool && pManBody->GetPosition().x > 156.0f)
+		{
+			playerVelocity = 29.9f;
+			playerIsFlying = true;
+		}
+		else if (lBool && pManBody->GetPosition().y > 278.0f)
+		{
+			playerVelocity = 29.9f;
+			playerIsFlying = true;
+		}
+		else if (dBool && pManBody->GetPosition().x < 1.5f)
+		{
+			playerVelocity = 29.9f;
+			playerIsFlying = true;
+		}
 	}
-	log("num1 : %d", num);
+
+	
+
 	if (num == 1)
 	{
 		log("num2: %d", num);
-		Rect rect = home->getBoundingBox();
-		Rect rect2 = replay->getBoundingBox();
+		Rect homeButton = home->getBoundingBox();
+		Rect replayButton = replay->getBoundingBox();
 
-		if (rect.containsPoint(touchPoint))
+		if (homeButton.containsPoint(touchPoint))
 		{
 			auto homeMove = MoveBy::create(0.1f, Vec2(0, -10));
 			home->runAction(homeMove);
 			log("aa");
 		}
-		else if (rect2.containsPoint(touchPoint))
+		else if (replayButton.containsPoint(touchPoint))
 		{
 			auto replayMove = MoveBy::create(0.1f, Vec2(0, -10));
 			replay->runAction(replayMove);
@@ -494,17 +583,17 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 void Stage1::onTouchEnded(Touch *touch, Event *event)
 {
 	playerIsFlying = false;
-	playerVelocity = -60.0f;
+	playerVelocity = 0.0f;
 
 	auto touchPoint = touch->getLocation();
 
 	if (num == 1)
 	{
 		log("num3: %d", num);
-		Rect rect = home->getBoundingBox();
-		Rect rect2 = replay->getBoundingBox();
+		Rect homeButton = home->getBoundingBox();
+		Rect replayButton = replay->getBoundingBox();
 
-		if (rect.containsPoint(touchPoint))
+		if (homeButton.containsPoint(touchPoint))
 		{
 			auto homeMove = MoveBy::create(0.1f, Vec2(0, 10));
 			home->runAction(homeMove);
@@ -513,7 +602,7 @@ void Stage1::onTouchEnded(Touch *touch, Event *event)
 			Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
 
 		}
-		else if (rect2.containsPoint(touchPoint))
+		else if (replayButton.containsPoint(touchPoint))
 		{
 			auto replayMove = MoveBy::create(0.1f, Vec2(0, 10));
 			replay->runAction(replayMove);
@@ -575,37 +664,30 @@ void Stage1::BeginContact(b2Contact *contact)
 	if (bodyA->GetType() == b2_dynamicBody && bodyB->GetType() == b2_kinematicBody)
 	{
 
-		if (rBool)
+		if (rBool && swichNum == 1)
 		{
 			_world->SetGravity(b2Vec2(30.0f, 0));
 			rBool = false;
 			uBool = true;
-			if (gBool)
-			{
-				this->unschedule(schedule_selector(Stage1::tick));
-				log("clear");
-			}
-			
 		}
-		else if (uBool)
+		else if (uBool && swichNum == 2)
 		{
 			_world->SetGravity(b2Vec2(0, 30.0f));
 			uBool = false;
 			lBool = true;
 		}
-		else if (lBool)
+		else if (lBool && swichNum == 3)
 		{
 			_world->SetGravity(b2Vec2(-30.0f, 0));
 			lBool = false;
 			dBool = true;
 		}
-		else if (dBool)
+		else if (dBool && swichNum == 4)
 		{
 			_world->SetGravity(b2Vec2(0, -30.0f));
 			dBool = false;
 			rBool = true;
 		}
-		log("contact");
 	}
 	else if (bodyA->GetType() == b2_dynamicBody && bodyB->GetType() == b2_staticBody)
 	{
@@ -616,13 +698,18 @@ void Stage1::BeginContact(b2Contact *contact)
 
 			if (nTag == 1)
 			{
+				Director::getInstance()->getActionManager()->pauseAllRunningActions(); // 애니메이션 액션 멈추기
 				this->unschedule(schedule_selector(Stage1::tick));
 				this->gameOver();
-				//log("contact %d", nTag);
+				log("contact %d", nTag);
 			}
 			else if (nTag == 2)
 			{
 				log("contact2 %d", nTag);
+			}
+			else if (nTag == 3)
+			{
+				shield = true;
 			}
 		}
 
@@ -644,9 +731,9 @@ void Stage1::gameOver()
 {
 	// 반짝이는 효과
 	Sprite* sprite = Sprite::create("Images/base2.png");
-	sprite->setPosition(Vec2(360, 640));
+	sprite->setPosition(Vec2(winSize.width * 4, winSize.height * 4));
 	sprite->setOpacity(0);
-	sprite->setScale(16.0f);
+	sprite->setScale(1000.0f);
 	this->addChild(sprite);
 
 	auto bord = Sprite::create("gameOverImages/score_bord.png");
@@ -684,32 +771,24 @@ void Stage1::gameOver()
 	score->runAction(fadeIn2->clone());
 	bestScore->runAction(fadeIn2->clone());
 	
-	this->scheduleOnce(schedule_selector(Stage1::createMenu), 1);
+	this->scheduleOnce(schedule_selector(Stage1::createMenu), 2);
 
 }
 
 void Stage1::createMenu(float f)
 {
 	replay = Sprite::create("gameOverImages/replay.png");
-	//replay->setPosition(Vec2(-100, 0));
-	replay->setOpacity(0);
-	this->addChild(replay);
+	replay->setPosition(Vec2(pManBody->GetPosition().x * 32 + 100, 170));
+	this->addChild(replay,3);
 
 	home = Sprite::create("Images/home.png");
-	//home->setPosition(Vec2(-100, 0));
-	home->setOpacity(0);
-	this->addChild(home);
-
-	auto fadeIn2 = FadeIn::create(2.5f);
-
-	if (rBool)
-	{
-		replay->setPosition(Vec2(pManBody->GetPosition().x * 32 + 100, 170));
-		home->setPosition(Vec2(pManBody->GetPosition().x * 32 - 100, 170));
-	}
-
-	replay->runAction(fadeIn2);
-	home->runAction(fadeIn2);
+	home->setPosition(Vec2(pManBody->GetPosition().x * 32 - 100, 170));
+	this->addChild(home,3);
 
 	num++;
+}
+
+void Stage1::createBarrier(float f)
+{
+	
 }

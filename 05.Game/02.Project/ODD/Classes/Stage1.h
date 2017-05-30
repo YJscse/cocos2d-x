@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __STAGE1__
 #define __STAGE1__
 
@@ -26,7 +27,8 @@ public:
 
 	bool createBox2dWorld(bool debug);
 	~Stage1();
-	virtual void draw(Renderer* renderer, const Mat4& transform, uint32_t flags) override;
+	virtual void draw(Renderer* renderer, const Mat4& transform,
+					  uint32_t flags) override;
 
 	virtual void onEnter();
 	virtual void onExit();
@@ -40,6 +42,7 @@ public:
 
 	Size winSize;
 	Texture2D* texture;
+	Texture2D* texture2;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
@@ -50,12 +53,14 @@ public:
 
 	/////////////////////////////
 
+	Layer* layer;
 	Sprite* bg;
 	Sprite* pMan;
 	Sprite* replay;
 	Sprite* home;
 
 	b2Body* pManBody;
+	b2Body* shieldItem;
 
 	//RenderTexture* miniMap;
 
@@ -69,17 +74,21 @@ public:
 	bool dBool = false;
 	bool gBool = false;
 	bool overBool = false;
+	bool shield = false;
 
 	void movePlayer(float f);
 	void createPlayer();
-	void createSpine();
+	void createFire();
 	void waySwich();
 	void createWall();
 	void BeginContact(b2Contact *contact);
 	void gameOver();
 	void createMenu(float f);
+	void createItem();
+	void createBarrier(float f);
 
-	int num;
+	int num = 0;
+	int swichNum = 0;
 	std::vector<b2Body*> delVec;
 
 	
