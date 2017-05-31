@@ -26,6 +26,8 @@ bool Stage1::init()
 	// 이미지의 텍스처를 구한다.
 	texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
 	texture2 = Director::getInstance()->getTextureCache()->addImage("Images/fire_animation.png");
+	texture3 = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run_barrier.png");
+
 
 	bg = Sprite::create("Images/stage1_background.png");
 	bg->setScale(7);
@@ -33,25 +35,6 @@ bool Stage1::init()
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
 
-	layer = Layer::create();
-	this->addChild(layer);
-
-	//LayerColor* mapLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, winSize.height);
-	//mapLayer->setAnchorPoint(Vec2(0, 0));
-	//mapLayer->setPosition(Vec2(0, 0));
-	//this->addChild(mapLayer);
-
-	//auto pBack = Sprite::create("Images/minimap_back.png");
-	//pBack->setColor(Color3B::BLACK);
-	//pBack->setOpacity(50);
-	//pBack->setPosition(Vec2(400, 260));
-	//mapLayer->addChild(pBack);
-
-	//miniMap = RenderTexture::create(720, 1280, Texture2D::PixelFormat::RGBA8888);
-	//miniMap->retain();
-	//miniMap->setPosition(400, 260);
-	//miniMap->getSprite()->setScale(0.22f);
-	//mapLayer->addChild(miniMap);
 	this->createPlayer();
 
 	delVec.clear();
@@ -153,7 +136,7 @@ void Stage1::createFire()
 		this->addNewSprite(Vec2(winSize.width + 43.5 * i, 18), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 	}
 
-	for (int i = 1; i < 10; i++)
+	for (int i = 1; i < 7; i++)
 	{
 		this->addNewSprite(Vec2(winSize.width * 3 + 43.5 * i, 18), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 	}
@@ -230,7 +213,31 @@ void Stage1::onExit()
 }
 
 void Stage1::tick(float dt)
-{	
+{
+	// 객체 제거
+	//*************************************************
+
+	std::vector<b2Body*>::iterator it = delVec.begin();
+	// loop through, increasing to next element until the end is reached
+	for (; it != delVec.end(); ++it) {
+		auto obj = (b2Body*)(*it);
+
+		Sprite* spriteData = (Sprite *)obj->GetUserData();
+		int nTag = spriteData->getTag();
+
+		log("Tag .. %d", nTag);
+
+		// 스프라이트 삭제
+		//obj->SetUserData(nullptr);
+		this->removeChild(spriteData, true);
+
+		// 물리객체 삭제
+		_world->DestroyBody(obj);
+	}
+	delVec.clear();
+
+	//*******************************************
+
 	int velocityIterations = 8;
 	int positionIterations = 3;
 
@@ -248,7 +255,7 @@ void Stage1::tick(float dt)
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 	}
-	
+
 	if (rBool)
 	{
 
@@ -277,6 +284,25 @@ void Stage1::tick(float dt)
 		if (pManBody->GetPosition().x > 70)
 		{
 			swichNum = 1;
+		}
+
+		// 쉴드
+		if (sum == 1)
+		{
+			removeChild(barrier);
+		}
+		sum = 1;
+		if (shield)
+		{
+			barrier = Sprite::create("Images/shieldWhite.png");
+			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
+			if (shieldNum == 1)
+			{
+				barrier->setOpacity(50);
+			}
+			barrier->setScale(0.5);
+			this->addChild(barrier);
+
 		}
 	}
 	else if (uBool)
@@ -307,6 +333,25 @@ void Stage1::tick(float dt)
 		{
 			swichNum = 2;
 		}
+
+		// 쉴드 
+		if (sum == 1)
+		{
+			removeChild(barrier);
+		}
+		sum = 1;
+		if (shield)
+		{
+			barrier = Sprite::create("Images/shieldWhite.png");
+			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
+			barrier->setScale(0.5);
+			if (shieldNum == 1)
+			{
+				barrier->setOpacity(50);
+			}
+			this->addChild(barrier);
+
+		}
 	}
 	else if (lBool)
 	{
@@ -335,6 +380,25 @@ void Stage1::tick(float dt)
 		if (pManBody->GetPosition().x < 70)
 		{
 			swichNum = 3;
+		}
+
+		// 쉴드
+		if (sum == 1)
+		{
+			removeChild(barrier);
+		}
+		sum = 1;
+		if (shield)
+		{
+			barrier = Sprite::create("Images/shieldWhite.png");
+			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
+			barrier->setScale(0.5);
+			if (shieldNum == 1)
+			{
+				barrier->setOpacity(50);
+			}
+			this->addChild(barrier);
+
 		}
 	}
 	else if (dBool)
@@ -365,7 +429,28 @@ void Stage1::tick(float dt)
 		{
 			swichNum = 4;
 		}
+
+		// 쉴드
+		if (sum == 1)
+		{
+			removeChild(barrier);
+		}
+		sum = 1;
+		if (shield)
+		{
+			barrier = Sprite::create("Images/shieldWhite.png");
+			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
+			barrier->setScale(0.5);
+			if (shieldNum == 1)
+			{
+				barrier->setOpacity(50);
+			}
+			this->addChild(barrier);
+
+		}
 	}
+
+	
 
 }
 
@@ -403,6 +488,34 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			pMan->setScale(0.5f);
 			pMan->runAction(rep);
 			
+			pMan->setTag(0);
+			bodyDef.userData = pMan;
+		}
+		else if (strcmp(spriteName, "test_barrier") == 0)
+		{
+			auto animation = Animation::create();
+			animation->setDelayPerUnit(0.05f);
+
+			for (int i = 0; i < 8; i++)
+			{
+				int column = i % 8;
+				int row = i / 8;
+
+				animation->addSpriteFrameWithTexture(
+					texture3,
+					Rect(column * 256, row * 256, 256, 256));
+			}
+
+			pMan = Sprite::createWithTexture(texture3, Rect(0, 0, 256, 256));
+			pMan->setPosition(Vec2(point));
+			this->addChild(pMan);
+
+			auto animate = Animate::create(animation);
+			auto rep = RepeatForever::create(animate);
+			pMan->setAnchorPoint(Vec2(0.5f, 0.4f));
+			pMan->setScale(0.5f);
+			pMan->runAction(rep);
+
 			pMan->setTag(0);
 			bodyDef.userData = pMan;
 		}
@@ -555,27 +668,6 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 		}
 	}
 
-	
-
-	if (num == 1)
-	{
-		log("num2: %d", num);
-		Rect homeButton = home->getBoundingBox();
-		Rect replayButton = replay->getBoundingBox();
-
-		if (homeButton.containsPoint(touchPoint))
-		{
-			auto homeMove = MoveBy::create(0.1f, Vec2(0, -10));
-			home->runAction(homeMove);
-			log("aa");
-		}
-		else if (replayButton.containsPoint(touchPoint))
-		{
-			auto replayMove = MoveBy::create(0.1f, Vec2(0, -10));
-			replay->runAction(replayMove);
-		}
-	}
-
 	jumpBool = true;
 	return true;
 }
@@ -586,31 +678,6 @@ void Stage1::onTouchEnded(Touch *touch, Event *event)
 	playerVelocity = 0.0f;
 
 	auto touchPoint = touch->getLocation();
-
-	if (num == 1)
-	{
-		log("num3: %d", num);
-		Rect homeButton = home->getBoundingBox();
-		Rect replayButton = replay->getBoundingBox();
-
-		if (homeButton.containsPoint(touchPoint))
-		{
-			auto homeMove = MoveBy::create(0.1f, Vec2(0, 10));
-			home->runAction(homeMove);
-
-			auto pScene = GameMain::createScene();
-			Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
-
-		}
-		else if (replayButton.containsPoint(touchPoint))
-		{
-			auto replayMove = MoveBy::create(0.1f, Vec2(0, 10));
-			replay->runAction(replayMove);
-
-			auto pScene = Stage1::createScene();
-			Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
-		}
-	}
 
 }
 
@@ -698,17 +765,39 @@ void Stage1::BeginContact(b2Contact *contact)
 
 			if (nTag == 1)
 			{
-				Director::getInstance()->getActionManager()->pauseAllRunningActions(); // 애니메이션 액션 멈추기
-				this->unschedule(schedule_selector(Stage1::tick));
-				this->gameOver();
-				log("contact %d", nTag);
+				if (shield == false)
+				{
+					// 애니메이션 액션 멈추기
+					Director::getInstance()->getActionManager()->pauseAllRunningActions(); 
+					this->unschedule(schedule_selector(Stage1::tick));
+					this->gameOver();
+				}
+				else
+				{
+					if (shieldNum == 2)
+					{
+						shieldNum--;
+					}
+					else if (shieldNum == 1)
+					{
+						shieldNum--;
+					}
+					else
+					{
+						this->removeChild(barrier, true);
+						shield = false;
+					}
+				}
 			}
 			else if (nTag == 2)
 			{
-				log("contact2 %d", nTag);
+
 			}
 			else if (nTag == 3)
 			{
+				b2Vec2 pos = pManBody->GetPosition();
+				delVec.push_back(bodyB);
+				shieldNum = 2;
 				shield = true;
 			}
 		}
@@ -765,27 +854,63 @@ void Stage1::gameOver()
 	{
 		bord->setPosition(Vec2(pManBody->GetPosition().x * 32, 400));
 	}
+	else if (uBool)
+	{
+		bord->setPosition(Vec2(pManBody->GetPosition().x * 31 , pManBody->GetPosition().y * 32));
+	}
+	else if (lBool)
+	{
+		bord->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 30));
+	}
+	else if (dBool)
+	{
+		bord->setPosition(Vec2(pManBody->GetPosition().x * 4, pManBody->GetPosition().y * 32));
+	}
 
 	bord->runAction(fadeIn1);
 	over->runAction(fadeIn1->clone());
 	score->runAction(fadeIn2->clone());
 	bestScore->runAction(fadeIn2->clone());
 	
-	this->scheduleOnce(schedule_selector(Stage1::createMenu), 2);
+	num++;
 
+	auto homeButton = MenuItemImage::create(
+		"Images/home.png",
+		"Images/home.png",
+		CC_CALLBACK_1(Stage1::createHome, this));
+
+	auto replayButton = MenuItemImage::create(
+		"gameOverImages/replay.png",
+		"gameOverImages/replay.png",
+		CC_CALLBACK_1(Stage1::createReplay, this));
+
+	// 메뉴 생성
+	auto pReplay = Menu::create(replayButton, nullptr);
+	auto pHome = Menu::create(homeButton, nullptr);
+
+	replayButton->setPosition(Vec2(350, -40));
+	homeButton->setPosition(Vec2(50, -40));
+
+	pReplay->setPosition(Vec2::ZERO);
+	pHome->setPosition(Vec2::ZERO);
+
+	bord->addChild(pReplay);
+	bord->addChild(pHome);
+
+	//log("replay position().x : %f, position().y : %f, home position().x : %f, position().y : %f", replayButton->getPosition().x, replayButton->getPosition().y, homeButton->getPosition().x, homeButton->getPosition().y);
+	//log("%f .. %f   %f .. %f", pReplay->getPosition().x, pReplay->getPosition().y, pHome->getPosition().x, pHome->getPosition().y);
 }
 
-void Stage1::createMenu(float f)
+void Stage1::createReplay(Ref* pSender)
 {
-	replay = Sprite::create("gameOverImages/replay.png");
-	replay->setPosition(Vec2(pManBody->GetPosition().x * 32 + 100, 170));
-	this->addChild(replay,3);
+	auto pScene = Stage1::createScene();
+	Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
+}
 
-	home = Sprite::create("Images/home.png");
-	home->setPosition(Vec2(pManBody->GetPosition().x * 32 - 100, 170));
-	this->addChild(home,3);
-
-	num++;
+void Stage1::createHome(Ref* pSender)
+{
+	auto pScene = GameMain::createScene();
+	Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
 }
 
 void Stage1::createBarrier(float f)

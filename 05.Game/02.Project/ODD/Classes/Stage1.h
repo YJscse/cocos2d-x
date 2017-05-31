@@ -43,6 +43,7 @@ public:
 	Size winSize;
 	Texture2D* texture;
 	Texture2D* texture2;
+	Texture2D* texture3;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
@@ -58,11 +59,13 @@ public:
 	Sprite* pMan;
 	Sprite* replay;
 	Sprite* home;
+	Sprite* barrier;
+	Sprite* sItem;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
 
-	//RenderTexture* miniMap;
+	RenderTexture* miniMap;
 
 	float playerVelocity;
 	bool playerIsFlying;
@@ -83,12 +86,17 @@ public:
 	void createWall();
 	void BeginContact(b2Contact *contact);
 	void gameOver();
-	void createMenu(float f);
 	void createItem();
 	void createBarrier(float f);
+	void createReplay(Ref* pSender);
+	void createHome(Ref* pSender);
 
+	
 	int num = 0;
 	int swichNum = 0;
+	int sum = 0;
+	int shieldNum = 0;
+	int sum2 = 0;
 	std::vector<b2Body*> delVec;
 
 	

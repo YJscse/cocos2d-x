@@ -138,7 +138,7 @@ void GameMain::selectStage()
 		stage[j]->setPosition(Vec2(winSize.width * 2/9 + (column * 100), winSize.height * 4/7 - (row * 100)));
 		//stage[j]->setScale(0.8f);
 		this->addChild(stage[j]);
-		log("column : %d, row : %d", column, row);
+		//log("column : %d, row : %d", column, row);
 	}
 
 	home = Sprite::create("Images/home.png");
