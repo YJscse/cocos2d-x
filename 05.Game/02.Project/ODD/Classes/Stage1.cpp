@@ -33,11 +33,12 @@ bool Stage1::init()
 	bg->setScale(7);
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
-	this->addChild(bg);
+	//this->addChild(bg);
 
 	this->createPlayer();
 
 	delVec.clear();
+	projectiles.clear();
 
 	return true;
 }
@@ -110,14 +111,20 @@ bool Stage1::createBox2dWorld(bool debug)
 	// 마우스 조인트 바디를 생성해서 월드에 추가한다.
 	gbody = this->addNewSprite(Vec2(0, 0), Size(0, 0), b2_staticBody, nullptr, 0);
 
-	pManBody = this->addNewSprite(Vec2(350, 40), Size(40, 80), b2_dynamicBody, "test", 0);
+	pManBody = this->addNewSprite(Vec2(100, 40), Size(40, 80), b2_dynamicBody, "test", 0);
+
+
+	turret = Sprite::create("Images/turret.png");
+	turret->setPosition(Vec2(winSize.width - 100, winSize.height/2));
+	turret->setScale(3);
+	this->addChild(turret, 2);
 
 	this->createWall();
 	this->createFire();
 	this->waySwich();
 	this->createItem();
 	this->schedule(schedule_selector(Stage1::movePlayer));
-
+	
 	return true;
 }
 
@@ -150,6 +157,96 @@ void Stage1::createFire()
 
 
 	
+}
+
+void Stage1::createBullet(float f)
+{
+	// 총알을 생성한다.
+	auto nextProjectile = Sprite::create("Images/bullet.png");
+	nextProjectile->retain();
+	
+	// 회전해야 할 각도를 구한다.
+	Vec2 shootVector = Vec2(pManBody->GetPosition().x, pManBody->GetPosition().y) - turret->getPosition();
+	float shootAngle = shootVector.getAngle();
+	float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
+
+	// 회전 시간을 결정한다.
+	float curAngle = turret->getRotation();
+	float rotateDiff = cocosAngle - curAngle;
+	if (rotateDiff > 180)
+	{
+		rotateDiff = rotateDiff - 360;
+	}
+	if (rotateDiff < -180)
+	{
+		rotateDiff = rotateDiff + 360;
+	}
+	float rotateSpeed = 0.5f / 180; // Would take 0.5seconds to rotate half a circle
+	float rotateDuration = fabsf(rotateDiff * rotateSpeed);
+
+	// 캐릭터와 같은 각도로 총알 방향 바꾸기(회전)
+	nextProjectile->setRotation(cocosAngle);
+
+	// 액션 실행
+	auto actRotate1 = RotateTo::create(rotateDuration, cocosAngle);
+	auto seqAct1 = Sequence::create(actRotate1, 
+		CallFunc::create(CC_CALLBACK_0(Stage1::finishRotate, this, nextProjectile, shootVector)),
+		nullptr);
+	turret->runAction(seqAct1);
+
+}
+
+void Stage1::finishRotate(Ref* sender, Vec2 dir)
+{
+	Vector<Sprite*> eraseBullet;
+
+	Sprite* sprite = (Sprite*)sender;
+
+	// Ok to add now - we`ve finished rotation!
+	Vec2 nPos1 = Vec2(turret->getContentSize().width, turret->getContentSize().height / 2);
+	Vec2 nPos2 = turret->convertToWorldSpace(nPos1);
+
+	sprite->setPosition(nPos2);
+
+	// 화면에 추가
+	this->addChild(sprite);
+
+	// 총알을 화면 밖으로 보낸다.
+	dir.normalize();
+	Vec2 overshotVector = dir * 1000;
+
+	if (count == 1)
+	{
+		this->removeChild(sprite);
+	}
+	count = 1;
+
+	auto actMove2 = MoveBy::create(0.5f, overshotVector);
+	auto seqAct2 = Sequence::create(actMove2, DelayTime::create(0.5f),
+		CallFunc::create(CC_CALLBACK_0(Stage1::spriteMoveFinished, this, sprite)),
+		nullptr);
+	sprite->runAction(seqAct2);
+
+	// 벡터에 추가
+	projectiles.pushBack(sprite);
+	//for (int a = 0; a < 1; ++a)
+	//{
+	//	for (auto missileObj : projectiles[a])
+	//	{
+
+	//	}
+	//}
+
+}
+
+void Stage1::spriteMoveFinished(Ref* sender)
+{
+	Sprite* sprite = (Sprite*)sender;
+	this->removeChild(sprite, true);
+
+	projectiles.eraseObject(sprite);
+
+	sprite->release();
 }
 
 void Stage1::createWall()
@@ -185,7 +282,7 @@ void Stage1::createPlayer()
 	}
 
 	pMan = Sprite::createWithTexture(texture, Rect(0, 0, 256, 256));
-	pMan->setPosition(Vec2(350, 45));
+	pMan->setPosition(Vec2(100, 40));
 	this->addChild(pMan);
 
 	auto animate = Animate::create(animation);
@@ -256,6 +353,30 @@ void Stage1::tick(float dt)
 		}
 	}
 
+	if (pManBody->GetPosition().x * 32 > winSize.width )
+	{
+		this->schedule(schedule_selector(Stage1::createBullet));
+	}
+
+	// 쉴드
+	if (sum == 1)
+	{
+		removeChild(barrier);
+	}
+	sum = 1;
+	if (shield)
+	{
+		barrier = Sprite::create("Images/shieldWhite.png");
+		barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
+		if (shieldNum == 1)
+		{
+			barrier->setOpacity(50);
+		}
+		barrier->setScale(0.5);
+		this->addChild(barrier);
+
+	}
+
 	if (rBool)
 	{
 
@@ -286,24 +407,7 @@ void Stage1::tick(float dt)
 			swichNum = 1;
 		}
 
-		// 쉴드
-		if (sum == 1)
-		{
-			removeChild(barrier);
-		}
-		sum = 1;
-		if (shield)
-		{
-			barrier = Sprite::create("Images/shieldWhite.png");
-			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
-			if (shieldNum == 1)
-			{
-				barrier->setOpacity(50);
-			}
-			barrier->setScale(0.5);
-			this->addChild(barrier);
-
-		}
+		
 	}
 	else if (uBool)
 	{
@@ -576,6 +680,16 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			this->addChild(sprite);
 
 			sprite->setTag(3);
+			bodyDef.userData = sprite;
+		}
+		else if (strcmp(spriteName, "bullet") == 0)
+		{
+			Sprite* sprite = Sprite::create("Images/bullet.png");
+			sprite->setScale(3);
+			sprite->setPosition(Vec2(point));
+			this->addChild(sprite);
+
+			sprite->setTag(1);
 			bodyDef.userData = sprite;
 		}
 	}

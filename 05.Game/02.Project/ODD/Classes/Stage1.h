@@ -61,6 +61,7 @@ public:
 	Sprite* home;
 	Sprite* barrier;
 	Sprite* sItem;
+	Sprite* turret;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
@@ -80,24 +81,32 @@ public:
 	bool shield = false;
 
 	void movePlayer(float f);
-	void createPlayer();
-	void createFire();
 	void waySwich();
-	void createWall();
 	void BeginContact(b2Contact *contact);
 	void gameOver();
+
+	void createPlayer();
+	void createFire();
+	void createWall();
 	void createItem();
 	void createBarrier(float f);
 	void createReplay(Ref* pSender);
 	void createHome(Ref* pSender);
 
-	
+	void createBullet(float f);
+	void finishRotate(Ref* sender, Vec2 dir);
+	void spriteMoveFinished(Ref* sender);
+
 	int num = 0;
 	int swichNum = 0;
 	int sum = 0;
 	int shieldNum = 0;
 	int sum2 = 0;
+	int bulletNum = 0;
+	int count = 0;
+
 	std::vector<b2Body*> delVec;
+	Vector<Sprite*> projectiles;
 
 	
 
