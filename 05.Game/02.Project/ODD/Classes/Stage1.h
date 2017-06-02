@@ -44,6 +44,7 @@ public:
 	Texture2D* texture;
 	Texture2D* texture2;
 	Texture2D* texture3;
+	Texture2D* texture4;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
@@ -62,6 +63,8 @@ public:
 	Sprite* barrier;
 	Sprite* sItem;
 	Sprite* turret;
+	Sprite* over;
+	Sprite* clear;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
@@ -92,6 +95,8 @@ public:
 	void createBarrier(float f);
 	void createReplay(Ref* pSender);
 	void createHome(Ref* pSender);
+	void createNext(Ref* pSender);
+	void createStar();
 
 	void createBullet(float f);
 	void finishRotate(Ref* sender, Vec2 dir);
@@ -104,6 +109,7 @@ public:
 	int sum2 = 0;
 	int bulletNum = 0;
 	int count = 0;
+	int gameClear = 0;
 
 	std::vector<b2Body*> delVec;
 	Vector<Sprite*> projectiles;

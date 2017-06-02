@@ -27,13 +27,14 @@ bool Stage1::init()
 	texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
 	texture2 = Director::getInstance()->getTextureCache()->addImage("Images/fire_animation.png");
 	texture3 = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run_barrier.png");
+	texture4 = Director::getInstance()->getTextureCache()->addImage("Images/star.png");
 
 
 	bg = Sprite::create("Images/stage1_background.png");
 	bg->setScale(7);
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
-	//this->addChild(bg);
+	this->addChild(bg);
 
 	this->createPlayer();
 
@@ -113,9 +114,9 @@ bool Stage1::createBox2dWorld(bool debug)
 
 	pManBody = this->addNewSprite(Vec2(100, 40), Size(40, 80), b2_dynamicBody, "test", 0);
 
-
 	turret = Sprite::create("Images/turret.png");
-	turret->setPosition(Vec2(winSize.width - 100, winSize.height/2));
+	turret->setPosition(Vec2(winSize.width * 2, winSize.height/2));
+	turret->setRotation(90);
 	turret->setScale(3);
 	this->addChild(turret, 2);
 
@@ -123,6 +124,7 @@ bool Stage1::createBox2dWorld(bool debug)
 	this->createFire();
 	this->waySwich();
 	this->createItem();
+	this->createStar();
 	this->schedule(schedule_selector(Stage1::movePlayer));
 	
 	return true;
@@ -135,10 +137,37 @@ Stage1::~Stage1()
 	_world = nullptr;
 }
 
+void Stage1::createStar()
+{
+	// 아래 별
+	for (int i = 11; i < 20; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width + (i * 64), 40), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 24; i < 28; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width + (i * 64), 160), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 35; i < 40; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width + (i * 64), 40), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 1; i < 4; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 5 + (i * 64), 160), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 10; i < 20; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 5 + (i * 64), 40), Size(32, 32), b2_staticBody, "star", 2);
+	}
+
+
+
+}
 void Stage1::createFire()
 {
 	// 아래 장애물
-	for (int i = 1; i < 3; i++)
+	for (int i = 1; i < 5; i++)
 	{
 		this->addNewSprite(Vec2(winSize.width + 43.5 * i, 18), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 	}
@@ -155,7 +184,14 @@ void Stage1::createFire()
 
 	//오른쪽 장애물
 
-
+	for (int i = 1; i < 5; i++)
+	{
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 2 + 18), Size(97.5, 43.5), b2_staticBody, "fire", 0);
+		b2Vec2 pos = pFire->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180); // 회전 공식
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pFire->SetTransform(pos, angle);
+	}
 	
 }
 
@@ -163,10 +199,11 @@ void Stage1::createBullet(float f)
 {
 	// 총알을 생성한다.
 	auto nextProjectile = Sprite::create("Images/bullet.png");
+	nextProjectile->setScale(2);
 	nextProjectile->retain();
 	
 	// 회전해야 할 각도를 구한다.
-	Vec2 shootVector = Vec2(pManBody->GetPosition().x, pManBody->GetPosition().y) - turret->getPosition();
+	Vec2 shootVector = Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32) - turret->getPosition();
 	float shootAngle = shootVector.getAngle();
 	float cocosAngle = CC_RADIANS_TO_DEGREES(-1 * shootAngle);
 
@@ -181,7 +218,7 @@ void Stage1::createBullet(float f)
 	{
 		rotateDiff = rotateDiff + 360;
 	}
-	float rotateSpeed = 0.5f / 180; // Would take 0.5seconds to rotate half a circle
+	float rotateSpeed = 0.2f / 180; // Would take 0.5seconds to rotate half a circle
 	float rotateDuration = fabsf(rotateDiff * rotateSpeed);
 
 	// 캐릭터와 같은 각도로 총알 방향 바꾸기(회전)
@@ -221,7 +258,7 @@ void Stage1::finishRotate(Ref* sender, Vec2 dir)
 	}
 	count = 1;
 
-	auto actMove2 = MoveBy::create(0.5f, overshotVector);
+	auto actMove2 = MoveBy::create(1.0f, overshotVector);
 	auto seqAct2 = Sequence::create(actMove2, DelayTime::create(0.5f),
 		CallFunc::create(CC_CALLBACK_0(Stage1::spriteMoveFinished, this, sprite)),
 		nullptr);
@@ -259,8 +296,8 @@ void Stage1::createWall()
 
 void Stage1::createItem()
 {
-	shieldItem = this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height / 5),
-										Size(72, 72), b2_staticBody, "shield", 0);
+	shieldItem = this->addNewSprite(Vec2(winSize.width * 7 - 50, winSize.height / 5),
+										Size(72, 72), b2_staticBody, "shield", 2);
 	b2Vec2 pos = shieldItem->GetPosition();
 	shieldItem->SetTransform(pos, 89.5f);
 }
@@ -282,7 +319,7 @@ void Stage1::createPlayer()
 	}
 
 	pMan = Sprite::createWithTexture(texture, Rect(0, 0, 256, 256));
-	pMan->setPosition(Vec2(100, 40));
+	pMan->setPosition(Vec2(100, 50));
 	this->addChild(pMan);
 
 	auto animate = Animate::create(animation);
@@ -368,6 +405,7 @@ void Stage1::tick(float dt)
 	{
 		barrier = Sprite::create("Images/shieldWhite.png");
 		barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
+
 		if (shieldNum == 1)
 		{
 			barrier->setOpacity(50);
@@ -379,9 +417,11 @@ void Stage1::tick(float dt)
 
 	if (rBool)
 	{
+	
 
 		b2Vec2 pos = pManBody->GetPosition();
-		float angle = 0.0f;
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180); // 회전 공식
+		float angle = (float)(360 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
 
 		pManBody->ApplyLinearImpulse(b2Vec2(0.5f, 0), pManBody->GetWorldCenter(), true);
@@ -406,14 +446,15 @@ void Stage1::tick(float dt)
 		{
 			swichNum = 1;
 		}
-
-		
+	
 	}
 	else if (uBool)
 	{
 
 		b2Vec2 pos = pManBody->GetPosition();
-		float angle = 89.53f;
+		//float angle = 89.53f;
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
 
 		pManBody->ApplyLinearImpulse(b2Vec2(0, 0.5f), pManBody->GetWorldCenter(), true);
@@ -438,30 +479,14 @@ void Stage1::tick(float dt)
 			swichNum = 2;
 		}
 
-		// 쉴드 
-		if (sum == 1)
-		{
-			removeChild(barrier);
-		}
-		sum = 1;
-		if (shield)
-		{
-			barrier = Sprite::create("Images/shieldWhite.png");
-			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
-			barrier->setScale(0.5);
-			if (shieldNum == 1)
-			{
-				barrier->setOpacity(50);
-			}
-			this->addChild(barrier);
-
-		}
 	}
 	else if (lBool)
 	{
 
 		b2Vec2 pos = pManBody->GetPosition();
-		float angle = 179.07f;
+		//float angle = 179.07f;
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(180 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
 
 		pManBody->ApplyLinearImpulse(b2Vec2(-0.5f, 0), pManBody->GetWorldCenter(), true);
@@ -486,30 +511,14 @@ void Stage1::tick(float dt)
 			swichNum = 3;
 		}
 
-		// 쉴드
-		if (sum == 1)
-		{
-			removeChild(barrier);
-		}
-		sum = 1;
-		if (shield)
-		{
-			barrier = Sprite::create("Images/shieldWhite.png");
-			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
-			barrier->setScale(0.5);
-			if (shieldNum == 1)
-			{
-				barrier->setOpacity(50);
-			}
-			this->addChild(barrier);
-
-		}
 	}
 	else if (dBool)
 	{
 
 		b2Vec2 pos = pManBody->GetPosition();
-		float angle = 268.59f;
+		//float angle = 268.59f;
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
 
 		pManBody->ApplyLinearImpulse(b2Vec2(0, -0.5f), pManBody->GetWorldCenter(), true);
@@ -534,24 +543,6 @@ void Stage1::tick(float dt)
 			swichNum = 4;
 		}
 
-		// 쉴드
-		if (sum == 1)
-		{
-			removeChild(barrier);
-		}
-		sum = 1;
-		if (shield)
-		{
-			barrier = Sprite::create("Images/shieldWhite.png");
-			barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
-			barrier->setScale(0.5);
-			if (shieldNum == 1)
-			{
-				barrier->setOpacity(50);
-			}
-			this->addChild(barrier);
-
-		}
 	}
 
 	
@@ -659,7 +650,7 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			sprite->setScaleY(0.5f);
 			this->addChild(sprite);
 
-			sprite->setTag(2);
+			//sprite->setTag(2);
 			bodyDef.userData = sprite;
 		}
 		else if (strcmp(spriteName, "wallV") == 0)
@@ -669,7 +660,7 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			sprite->setPosition(Vec2(point));
 			this->addChild(sprite);
 
-			sprite->setTag(2);
+			//sprite->setTag(2);
 			bodyDef.userData = sprite;
 		}
 		else if (strcmp(spriteName, "shield") == 0)
@@ -692,6 +683,34 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			sprite->setTag(1);
 			bodyDef.userData = sprite;
 		}
+		else if (strcmp(spriteName, "star") == 0)
+		{
+			auto star_animation = Animation::create();
+			star_animation->setDelayPerUnit(0.05f);
+
+			for (int i = 0; i < 8; i++)
+			{
+				int column = i % 8;
+				int row = i / 8;
+
+				star_animation->addSpriteFrameWithTexture(
+					texture4,
+					Rect(i * 32, 0, 32, 32));
+			}
+
+			Sprite* star = Sprite::createWithTexture(texture4, Rect(0, 0, 32, 32));
+
+			auto star_animate = Animate::create(star_animation);
+			auto rep = RepeatForever::create(star_animate);
+			star->setScale(1.5f);
+			star->runAction(rep);
+			star->setAnchorPoint(Vec2(0.5, 0.2));
+			star->setPosition(Vec2(point));
+			this->addChild(star);
+
+			star->setTag(2);
+			bodyDef.userData = star;
+		}
 	}
 	// 월드에 바디데프의 정보로 바디를 만든다.
 	b2Body *body = _world->CreateBody(&bodyDef);
@@ -707,11 +726,18 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 
 		fixtureDef.shape = &dynamicBox;
 	}
-	else
+	else if(type == 1)
 	{
 		circle.m_radius = (size.width / 2) / PTM_RATIO;
 
 		fixtureDef.shape = &circle;
+	}
+	else if (type == 2)
+	{
+		dynamicBox.SetAsBox(size.width / 2 / PTM_RATIO, size.height / 2 / PTM_RATIO);
+
+		fixtureDef.shape = &dynamicBox;
+		fixtureDef.isSensor = true;
 	}
 
 	// Define the dynamic body fixture.
@@ -868,6 +894,11 @@ void Stage1::BeginContact(b2Contact *contact)
 			_world->SetGravity(b2Vec2(0, -30.0f));
 			dBool = false;
 			rBool = true;
+
+			gameClear = 1;
+			Director::getInstance()->getActionManager()->pauseAllRunningActions();
+			this->unschedule(schedule_selector(Stage1::tick));
+			this->gameOver();
 		}
 	}
 	else if (bodyA->GetType() == b2_dynamicBody && bodyB->GetType() == b2_staticBody)
@@ -895,9 +926,6 @@ void Stage1::BeginContact(b2Contact *contact)
 					else if (shieldNum == 1)
 					{
 						shieldNum--;
-					}
-					else
-					{
 						this->removeChild(barrier, true);
 						shield = false;
 					}
@@ -905,7 +933,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 2)
 			{
-
+				delVec.push_back(bodyB);
 			}
 			else if (nTag == 3)
 			{
@@ -932,22 +960,9 @@ void Stage1::waySwich()
 
 void Stage1::gameOver()
 {
-	// 반짝이는 효과
-	Sprite* sprite = Sprite::create("Images/base2.png");
-	sprite->setPosition(Vec2(winSize.width * 4, winSize.height * 4));
-	sprite->setOpacity(0);
-	sprite->setScale(1000.0f);
-	this->addChild(sprite);
-
 	auto bord = Sprite::create("gameOverImages/score_bord.png");
 	bord->setOpacity(0);
 	this->addChild(bord);
-
-	auto over = Sprite::create("gameOverImages/game_over.png");
-	over->setOpacity(0);
-	over->setPosition(Vec2(200, 600));
-	over->setScale(2);
-	bord->addChild(over);
 
 	auto score = Sprite::create("gameOverImages/score.png");
 	score->setPosition(Vec2(200, 200));
@@ -981,8 +996,36 @@ void Stage1::gameOver()
 		bord->setPosition(Vec2(pManBody->GetPosition().x * 4, pManBody->GetPosition().y * 32));
 	}
 
-	bord->runAction(fadeIn1);
-	over->runAction(fadeIn1->clone());
+	if (gameClear == 1)
+	{
+		clear = Sprite::create("gameOverImages/clear.png");
+		clear->setOpacity(0);
+		clear->setPosition(Vec2(200, 600));
+		clear->setScale(2);
+		bord->addChild(clear);
+		clear->runAction(fadeIn1);
+
+		auto nextButton = MenuItemImage::create(
+			"Images/next.png",
+			"Images/next.png",
+			CC_CALLBACK_1(Stage1::createNext, this));
+		auto pNext = Menu::create(nextButton, nullptr);
+		nextButton->setPosition(Vec2(200, -40));
+		pNext->setPosition(Vec2::ZERO);
+		bord->addChild(pNext);
+
+	}
+	else
+	{
+		over = Sprite::create("gameOverImages/game_over.png");
+		over->setOpacity(0);
+		over->setPosition(Vec2(200, 600));
+		over->setScale(2);
+		bord->addChild(over);
+		over->runAction(fadeIn1);
+	}
+	
+	bord->runAction(fadeIn1->clone());
 	score->runAction(fadeIn2->clone());
 	bestScore->runAction(fadeIn2->clone());
 	
@@ -1022,6 +1065,12 @@ void Stage1::createReplay(Ref* pSender)
 }
 
 void Stage1::createHome(Ref* pSender)
+{
+	auto pScene = GameMain::createScene();
+	Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
+}
+
+void Stage1::createNext(Ref* pSender)
 {
 	auto pScene = GameMain::createScene();
 	Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
