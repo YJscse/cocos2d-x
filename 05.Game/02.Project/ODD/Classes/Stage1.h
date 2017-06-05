@@ -82,6 +82,7 @@ public:
 	bool gBool = false;
 	bool overBool = false;
 	bool shield = false;
+	bool jump = false;
 
 	void movePlayer(float f);
 	void waySwich();
@@ -92,7 +93,6 @@ public:
 	void createFire();
 	void createWall();
 	void createItem();
-	void createBarrier(float f);
 	void createReplay(Ref* pSender);
 	void createHome(Ref* pSender);
 	void createNext(Ref* pSender);

@@ -34,7 +34,7 @@ bool Stage1::init()
 	bg->setScale(7);
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
-	this->addChild(bg);
+	//this->addChild(bg);
 
 	this->createPlayer();
 
@@ -112,7 +112,7 @@ bool Stage1::createBox2dWorld(bool debug)
 	// 마우스 조인트 바디를 생성해서 월드에 추가한다.
 	gbody = this->addNewSprite(Vec2(0, 0), Size(0, 0), b2_staticBody, nullptr, 0);
 
-	pManBody = this->addNewSprite(Vec2(100, 40), Size(40, 80), b2_dynamicBody, "test", 0);
+	pManBody = this->addNewSprite(Vec2(winSize.width * 6, 40), Size(40, 80), b2_dynamicBody, "test", 0);
 
 	turret = Sprite::create("Images/turret.png");
 	turret->setPosition(Vec2(winSize.width * 2, winSize.height/2));
@@ -161,8 +161,41 @@ void Stage1::createStar()
 		this->addNewSprite(Vec2(winSize.width * 5 + (i * 64), 40), Size(32, 32), b2_staticBody, "star", 2);
 	}
 
-
-
+	// 오른쪽 별
+	for (int i = -2 ; i < 5; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height / 2 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 160, winSize.height + 20 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 4/3 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 160, winSize.height * 2 + 20 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 2.5 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height * 2.5 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 160, winSize.height * 3 + 20 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 3.5 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height * 3.5 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
+	for (int i = 0; i < 20; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 270, winSize.height * 4 + 20 + i * 64), Size(32, 32), b2_staticBody, "star", 2);
+	}
 }
 void Stage1::createFire()
 {
@@ -186,13 +219,82 @@ void Stage1::createFire()
 
 	for (int i = 1; i < 5; i++)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 2 + 18), Size(97.5, 43.5), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 18, winSize.height  + 43.5 * i), Size(43.5, 97.5), b2_staticBody, "fire", 0);
 		b2Vec2 pos = pFire->GetPosition();
-		double DEGREES_TO_RADIANS = (double)(3.141592 / 180); // 회전 공식
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
 		pFire->SetTransform(pos, angle);
 	}
-	
+	for (int i = 1; i < 4; i++)
+	{
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 18, winSize.height * 2 + 43.5 * i), Size(43.5, 97.5), b2_staticBody, "fire", 0);
+		b2Vec2 pos = pFire->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pFire->SetTransform(pos, angle);
+	}
+	for (int i = 3; i < 8; i++)
+	{
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 18, winSize.height * 3 + 43.5 * i), Size(43.5, 97.5), b2_staticBody, "fire", 0);
+		b2Vec2 pos = pFire->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pFire->SetTransform(pos, angle);
+	}
+	for (int i = 3; i < 30; i++)
+	{
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 18, winSize.height * 4 + 43.5 * i), Size(43.5, 97.5), b2_staticBody, "fire", 0);
+		b2Vec2 pos = pFire->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pFire->SetTransform(pos, angle);
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 320, winSize.height * 5 + 180 + i * 43.5), Size(43.5, 97.5), b2_staticBody, "fire", 0);
+		b2Vec2 pos = pFire->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
+		pFire->SetTransform(pos, angle);
+	}
+
+}
+
+void Stage1::createWall()
+{
+	// 아래 벽
+	this->addNewSprite(Vec2(winSize.width * 4, 250), Size(50, 200), b2_staticBody, "wallV", 0);
+
+	// 오른쪽 벽
+	for (int i = 0; i < 2; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 230, winSize.height * 4/3), Size(50, 200), b2_staticBody, "wallV", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+	for (int i = 1; i < 4; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 150, winSize.height * 4 + i * 336), Size(336, 50), b2_staticBody, "wall", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+	for (int i = 1; i < 2; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 350, winSize.height * 5 + i * 336), Size(336, 50), b2_staticBody, "wall", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+
 }
 
 void Stage1::createBullet(float f)
@@ -284,14 +386,6 @@ void Stage1::spriteMoveFinished(Ref* sender)
 	projectiles.eraseObject(sprite);
 
 	sprite->release();
-}
-
-void Stage1::createWall()
-{
-	// 아래 벽
-	this->addNewSprite(Vec2(winSize.width * 4, 250), Size(50, 200), b2_staticBody, "wallV", 0);
-
-	// 오른쪽 벽
 }
 
 void Stage1::createItem()
@@ -650,7 +744,7 @@ b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			sprite->setScaleY(0.5f);
 			this->addChild(sprite);
 
-			//sprite->setTag(2);
+			sprite->setTag(4);
 			bodyDef.userData = sprite;
 		}
 		else if (strcmp(spriteName, "wallV") == 0)
@@ -786,25 +880,29 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 	}
 	else if (jumpBool)  // 점프 한번만 가능하게끔
 	{
-		if (rBool && pManBody->GetPosition().y < 1.3f)
+		if (rBool && (pManBody->GetPosition().y < 1.3f || jump)) // pManBody->GetPosition().y < 1.3f
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
+			jump = false;
 		}
-		else if (uBool && pManBody->GetPosition().x > 156.0f)
+		else if (uBool && (pManBody->GetPosition().x > 156.0f || jump)) // pManBody->GetPosition().x > 156.0f
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
+			jump = false;
 		}
-		else if (lBool && pManBody->GetPosition().y > 278.0f)
+		else if (lBool && (pManBody->GetPosition().y > 278.0f  || jump)) // pManBody->GetPosition().y > 278.0f
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
+			jump = false;
 		}
-		else if (dBool && pManBody->GetPosition().x < 1.5f)
+		else if (dBool && (pManBody->GetPosition().x < 1.5f || jump)) // pManBody->GetPosition().x < 1.5f
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
+			jump = false;
 		}
 	}
 
@@ -912,20 +1010,25 @@ void Stage1::BeginContact(b2Contact *contact)
 			{
 				if (shield == false)
 				{
+					this->gameOver();
 					// 애니메이션 액션 멈추기
 					Director::getInstance()->getActionManager()->pauseAllRunningActions(); 
 					this->unschedule(schedule_selector(Stage1::tick));
-					this->gameOver();
+					
+					log("game over");
+					
 				}
 				else
 				{
 					if (shieldNum == 2)
 					{
 						shieldNum--;
+						pManBody->SetLinearDamping(0.5f);
 					}
 					else if (shieldNum == 1)
 					{
 						shieldNum--;
+						pManBody->SetLinearDamping(0.5f);
 						this->removeChild(barrier, true);
 						shield = false;
 					}
@@ -941,6 +1044,10 @@ void Stage1::BeginContact(b2Contact *contact)
 				delVec.push_back(bodyB);
 				shieldNum = 2;
 				shield = true;
+			}
+			else if (nTag == 4)
+			{
+				jump = true;
 			}
 		}
 
@@ -962,7 +1069,6 @@ void Stage1::gameOver()
 {
 	auto bord = Sprite::create("gameOverImages/score_bord.png");
 	bord->setOpacity(0);
-	this->addChild(bord);
 
 	auto score = Sprite::create("gameOverImages/score.png");
 	score->setPosition(Vec2(200, 200));
@@ -985,7 +1091,9 @@ void Stage1::gameOver()
 	}
 	else if (uBool)
 	{
-		bord->setPosition(Vec2(pManBody->GetPosition().x * 31 , pManBody->GetPosition().y * 32));
+		bord->setPosition(Vec2(pManBody->GetPosition().x * 30, pManBody->GetPosition().y * 31));
+		log("bord : %f .. %f", bord->getPosition().x, bord->getPosition().y);
+		log("pManBody : %f .. %f", pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 31);
 	}
 	else if (lBool)
 	{
@@ -1051,6 +1159,7 @@ void Stage1::gameOver()
 	pReplay->setPosition(Vec2::ZERO);
 	pHome->setPosition(Vec2::ZERO);
 
+	this->addChild(bord);
 	bord->addChild(pReplay);
 	bord->addChild(pHome);
 
@@ -1076,7 +1185,3 @@ void Stage1::createNext(Ref* pSender)
 	Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
 }
 
-void Stage1::createBarrier(float f)
-{
-	
-}
