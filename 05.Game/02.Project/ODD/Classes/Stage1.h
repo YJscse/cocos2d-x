@@ -65,9 +65,11 @@ public:
 	Sprite* turret;
 	Sprite* over;
 	Sprite* clear;
+	Sprite* jumpjump;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
+	b2Body* jumpItem;
 
 	RenderTexture* miniMap;
 
@@ -75,8 +77,8 @@ public:
 	bool playerIsFlying;
 
 	bool jumpBool = false;
-	bool rBool = true;
-	bool uBool = false;
+	bool rBool = false;
+	bool uBool = true;
 	bool lBool = false;
 	bool dBool = false;
 	bool gBool = false;
@@ -87,7 +89,7 @@ public:
 	void movePlayer(float f);
 	void waySwich();
 	void BeginContact(b2Contact *contact);
-	void gameOver();
+	void gameOver(float f);
 
 	void createPlayer();
 	void createFire();
@@ -98,10 +100,6 @@ public:
 	void createNext(Ref* pSender);
 	void createStar();
 
-	void createBullet(float f);
-	void finishRotate(Ref* sender, Vec2 dir);
-	void spriteMoveFinished(Ref* sender);
-
 	int num = 0;
 	int swichNum = 0;
 	int sum = 0;
@@ -110,9 +108,10 @@ public:
 	int bulletNum = 0;
 	int count = 0;
 	int gameClear = 0;
+	int doubleJump = 0;
+	int jSum = 0;
 
 	std::vector<b2Body*> delVec;
-	Vector<Sprite*> projectiles;
 
 	
 
