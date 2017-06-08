@@ -44,7 +44,6 @@ public:
 	Texture2D* texture;
 	Texture2D* texture2;
 	Texture2D* texture3;
-	Texture2D* texture4;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
@@ -62,7 +61,6 @@ public:
 	Sprite* home;
 	Sprite* barrier;
 	Sprite* sItem;
-	Sprite* turret;
 	Sprite* over;
 	Sprite* clear;
 	Sprite* jumpjump;
@@ -78,8 +76,8 @@ public:
 
 	bool jumpBool = false;
 	bool rBool = false;
-	bool uBool = true;
-	bool lBool = false;
+	bool uBool = false;
+	bool lBool = true;
 	bool dBool = false;
 	bool gBool = false;
 	bool overBool = false;
@@ -105,11 +103,11 @@ public:
 	int sum = 0;
 	int shieldNum = 0;
 	int sum2 = 0;
-	int bulletNum = 0;
 	int count = 0;
 	int gameClear = 0;
 	int doubleJump = 0;
 	int jSum = 0;
+	int stageNum = 0;
 
 	std::vector<b2Body*> delVec;
 
