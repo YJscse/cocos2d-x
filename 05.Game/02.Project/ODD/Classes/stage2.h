@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __STAGE1__
-#define __STAGE1__
+#ifndef __STAGE2__
+#define __STAGE2__
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)             // 한글나오게 하는 헤더
 #pragma execution_character_set("utf-8")
@@ -14,7 +14,7 @@
 
 using namespace cocos2d;
 
-class Stage1 
+class Stage2
 	: public Layer
 	, public b2ContactListener
 {
@@ -23,21 +23,20 @@ public:
 
 	virtual bool init();
 
-	CREATE_FUNC(Stage1);
+	CREATE_FUNC(Stage2);
 
 	bool createBox2dWorld(bool debug);
-	~Stage1();
+	~Stage2();
 	virtual void draw(Renderer* renderer, const Mat4& transform,
-					  uint32_t flags) override;
+		uint32_t flags) override;
 
 	virtual void onEnter();
 	virtual void onExit();
 	void tick(float dt);
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const char* spriteName, int type);
 
-	b2Body* getBodyAtTab(Vec2 p);
 	virtual bool onTouchBegan(Touch *touch, Event* event);
-//	virtual void onTouchMoved(Touch *touch, Event* event);
+	//	virtual void onTouchMoved(Touch *touch, Event* event);
 	virtual void onTouchEnded(Touch *touch, Event* event);
 
 	Size winSize;
@@ -47,10 +46,10 @@ public:
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
-	bool bDrag;
-	b2Body* dragBody;
-	b2MouseJoint* mouseJoint;
-	b2Body* gbody;
+	//bool bDrag;
+	//b2Body* dragBody;
+	//b2MouseJoint* mouseJoint;
+	//b2Body* gbody;
 
 	/////////////////////////////
 
@@ -93,7 +92,7 @@ public:
 	void gameOver(float f);
 
 	void createPlayer();
-	void createFire();
+	void createFire(float f);
 	void createWall();
 	void createItem();
 	void createReplay(Ref* pSender);
@@ -111,10 +110,11 @@ public:
 	int doubleJump = 0;
 	int jSum = 0;
 	int stageNum = 0;
+	int fireNum = 0;
 
 	std::vector<b2Body*> delVec;
 
-	
+
 
 
 protected:
@@ -124,4 +124,4 @@ protected:
 
 };
 
-#endif // __STAGE1__
+#endif // __Stage2__

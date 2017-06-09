@@ -1,6 +1,7 @@
 #include "GameMain.h"
 #include "HelloWorldScene.h"
 #include "Stage1.h"
+#include "Stage2.h"
 
 Scene* GameMain::createScene()
 {
@@ -224,7 +225,7 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 		}
 		else if (stage2.containsPoint(touchPoint))
 		{
-			auto pScene = Stage1::createScene();
+			auto pScene = Stage2::createScene();
 			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
 			log("aaa");
 		}
