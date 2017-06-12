@@ -67,12 +67,19 @@ public:
 	Sprite* cover;
 	Sprite* ready;
 	Sprite* go;
+	Sprite* bord;
+	Sprite* score;
+	Sprite* best;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
 	b2Body* jumpItem;
 
 	RenderTexture* miniMap;
+
+	LabelAtlas* Score;
+	LabelAtlas* NowScore;
+	LabelAtlas* BestScore;
 
 	float playerVelocity;
 	bool playerIsFlying;
@@ -86,11 +93,14 @@ public:
 	bool overBool = false;
 	bool shield = false;
 	bool jump = false;
+	bool dJump = false;
 
 	void movePlayer(float f);
 	void waySwich();
 	void BeginContact(b2Contact *contact);
 	void gameOver(float f);
+	void overScore(float f);
+	void overBestScore(float f);
 
 	void createPlayer();
 	void createFire();
@@ -100,6 +110,7 @@ public:
 	void createHome(Ref* pSender);
 	void createNext(Ref* pSender);
 	void createStar();
+	void createScore();
 
 	int num = 0;
 	int swichNum = 0;
@@ -111,6 +122,12 @@ public:
 	int doubleJump = 0;
 	int jSum = 0;
 	int stageNum = 0;
+	int nowScore = 0;
+	int nScore = 0;
+
+	unsigned int m_nSoundId;
+
+	char str[500] = { 0 };
 
 	std::vector<b2Body*> delVec;
 

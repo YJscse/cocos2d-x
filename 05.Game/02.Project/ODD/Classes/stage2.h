@@ -85,6 +85,7 @@ public:
 	bool overBool = false;
 	bool shield = false;
 	bool jump = false;
+	bool dJump = false;
 
 	void movePlayer(float f);
 	void waySwich();

@@ -26,7 +26,7 @@ public:
 	Sprite* play;
 	Sprite* score;
 	Sprite* background;
-	Sprite* sound;
+	Sprite* effect;
 	Sprite* bgm;
 	Sprite* home;
 
@@ -34,6 +34,9 @@ public:
 	Sprite* stage[9];
 
 	bool sselect = false;
+	bool effectBool = true;
+	bool bgmBool = true;
+	unsigned int m_nSoundId;
 
 	virtual void onEnter();
 	virtual void onExit();

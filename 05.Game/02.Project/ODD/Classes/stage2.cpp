@@ -169,7 +169,7 @@ void Stage2::createStar()
 		{
 			this->addNewSprite(Vec2(winSize.width * 7 - 180, winSize.height * 0.5 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 		}
-		else if (i >= 10 && i < 14)
+		else if (i >= 6 && i < 10)
 		{
 			this->addNewSprite(Vec2(winSize.width * 7 - 180, winSize.height * 0.5 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 		}
@@ -179,14 +179,36 @@ void Stage2::createStar()
 		}
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		this->addNewSprite(Vec2(winSize.width * 7 - 300, winSize.height * 2 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 		this->addNewSprite(Vec2(winSize.width * 7 - 350, winSize.height * 2 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 	}
 
+	for (int i = 0; i < 10; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 2.4 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height * 2.4 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+	}
 
-	
+	for (int i = 0; i < 5; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 3.9 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 220, winSize.height * 3.9 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 270, winSize.height * 4.2 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+	}
+
+	for (int i = 0; i < 30; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 5 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height * 5 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 160, winSize.height * 5 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(winSize.width * 7 - 220, winSize.height * 5 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+	}
 }
 
 void Stage2::createFire(float f)
@@ -196,7 +218,7 @@ void Stage2::createFire(float f)
 	{
 		for (int i = 1; i < 20; i++)
 		{
-			this->addNewSprite(Vec2(winSize.width * 1.5 + 40.8 * i, 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+			this->addNewSprite(Vec2(winSize.width * 1.5 + 40.8 * i, 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 		}
 		fireNum = 1;
 	}
@@ -205,7 +227,7 @@ void Stage2::createFire(float f)
 	{
 		for (int i = 0; i < 17; i++)
 		{
-			this->addNewSprite(Vec2(winSize.width * 3.8 + 40.8 * i, 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+			this->addNewSprite(Vec2(winSize.width * 3.8 + 40.8 * i, 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 		}
 		fireNum = 2;
 	}
@@ -215,36 +237,53 @@ void Stage2::createFire(float f)
 	{
 		for (int i = 1; i < 5; i++)
 		{
-			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 0.5 + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 0.5 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 			b2Vec2 pos = pFire->GetPosition();
 			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 			float angle = (float)(90 * DEGREES_TO_RADIANS);
 			pFire->SetTransform(pos, angle);
 		}
 
-		for (int i = 0; i < 7; i++)
+		for (int i = 1; i < 5; i++)
 		{
-			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 1.6 + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 0.8 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 			b2Vec2 pos = pFire->GetPosition();
 			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 			float angle = (float)(90 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+	
+
+		for (int i = 0; i < 7; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 1.6 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(90 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+
+		for (int i = 0; i < 5; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 3 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(90 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}	
+
+		for (int i = 4; i < 8; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - (40.8 * i), winSize.height * 4.65), Size(40, 87), b2_staticBody, "fire", 0);
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(180 * DEGREES_TO_RADIANS);
 			pFire->SetTransform(pos, angle);
 		}
 		fireNum = 3;
 	}
 
-	else if (pManBody->GetPosition().y * 32 > winSize.height * 0.9 && fireNum == 3)
-	{
-		for (int i = 1; i < 5; i++)
-		{
-			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
-			b2Vec2 pos = pFire->GetPosition();
-			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
-			float angle = (float)(90 * DEGREES_TO_RADIANS);
-			pFire->SetTransform(pos, angle);
-		}
-		fireNum = 4;
-	}
+
 }
 
 void Stage2::createWall()
@@ -267,6 +306,48 @@ void Stage2::createWall()
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
 		pWall->SetTransform(pos, angle);
 	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 300, winSize.height * 2.3), Size(50, 200), b2_staticBody, "wallV", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 220, winSize.height * 3.3), Size(50, 200), b2_staticBody, "wallV", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 1; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 120, winSize.height * 4), Size(336, 50), b2_staticBody, "wall", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 7 - 220, winSize.height * 4.7), Size(50, 200), b2_staticBody, "wallV", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+
 }
 
 void Stage2::createItem()
@@ -287,8 +368,8 @@ void Stage2::createItem()
 		jumpItem->SetTransform(pos, angle);
 	}
 
-//	shieldItem = this->addNewSprite(Vec2(winSize.width * 7 - 50, winSize.height / 5),
-//		Size(72, 72), b2_staticBody, "shield", 2);
+	//shieldItem = this->addNewSprite(Vec2(winSize.width * 7 - 180, winSize.height * 3.1),
+	//	Size(72, 72), b2_staticBody, "shield", 2);
 
 	//b2Vec2 pos = shieldItem->GetPosition();
 	//double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -426,7 +507,7 @@ void Stage2::tick(float dt)
 
 		}
 
-		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 방향 전환할때 각 벽 끝에 있는 staticBody에 몇번을 부딪혀도
 		// 중력이 계속해서 바뀌지않도록 하기위한 코드
 		if (pManBody->GetPosition().x > 70)
 		{
@@ -453,7 +534,6 @@ void Stage2::tick(float dt)
 	{
 
 		b2Vec2 pos = pManBody->GetPosition();
-		//float angle = 89.53f;
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
@@ -473,7 +553,7 @@ void Stage2::tick(float dt)
 			}
 		}
 
-		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 방향 전환할때 각 벽 끝에 있는 staticBody에 몇번을 부딪혀도
 		// 중력이 계속해서 바뀌지않도록 하기위한 코드
 		if (pManBody->GetPosition().y > 70)
 		{
@@ -486,7 +566,7 @@ void Stage2::tick(float dt)
 			removeChild(jumpjump);
 		}
 		jSum = 1;
-		if (doubleJump > 0)
+		if (dJump)
 		{
 			jumpjump = Sprite::create("Images/jump.png");
 			jumpjump->setPosition(Vec2(pManBody->GetPosition().x * 32 - 100, pManBody->GetPosition().y * 32));
@@ -495,13 +575,13 @@ void Stage2::tick(float dt)
 			this->addChild(jumpjump);
 
 		}
+		
 
 	}
 	else if (lBool)
 	{
 
 		b2Vec2 pos = pManBody->GetPosition();
-		//float angle = 179.07f;
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(180 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
@@ -521,7 +601,7 @@ void Stage2::tick(float dt)
 			}
 		}
 
-		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 방향 전환할때 각 벽 끝에 있는 staticBody에 몇번을 부딪혀도
 		// 중력이 계속해서 바뀌지않도록 하기위한 코드
 		if (pManBody->GetPosition().x < 70)
 		{
@@ -542,13 +622,13 @@ void Stage2::tick(float dt)
 			jumpjump->setRotation(180);
 			this->addChild(jumpjump);
 		}
+		
 
 	}
 	else if (dBool)
 	{
 
 		b2Vec2 pos = pManBody->GetPosition();
-		//float angle = 268.59f;
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(270 * DEGREES_TO_RADIANS);
 		pManBody->SetTransform(pos, angle);
@@ -568,7 +648,7 @@ void Stage2::tick(float dt)
 			}
 		}
 
-		// 방향 전환할때 각 벽 끝에 있는 kinematicBody에 몇번을 부딪혀도
+		// 방향 전환할때 각 벽 끝에 있는 staticBody에 몇번을 부딪혀도
 		// 중력이 계속해서 바뀌지않도록 하기위한 코드
 		if (pManBody->GetPosition().y < 70)
 		{
@@ -836,40 +916,69 @@ bool Stage2::onTouchBegan(Touch* touch, Event* event)
 			log("%f .. %f", winSize.width, winSize.height);
 		}
 	}
-	else if (jumpBool && doubleJump == 0)  // 점프 한번만 가능하게끔
+	else if (jumpBool)  // 점프 한번만 가능하게끔
 	{
-		if (rBool && (pManBody->GetPosition().y < 1.3f || jump)) // pManBody->GetPosition().y < 1.3f
+		if (rBool && (pManBody->GetPosition().y * 32 < 50 || jump || dJump)) 
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			if (pManBody->GetPosition().y * 32 > 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-		else if (uBool && (pManBody->GetPosition().x > 156.0f || jump)) // pManBody->GetPosition().x > 156.0f
+		else if (uBool && (pManBody->GetPosition().x * 32 > winSize.width * 7 - 50 || jump || dJump)) 
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+			if (pManBody->GetPosition().x * 32 < winSize.width * 7 - 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-		else if (lBool && (pManBody->GetPosition().y > 278.0f || jump)) // pManBody->GetPosition().y > 278.0f
+		else if (lBool && (pManBody->GetPosition().y * 32 > winSize.height * 7 - 50 || jump || dJump)) 
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			if (pManBody->GetPosition().y * 32 < winSize.height * 7 - 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-		else if (dBool && (pManBody->GetPosition().x < 1.5f || jump)) // pManBody->GetPosition().x < 1.5f
+		else if (dBool && (pManBody->GetPosition().x * 32 < 50 || jump || dJump)) // jump = 발판위에서도 점프가 가능하게끔 설정
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			if (pManBody->GetPosition().x * 32 > 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
 	}
-	else if (jumpBool && doubleJump > 0)
-	{
-		playerVelocity = 29.9f;
-		playerIsFlying = true;
-		doubleJump--;
-		log("double jump");
-	}
+	
 
 	jumpBool = true;
 	return true;
@@ -1022,7 +1131,8 @@ void Stage2::BeginContact(b2Contact *contact)
 			else if (nTag == 5)
 			{
 				delVec.push_back(bodyB);
-				doubleJump = 2;
+				doubleJump = 1;
+				dJump = true;
 			}
 		}
 

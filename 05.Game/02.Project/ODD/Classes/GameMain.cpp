@@ -2,6 +2,26 @@
 #include "HelloWorldScene.h"
 #include "Stage1.h"
 #include "Stage2.h"
+#include "SimpleAudioEngine.h"
+
+//ansroid dffect only support ogg
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#define EFFECT_FILE    "sounds/click.ogg"
+#elif(CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE)
+#define EFFECT_FILE    "sounds/click.raw"
+#else
+#define EFFECT_FILE    "sounds/click.wav"
+#endif // CC_PLATFORM_ANDROID
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#define MUSIC_FILE    "sounds/BGM2.mid"
+#elif(CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
+#define MUSIC_FILE    "sounds/BGM2.ogg"
+#else
+#define MUSIC_FILE    "sounds/BGM2.wav"
+#endif // CC_PLATFORM_WIN32
+
+using namespace CocosDenshion;
 
 Scene* GameMain::createScene()
 {
@@ -21,12 +41,12 @@ bool GameMain::init()
 	winSize = Director::getInstance()->getWinSize();
 
 
-	auto sound = Sprite::create("Images/sound_on.png");
-	sound->setScale(0.7f);
-	sound->setPosition(Vec2(winSize.width * 14/15, winSize.height * 14/15));
-	this->addChild(sound, 2);
+	effect = Sprite::create("Images/sound_on.png");
+	effect->setScale(0.7f);
+	effect->setPosition(Vec2(winSize.width * 14/15, winSize.height * 14/15));
+	this->addChild(effect, 2);
 
-	auto bgm = Sprite::create("Images/bgm_on.png");
+	bgm = Sprite::create("Images/bgm_on.png");
 	bgm->setScale(0.7f);
 	bgm->setPosition(Vec2(winSize.width * 12/15, winSize.height * 14/15));
 	this->addChild(bgm, 2);
@@ -36,6 +56,9 @@ bool GameMain::init()
 	this->createPlay();
 	this->createScore();
 
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Main_BGM.mp3");
+	SimpleAudioEngine::getInstance()->setEffectsVolume(0.5);
+	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.5);
 	return true;
 }
 
@@ -153,9 +176,16 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 
 	Rect rect = play->getBoundingBox();
 	Rect rect2 = score->getBoundingBox();
+	Rect rect3 = effect->getBoundingBox();
+	Rect rect4 = bgm->getBoundingBox();
 
 	if (rect.containsPoint(touchPoint) && sselect == false)
 	{
+		
+		if (effectBool)
+		{
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+		}
 		auto playMove = MoveBy::create(0.1f, Vec2(0, -10));
 		play->runAction(playMove);	
 		
@@ -164,6 +194,56 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 	{
 		auto scoreMove = MoveBy::create(0.1f, Vec2(0, -10));
 		score->runAction(scoreMove);
+	}
+
+	else if (rect3.containsPoint(touchPoint))
+	{
+		if (effectBool)
+		{
+			SimpleAudioEngine::getInstance()->stopEffect(m_nSoundId);
+			effectBool = false;
+
+		}
+		else if (effectBool == false)
+		{
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+			effectBool = true;
+		}
+	}
+
+	else if (rect4.containsPoint(touchPoint))
+	{
+		if (bgmBool)
+		{
+			SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+			bgmBool = false;
+		}
+		else if (bgmBool == false)
+		{
+			SimpleAudioEngine::getInstance()->playBackgroundMusic(MUSIC_FILE);
+			bgmBool = true;
+		}
+	}
+
+	if (sselect)
+	{
+		if (effectBool)
+		{
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+		}
+
+		Rect homeButton = home->getBoundingBox();
+
+		if (homeButton.containsPoint(touchPoint))
+		{
+			removeChild(stageBord);
+			for (int i = 0; i < 9; i++)
+			{
+				removeChild(stage[i]);
+			}
+			removeChild(home);
+			sselect = false;
+		}
 	}
 
 	return true;
@@ -184,9 +264,6 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 
 		sselect = true;
 		this->selectStage();
-
-//		auto pScene = StageSelect::createScene();
-//		Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1 ,pScene));
 	}
 	else if (rect2.containsPoint(touchPoint) && sselect == false)
 	{
@@ -195,6 +272,10 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 	}
 	else if (sselect)
 	{
+		if (effectBool)
+		{
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+		}
 
 		Rect stage1 = stage[0]->getBoundingBox();
 		Rect stage2 = stage[1]->getBoundingBox();
@@ -205,19 +286,8 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 		Rect stage7 = stage[6]->getBoundingBox();
 		Rect stage8 = stage[7]->getBoundingBox();
 		Rect stage9 = stage[8]->getBoundingBox();
-		Rect homeButton = home->getBoundingBox();
 
-		if (homeButton.containsPoint(touchPoint))
-		{
-			removeChild(stageBord);
-			for (int i = 0; i < 9; i++)
-			{
-				removeChild(stage[i]);
-			}
-			removeChild(home);
-			sselect = false;
-		}
-		else if (stage1.containsPoint(touchPoint))
+		if (stage1.containsPoint(touchPoint))
 		{
 			auto pScene = Stage1::createScene();
 			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
@@ -280,6 +350,11 @@ void GameMain::onEnter()
 void GameMain::onExit()
 {
 	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
-
+	
+	if (bgmBool == false)
+	{
+		SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
+		SimpleAudioEngine::getInstance()->end();
+	}
 	Layer::onExit();
 }

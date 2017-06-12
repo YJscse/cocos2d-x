@@ -1,6 +1,27 @@
 #include "Stage1.h"
 #include "GameMain.h"
 #include "Stage2.h"
+#include "SimpleAudioEngine.h"
+
+
+//ansroid dffect only support ogg
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#define EFFECT_FILE    "sounds/jump.ogg"
+#elif(CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE)
+#define EFFECT_FILE    "sounds/click.raw"
+#else
+#define EFFECT_FILE    "sounds/click.wav"
+#endif // CC_PLATFORM_ANDROID
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#define MUSIC_FILE    "sounds/BGM2.mid"
+#elif(CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
+#define MUSIC_FILE    "sounds/BGM3.ogg"
+#else
+#define MUSIC_FILE    "sounds/BGM3.wav"
+#endif // CC_PLATFORM_WIN32
+
+using namespace CocosDenshion;
 
 USING_NS_CC;
 
@@ -49,6 +70,8 @@ bool Stage1::init()
 	ready->runAction(rep);
 
 	this->createPlayer();
+
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Play_BGM.wav");
 
 	delVec.clear();
 
@@ -131,7 +154,7 @@ bool Stage1::createBox2dWorld(bool debug)
 	this->createItem();
 	this->createStar();
 	this->schedule(schedule_selector(Stage1::movePlayer));
-	
+
 	return true;
 }
 
@@ -150,7 +173,7 @@ void Stage1::createStar()
 		this->addNewSprite(Vec2(winSize.width + (i * 64), 40), Size(32, 32), b2_staticBody, "star", 2);
 	}
 	
-	for (int i = 24; i < 28; i++)
+	for (int i = 23; i < 27; i++)
 	{
 		this->addNewSprite(Vec2(winSize.width + (i * 64), 160), Size(32, 32), b2_staticBody, "star", 2);
 	}
@@ -334,23 +357,23 @@ void Stage1::createFire()
 	// 아래 장애물
 	for (int i = 1; i < 5; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width + 40.8 * i, 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		this->addNewSprite(Vec2(winSize.width + 40.8 * i, 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 	}
 
 	for (int i = 1; i < 7; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 3 + 40.8 * i, 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		this->addNewSprite(Vec2(winSize.width * 3 + 40.8 * i, 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 	}
 
 	for (int i = 1; i < 5; i++)
 	{
-		this->addNewSprite(Vec2(winSize.width * 5 + 40.8 * i, 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		this->addNewSprite(Vec2(winSize.width * 5 + 40.8 * i, 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 	}
 
 	// 오른쪽 장애물
 	for (int i = 1; i < 5; i++)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height  + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height  + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
@@ -359,7 +382,7 @@ void Stage1::createFire()
 
 	for (int i = 1; i < 4; i++)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 2 + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 2 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
@@ -368,7 +391,7 @@ void Stage1::createFire()
 
 	for (int i = 3; i < 8; i++)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 3 + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 3 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
@@ -377,7 +400,7 @@ void Stage1::createFire()
 
 	for (int i = 5; i < 27; i++)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 4 + 40.8 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 4 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
@@ -386,7 +409,7 @@ void Stage1::createFire()
 
 	for (int i = 0; i < 8; i++)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 280, winSize.height * 5 + 195 + i * 40.8), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 280, winSize.height * 5 + 195 + i * 40.8), Size(40, 87), b2_staticBody, "fire", 0);
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(270 * DEGREES_TO_RADIANS);
@@ -396,7 +419,7 @@ void Stage1::createFire()
 	// 위 장애물
 	for (int i = -1; i > -17; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 6 + 40.8 * i, winSize.height * 7 - 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 6 + 40.8 * i, winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 		
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -406,7 +429,7 @@ void Stage1::createFire()
 
 	for (int i = -7; i > -17; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 6 + 40.8 * i, winSize.height * 6.89 - 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 6 + 40.8 * i, winSize.height * 6.89 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -416,7 +439,7 @@ void Stage1::createFire()
 
 	for (int i = 1; i > -3; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 4 + 40.8 * i, winSize.height * 7 - 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 4 + 40.8 * i, winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -426,7 +449,7 @@ void Stage1::createFire()
 
 	for (int i = 0; i > -4; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 3 + 40.8 * i, winSize.height * 7 - 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 3 + 40.8 * i, winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -436,7 +459,7 @@ void Stage1::createFire()
 
 	for (int i = 0; i > -8; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 2 + 40.8 * i, winSize.height * 7 - 43.5), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 2 + 40.8 * i, winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -447,7 +470,7 @@ void Stage1::createFire()
 	// 왼쪽 장애물
 	for (int i = 0; i > -20; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 6.5 + 43.5 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 6.5 + 43.5 * i), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -457,7 +480,7 @@ void Stage1::createFire()
 
 	for (int i = 0; i > -5; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 5 + 43.5 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 5 + 43.5 * i), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -467,7 +490,7 @@ void Stage1::createFire()
 
 	for (int i = 0; i > -5; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 4 + 43.5 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 4 + 43.5 * i), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -477,7 +500,7 @@ void Stage1::createFire()
 
 	for (int i = 0; i > -7; i--)
 	{
-		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 2 + 43.5 * i), Size(40.8, 87), b2_staticBody, "fire", 0);
+		b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 2 + 43.5 * i), Size(40, 87), b2_staticBody, "fire", 0);
 
 		b2Vec2 pos = pFire->GetPosition();
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
@@ -616,6 +639,210 @@ void Stage1::createPlayer()
 	pMan->setPosition(Vec2(100, 60));
 	pMan->setScale(0.5f);
 	this->addChild(pMan);
+}
+
+void Stage1::createScore()
+{
+	if (rBool)
+	{
+		if (pManBody->GetPosition().x * 32 < winSize.width * 0.5)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 0.5, winSize.height * 0.7));
+			this->addChild(Score, 3);
+			
+		}
+		else if (pManBody->GetPosition().x * 32 >= winSize.width * 0.5 && 
+				 pManBody->GetPosition().x * 32 < winSize.width * 6.3)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(pManBody->GetPosition().x * 32, winSize.height * 0.7));
+			this->addChild(Score, 3);
+
+		}
+	
+		else if (pManBody->GetPosition().x * 32 >= winSize.width * 6.3)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 6.3, winSize.height * 0.7));
+			this->addChild(Score, 3);
+		}
+	}
+
+	else if (uBool)
+	{
+		if (pManBody->GetPosition().y * 32 < winSize.height * 0.7)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 6.3, winSize.height * 0.7));
+			this->addChild(Score, 3);
+		}
+		else if (pManBody->GetPosition().y * 32 >= winSize.height * 0.5 &&
+				 pManBody->GetPosition().y * 32 < winSize.height * 6.3)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 6.3, pManBody->GetPosition().y * 32));
+			this->addChild(Score, 3);
+		}
+
+		else if (pManBody->GetPosition().y * 32 >= winSize.height * 6.3)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 6.3, winSize.height * 6.3));
+			this->addChild(Score, 3);
+		}
+
+	}
+
+	else if (lBool)
+	{
+		if (pManBody->GetPosition().x * 32 > winSize.width * 6.3)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 6.3, winSize.height * 6.3));
+			this->addChild(Score, 3);
+		}
+
+		else if (pManBody->GetPosition().x * 32 <= winSize.width * 6.3 &&
+				 pManBody->GetPosition().x * 32 > winSize.width * 0.7)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(pManBody->GetPosition().x * 32, winSize.height * 6.3));
+			this->addChild(Score, 3);
+		}
+		else if (pManBody->GetPosition().x * 32 <= winSize.width * 0.7)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 0.7, winSize.height * 6.3));
+			this->addChild(Score, 3);
+		}
+	}
+
+	else if (dBool)
+	{
+		if (pManBody->GetPosition().y * 32 > winSize.height * 6.3)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 0.3, winSize.height * 6.3));
+			this->addChild(Score, 3);
+		}
+		else if (pManBody->GetPosition().y * 32 <= winSize.height * 6.3 &&
+				 pManBody->GetPosition().y * 32 > winSize.height * 0.7)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 0.3, pManBody->GetPosition().y * 32));
+			this->addChild(Score, 3);
+		}
+		else if (pManBody->GetPosition().y * 32 < winSize.height * 0.7)
+		{
+			removeChild(Score);
+
+			sprintf(str, "%d", nowScore);
+			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			Score->setScale(3);
+			Score->setPosition(Vec2(winSize.width * 0.3, winSize.height * 0.7));
+			this->addChild(Score, 3);
+		}
+	}
+}
+
+void Stage1::overScore(float f)
+{
+	float ni = 0;
+
+	if (nowScore != 0)
+	{
+		ni = 1 / nowScore;
+	}
+
+	NowScore = LabelAtlas::create("0", "Images/number.png", 24, 34, '0');
+	NowScore->setPosition(Vec2(200, 100));
+	//NowScore->setScale(0.4);
+	bord->addChild(NowScore, 3);
+
+	this->schedule(schedule_selector(Stage1::overBestScore), ni);
+
+	sprintf(str, "%d", nowScore);
+	BestScore = LabelAtlas::create(str, "Images/number.png", 24, 34, '0');
+	BestScore->setPosition(Vec2(200, 300));
+	//BestScore->setScale(0.4);
+	bord->addChild(BestScore, 3);
+}
+
+void Stage1::overBestScore(float f)
+{
+
+	removeChild(NowScore);
+	sprintf(str, "%d", nScore);
+	NowScore = LabelAtlas::create(str, "Images/number.png", 24, 34, '0');
+	NowScore->setPosition(Vec2(200, 100));
+	NowScore->setScale(0.4);
+
+	this->addChild(NowScore, 3);
+
+	if (nowScore == nScore)
+	{
+		if (nowScore > bScore)
+		{
+			removeChild(BestScore);
+
+			bScore = nowScore;
+			sprintf(str, "%d", bScore);
+			BestScore = LabelAtlas::create(str, "Images/number.png", 68, 91, '0');
+			BestScore->setPosition(Vec2(200, 300));
+			BestScore->setScale(0.4);
+			this->addChild(BestScore, 3);
+		}
+
+		this->unschedule(schedule_selector(Stage1::overBestScore));
+
+	}
+
+	nScore++;
 }
 
 void Stage1::onEnter()
@@ -859,6 +1086,7 @@ void Stage1::tick(float dt)
 		removeChild(cover);
 	}
 
+	this->createScore();
 }
 
 b2Body* Stage1::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const char* spriteName, int type)
@@ -1099,39 +1327,70 @@ bool Stage1::onTouchBegan(Touch* touch, Event* event)
 			log("%f .. %f", winSize.width, winSize.height);
 		}
 	}
-	else if (jumpBool && doubleJump == 0)  // 점프 한번만 가능하게끔
-	{
-		if (rBool && (pManBody->GetPosition().y < 1.3f || jump)) // pManBody->GetPosition().y < 1.3f
+	else if (jumpBool)  // 점프 한번만 가능하게끔
+	{		
+	//	m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+
+		if (rBool && (pManBody->GetPosition().y * 32 < 50 || jump || dJump))
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			
+			if (pManBody->GetPosition().y * 32 > 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-		else if (uBool && (pManBody->GetPosition().x > 156.0f || jump)) // pManBody->GetPosition().x > 156.0f
+		else if (uBool && (pManBody->GetPosition().x * 32 > winSize.width * 7 - 50 || jump || dJump))
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+			if (pManBody->GetPosition().x * 32 < winSize.width * 7 - 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-		else if (lBool && (pManBody->GetPosition().y > 278.0f || jump)) // pManBody->GetPosition().y > 278.0f
+		else if (lBool && (pManBody->GetPosition().y * 32 > winSize.height * 7 - 50 || jump || dJump))
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			if (pManBody->GetPosition().y * 32 < winSize.height * 7 - 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-		else if (dBool && (pManBody->GetPosition().x < 1.5f || jump)) // pManBody->GetPosition().x < 1.5f
+		else if (dBool && (pManBody->GetPosition().x * 32 < 50 || jump || dJump)) // jump = 발판위에서도 점프가 가능하게끔 설정
 		{
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			if (pManBody->GetPosition().x * 32 > 50 && dJump)
+			{
+				doubleJump--;
+				if (doubleJump == 0)
+				{
+					dJump = false;
+				}
+			}
 		}
-	}
-	else if (jumpBool && doubleJump > 0)
-	{
-		playerVelocity = 29.9f;
-		playerIsFlying = true;
-		doubleJump--;
-		log("double jump");
 	}
 
 	jumpBool = true;
@@ -1222,6 +1481,8 @@ void Stage1::BeginContact(b2Contact *contact)
 			dBool = false;
 			rBool = true;
 
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Stage_Clear.wav");
+
 			gameClear = 1;
 			Director::getInstance()->getActionManager()->pauseAllRunningActions();
 			this->unschedule(schedule_selector(Stage1::tick));
@@ -1240,6 +1501,9 @@ void Stage1::BeginContact(b2Contact *contact)
 			{
 				if (shield == false)
 				{
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.wav");
+					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
+				
 					this->scheduleOnce(schedule_selector(Stage1::gameOver), 1);
 					// 애니메이션 액션 멈추기
 					Director::getInstance()->getActionManager()->pauseAllRunningActions(); 
@@ -1250,6 +1514,8 @@ void Stage1::BeginContact(b2Contact *contact)
 				}
 				else
 				{
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.wav");
+
 					if (shieldNum == 2)
 					{
 						shieldNum--;
@@ -1269,10 +1535,18 @@ void Stage1::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 2)
 			{
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin.wav");
+
+				SimpleAudioEngine::getInstance()->setEffectsVolume(0.3);
+
 				delVec.push_back(bodyB);
+				nowScore++;
 			}
 			else if (nTag == 3)
 			{
+
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+
 				b2Vec2 pos = pManBody->GetPosition();
 				delVec.push_back(bodyB);
 				shieldNum = 2;
@@ -1284,8 +1558,11 @@ void Stage1::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 5)
 			{
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+
 				delVec.push_back(bodyB);
-				doubleJump = 2;
+				doubleJump = 1;
+				dJump = true;
 			}
 		}
 
@@ -1305,20 +1582,22 @@ void Stage1::waySwich()
 
 void Stage1::gameOver(float f)
 {
-	auto bord = Sprite::create("gameOverImages/score_bord.png");
+	removeChild(Score);
+
+	bord = Sprite::create("gameOverImages/score_bord.png");
 	bord->setOpacity(0);
 
-	auto score = Sprite::create("gameOverImages/score.png");
+	score = Sprite::create("gameOverImages/score.png");
 	score->setPosition(Vec2(200, 200));
 	score->setScale(0.3f);
 	score->setOpacity(0);
 	bord->addChild(score);
 
-	auto bestScore = Sprite::create("gameOverImages/best_score.png");
-	bestScore->setPosition(Vec2(200, 350));
-	bestScore->setScale(0.5f);
-	bestScore->setOpacity(0);
-	bord->addChild(bestScore);
+	best = Sprite::create("gameOverImages/best_score.png");
+	best->setPosition(Vec2(200, 350));
+	best->setScale(0.5f);
+	best->setOpacity(0);
+	bord->addChild(best);
 
 	auto fadeIn1 = FadeIn::create(1.5f);
 	auto fadeIn2 = FadeIn::create(2.5f);
@@ -1375,10 +1654,8 @@ void Stage1::gameOver(float f)
 	
 	bord->runAction(fadeIn1->clone());
 	score->runAction(fadeIn2->clone());
-	bestScore->runAction(fadeIn2->clone());
+	best->runAction(fadeIn2->clone());
 	
-	num++;
-
 	auto homeButton = MenuItemImage::create(
 		"Images/home.png",
 		"Images/home.png",
@@ -1402,6 +1679,9 @@ void Stage1::gameOver(float f)
 	this->addChild(bord);
 	bord->addChild(pReplay);
 	bord->addChild(pHome);
+
+	num = 1; // 게임이 끝났는데도 클릭하면 점프효과음이 계속나서 num에게 1을 줌
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Over.mp3");
 }
 
 void Stage1::createReplay(Ref* pSender)
