@@ -354,7 +354,7 @@ void GameMain::onExit()
 	if (bgmBool == false)
 	{
 		SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-		SimpleAudioEngine::getInstance()->end();
+		//SimpleAudioEngine::getInstance()->end();
 	}
 	Layer::onExit();
 }

@@ -25,6 +25,8 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
+int bScore = 0;
+
 Scene* Stage1::createScene()
 {
 	auto scene = Scene::create();
@@ -71,7 +73,7 @@ bool Stage1::init()
 
 	this->createPlayer();
 
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Play_BGM.wav");
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Play_BGM.mp3");
 
 	delVec.clear();
 
@@ -345,7 +347,6 @@ void Stage1::createStar()
 
 	for (int i = 2; i > -13; i--)
 	{
-		log("star");
 		this->addNewSprite(Vec2(40, winSize.height + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 		this->addNewSprite(Vec2(240, winSize.height + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 	}
@@ -763,7 +764,7 @@ void Stage1::createScore()
 			sprintf(str, "%d", nowScore);
 			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
 			Score->setScale(3);
-			Score->setPosition(Vec2(winSize.width * 0.3, winSize.height * 6.3));
+			Score->setPosition(Vec2(winSize.width * 0.7, winSize.height * 6.3));
 			this->addChild(Score, 3);
 		}
 		else if (pManBody->GetPosition().y * 32 <= winSize.height * 6.3 &&
@@ -774,7 +775,7 @@ void Stage1::createScore()
 			sprintf(str, "%d", nowScore);
 			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
 			Score->setScale(3);
-			Score->setPosition(Vec2(winSize.width * 0.3, pManBody->GetPosition().y * 32));
+			Score->setPosition(Vec2(winSize.width * 0.7, pManBody->GetPosition().y * 32));
 			this->addChild(Score, 3);
 		}
 		else if (pManBody->GetPosition().y * 32 < winSize.height * 0.7)
@@ -784,7 +785,7 @@ void Stage1::createScore()
 			sprintf(str, "%d", nowScore);
 			Score = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
 			Score->setScale(3);
-			Score->setPosition(Vec2(winSize.width * 0.3, winSize.height * 0.7));
+			Score->setPosition(Vec2(winSize.width * 0.7, winSize.height * 0.7));
 			this->addChild(Score, 3);
 		}
 	}
@@ -799,30 +800,28 @@ void Stage1::overScore(float f)
 		ni = 1 / nowScore;
 	}
 
-	NowScore = LabelAtlas::create("0", "Images/number.png", 24, 34, '0');
-	NowScore->setPosition(Vec2(200, 100));
-	//NowScore->setScale(0.4);
+	NowScore = LabelAtlas::create("0", "Images/score_number.png", 24, 34, '0');
+	NowScore->setPosition(Vec2(180, 50));
+	NowScore->setScale(2);
 	bord->addChild(NowScore, 3);
 
 	this->schedule(schedule_selector(Stage1::overBestScore), ni);
 
-	sprintf(str, "%d", nowScore);
-	BestScore = LabelAtlas::create(str, "Images/number.png", 24, 34, '0');
-	BestScore->setPosition(Vec2(200, 300));
-	//BestScore->setScale(0.4);
+	sprintf(str, "%d", bScore);
+	BestScore = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+	BestScore->setPosition(Vec2(180, 250));
+	BestScore->setScale(2);
 	bord->addChild(BestScore, 3);
 }
 
 void Stage1::overBestScore(float f)
 {
-
-	removeChild(NowScore);
+	bord->removeChild(NowScore, true);
 	sprintf(str, "%d", nScore);
-	NowScore = LabelAtlas::create(str, "Images/number.png", 24, 34, '0');
-	NowScore->setPosition(Vec2(200, 100));
-	NowScore->setScale(0.4);
-
-	this->addChild(NowScore, 3);
+	NowScore = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+	NowScore->setScale(2);
+	NowScore->setPosition(Vec2(180, 50));
+	bord->addChild(NowScore, 3);
 
 	if (nowScore == nScore)
 	{
@@ -832,12 +831,12 @@ void Stage1::overBestScore(float f)
 
 			bScore = nowScore;
 			sprintf(str, "%d", bScore);
-			BestScore = LabelAtlas::create(str, "Images/number.png", 68, 91, '0');
-			BestScore->setPosition(Vec2(200, 300));
-			BestScore->setScale(0.4);
-			this->addChild(BestScore, 3);
-		}
+			BestScore = LabelAtlas::create(str, "Images/score_number.png", 24, 34, '0');
+			BestScore->setPosition(Vec2(180, 250));
+			BestScore->setScale(2);
+			bord->addChild(BestScore, 3);
 
+		}
 		this->unschedule(schedule_selector(Stage1::overBestScore));
 
 	}
@@ -860,6 +859,7 @@ void Stage1::onEnter()
 void Stage1::onExit()
 {
 	//_eventDispatcher->removeAllEventListeners();
+	//SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
 	Layer::onExit();
 }
 
@@ -876,7 +876,7 @@ void Stage1::tick(float dt)
 		Sprite* spriteData = (Sprite *)obj->GetUserData();
 		int nTag = spriteData->getTag();
 
-		log("Tag .. %d", nTag);
+	//	log("Tag .. %d", nTag);
 
 		// 스프라이트 삭제
 		//obj->SetUserData(nullptr);
@@ -1505,6 +1505,7 @@ void Stage1::BeginContact(b2Contact *contact)
 					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
 				
 					this->scheduleOnce(schedule_selector(Stage1::gameOver), 1);
+
 					// 애니메이션 액션 멈추기
 					Director::getInstance()->getActionManager()->pauseAllRunningActions(); 
 					this->unschedule(schedule_selector(Stage1::tick));
@@ -1537,7 +1538,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			{
 				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin.wav");
 
-				SimpleAudioEngine::getInstance()->setEffectsVolume(0.3);
+				SimpleAudioEngine::getInstance()->setEffectsVolume(0.1);
 
 				delVec.push_back(bodyB);
 				nowScore++;
@@ -1679,6 +1680,8 @@ void Stage1::gameOver(float f)
 	this->addChild(bord);
 	bord->addChild(pReplay);
 	bord->addChild(pHome);
+
+	this->scheduleOnce(schedule_selector(Stage1::overScore), 1);
 
 	num = 1; // 게임이 끝났는데도 클릭하면 점프효과음이 계속나서 num에게 1을 줌
 	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Over.mp3");
