@@ -7,11 +7,15 @@
 #endif
 
 #include "cocos2d.h"
+#include "extensions/cocos-ext.h" 
+// 프로젝트 -> NULL 속성 -> C/C++ -> 일반 -> 추가 포함 디렉터리-> $(EngineRoot) 추가 하시오
 
 using namespace cocos2d;
+using namespace cocos2d::extension;
 
-
-class GameMain : public cocos2d::Layer
+class GameMain 
+	: public cocos2d::Layer
+	, public cocos2d::ui::EditBoxDelegate
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -49,6 +53,24 @@ public:
 	void createPlay();
 	void createScore();
 	void selectStage();
+
+	cocos2d::ui::EditBox* _editNum;
+	std::string txtNum;
+
+	void doSendScore(Ref* pSender);
+	void doSendTime(Ref* pSender);
+
+	void doSendOne(Ref* pSender);
+	void doSendMulti(Ref* pSender);
+
+	void doShowLeaderBoard(Ref* pSender);
+	void doShowAchivement(Ref* pSender);
+
+	void editBoxEditingDidBegin(cocos2d::ui::EditBox* editBox);
+	void editBoxEditingDidEnd(cocos2d::ui::EditBox* editBox);
+	void editBoxTextChanged(cocos2d::ui::EditBox* editBox, const std::string& text);
+	void editBoxReturn(cocos2d::ui::EditBox* editBox);
+
 
 };
 

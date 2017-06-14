@@ -1526,7 +1526,6 @@ void Stage1::BeginContact(b2Contact *contact)
 					{
 						shieldNum--;
 						this->removeChild(barrier, true);
-						shield = false;
 					}
 					else
 					{

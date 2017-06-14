@@ -84,9 +84,9 @@ public:
 	bool playerIsFlying;
 
 	bool jumpBool = false;
-	bool rBool = false;
+	bool rBool = true;
 	bool uBool = false;
-	bool lBool = true;
+	bool lBool = false;
 	bool dBool = false;
 	bool gBool = false;
 	bool overBool = false;
@@ -124,6 +124,8 @@ public:
 	int fireNum = 0;
 	int nowScore = 0;
 	int nScore = 0;
+
+	float regenCheckTime_;
 
 	unsigned int m_nSoundId;
 
