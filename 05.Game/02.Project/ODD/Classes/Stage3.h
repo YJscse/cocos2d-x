@@ -1,6 +1,7 @@
 #pragma once
-#ifndef __STAGE1__
-#define __STAGE1__
+#pragma once
+#ifndef __STAGE3__
+#define __STAGE3__
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)             // 한글나오게 하는 헤더
 #pragma execution_character_set("utf-8")
@@ -14,7 +15,7 @@
 
 using namespace cocos2d;
 
-class Stage1 
+class Stage3
 	: public Layer
 	, public b2ContactListener
 {
@@ -23,31 +24,30 @@ public:
 
 	virtual bool init();
 
-	CREATE_FUNC(Stage1);
+	CREATE_FUNC(Stage3);
 
 	bool createBox2dWorld(bool debug);
-	~Stage1();
+	~Stage3();
 	virtual void draw(Renderer* renderer, const Mat4& transform,
-					  uint32_t flags) override;
+		uint32_t flags) override;
 
 	virtual void onEnter();
 	virtual void onExit();
 	void tick(float dt);
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const char* spriteName, int type);
 
-	b2Body* getBodyAtTab(Vec2 p);
 	virtual bool onTouchBegan(Touch *touch, Event* event);
-//	virtual void onTouchMoved(Touch *touch, Event* event);
+	//	virtual void onTouchMoved(Touch *touch, Event* event);
 	virtual void onTouchEnded(Touch *touch, Event* event);
 
 	Size winSize;
 	Texture2D* texture;
 	Texture2D* texture2;
 	Texture2D* texture3;
+	Texture2D* texture4;
+	Texture2D* texture5;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
-
-
 
 	/////////////////////////////
 
@@ -100,7 +100,7 @@ public:
 	void overBestScore(float f);
 
 	void createPlayer();
-	void createFire();
+	void createFire(float f);
 	void createWall();
 	void createItem();
 	void createReplay(Ref* pSender);
@@ -108,6 +108,8 @@ public:
 	void createNext(Ref* pSender);
 	void createStar();
 	void createScore();
+	void createMeteor(float f);
+	void createExplosion();
 
 	int num = 0;
 	int swichNum = 0;
@@ -119,8 +121,11 @@ public:
 	int doubleJump = 0;
 	int jSum = 0;
 	int stageNum = 0;
+	int fireNum = 0;
 	int nowScore = 0;
 	int nScore = 0;
+	int meteorNum = 0;
+	int meteor = 0;
 
 	unsigned int m_nSoundId;
 
@@ -128,7 +133,7 @@ public:
 
 	std::vector<b2Body*> delVec;
 
-	
+
 
 
 protected:
@@ -138,4 +143,4 @@ protected:
 
 };
 
-#endif // __STAGE1__
+#endif // __Stage3__

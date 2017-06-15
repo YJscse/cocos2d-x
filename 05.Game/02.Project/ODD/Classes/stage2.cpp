@@ -1,5 +1,6 @@
+#include "Stage1.h"
 #include "Stage2.h"
-#include "Stage2.h"
+#include "Stage3.h"
 #include "GameMain.h"
 #include "SimpleAudioEngine.h"
 
@@ -35,11 +36,6 @@ bool Stage2::init()
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
-
-	cover = Sprite::create("Images/cover.png");
-	cover->setAnchorPoint(Vec2(0, 1));
-	cover->setPosition(Vec2(0, winSize.height));
-	//this->addChild(cover, 2);
 
 	ready = Sprite::create("Images/ready.png");
 	ready->setPosition(Vec2(winSize.width * 0.5, winSize.height * 2 / 3));
@@ -860,7 +856,7 @@ void Stage2::tick(float dt)
 		removeChild(barrier);
 	}
 	sum = 1;
-	if (shield)
+	if (shield && shieldNum > 0)
 	{
 		barrier = Sprite::create("Images/shieldWhite.png");
 		barrier->setPosition(Vec2(pManBody->GetPosition().x * 32, pManBody->GetPosition().y * 32));
@@ -1290,24 +1286,6 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 	return body;
 }
 
-//b2Body* Stage2::getBodyAtTab(Vec2 p)
-//{
-//	b2Fixture *fix;
-//	for (b2Body *b = _world->GetBodyList(); b; b = b->GetNext())
-//	{
-//		if (b->GetUserData() != nullptr)
-//		{
-//			if (b->GetType() == b2_staticBody)   continue;
-//			fix = b->GetFixtureList();
-//			if (fix->TestPoint(b2Vec2(p.x / PTM_RATIO, p.y / PTM_RATIO)))
-//			{
-//				return b;
-//			}
-//		}
-//	}
-//	return nullptr;
-//}
-
  bool Stage2::onTouchBegan(Touch* touch, Event* event)
 {
 	auto touchPoint = touch->getLocation();
@@ -1343,6 +1321,8 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerIsFlying = true;
 			jump = false;
 
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+
 			if (pManBody->GetPosition().y * 32 > 50 && dJump)
 			{
 				doubleJump--;
@@ -1357,6 +1337,9 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+
 			if (pManBody->GetPosition().x * 32 < winSize.width * 7 - 50 && dJump)
 			{
 				doubleJump--;
@@ -1371,6 +1354,8 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerVelocity = 29.9f;
 			playerIsFlying = true;
 			jump = false;
+
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
 
 			if (pManBody->GetPosition().y * 32 < winSize.height * 7 - 50 && dJump)
 			{
@@ -1387,6 +1372,8 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerIsFlying = true;
 			jump = false;
 
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+
 			if (pManBody->GetPosition().x * 32 > 50 && dJump)
 			{
 				doubleJump--;
@@ -1398,8 +1385,6 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 		}
 	}
 	
-
-
 	jumpBool = true;
 	return true;
 }

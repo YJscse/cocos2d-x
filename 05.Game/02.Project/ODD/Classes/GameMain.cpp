@@ -2,6 +2,7 @@
 #include "HelloWorldScene.h"
 #include "Stage1.h"
 #include "Stage2.h"
+#include "Stage3.h"
 #include "SimpleAudioEngine.h"
 
 //ansroid dffect only support ogg
@@ -440,23 +441,23 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 		{
 			auto pScene = Stage1::createScene();
 			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
-			log("aaa");
+			log("Stage1");
 		}
 		else if (stage2.containsPoint(touchPoint))
 		{
 			auto pScene = Stage2::createScene();
 			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
-			log("aaa");
+			log("Stage2");
 		}
 		else if (stage3.containsPoint(touchPoint))
 		{
-			auto pScene = Stage1::createScene();
+			auto pScene = Stage3::createScene();
 			Director::getInstance()->replaceScene(TransitionZoomFlipAngular::create(1, pScene, TransitionScene::Orientation::RIGHT_OVER));
-			log("aaa");
+			log("Stage3");
 		}
 		else if (stage4.containsPoint(touchPoint))
 		{
-			log("aaa");
+			log("Stage4");
 		}
 		else if (stage5.containsPoint(touchPoint))
 		{

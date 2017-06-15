@@ -46,11 +46,6 @@ public:
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
 
-	//bool bDrag;
-	//b2Body* dragBody;
-	//b2MouseJoint* mouseJoint;
-	//b2Body* gbody;
-
 	/////////////////////////////
 
 	Layer* layer;
@@ -63,7 +58,6 @@ public:
 	Sprite* over;
 	Sprite* clear;
 	Sprite* jumpjump;
-	Sprite* cover;
 	Sprite* ready;
 	Sprite* go;
 	Sprite* bord;
@@ -124,8 +118,6 @@ public:
 	int fireNum = 0;
 	int nowScore = 0;
 	int nScore = 0;
-
-	float regenCheckTime_;
 
 	unsigned int m_nSoundId;
 
