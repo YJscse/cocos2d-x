@@ -10,7 +10,7 @@
 #elif(CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE)
 #define EFFECT_FILE    "sounds/click.raw"
 #else
-#define EFFECT_FILE    "sounds/click.wav"
+#define EFFECT_FILE    "sounds/click.mp3"
 #endif // CC_PLATFORM_ANDROID
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
@@ -18,7 +18,7 @@
 #elif(CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
 #define MUSIC_FILE    "sounds/BGM3.ogg"
 #else
-#define MUSIC_FILE    "sounds/BGM3.wav"
+#define MUSIC_FILE    "sounds/BGM3.mp3"
 #endif // CC_PLATFORM_WIN32
 
 using namespace CocosDenshion;
@@ -1484,7 +1484,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			dBool = false;
 			rBool = true;
 
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Stage_Clear.wav");
+			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Stage_Clear.mp3");
 
 			gameClear = 1;
 			Director::getInstance()->getActionManager()->pauseAllRunningActions();
@@ -1504,7 +1504,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			{
 				if (shield == false)
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.mp3");
 					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
 				
 					this->scheduleOnce(schedule_selector(Stage1::gameOver), 1);
@@ -1518,7 +1518,7 @@ void Stage1::BeginContact(b2Contact *contact)
 				}
 				else
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.mp3");
 
 					if (shieldNum == 2)
 					{
@@ -1538,7 +1538,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 2)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
 
 				SimpleAudioEngine::getInstance()->setEffectsVolume(0.1);
 
@@ -1548,7 +1548,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			else if (nTag == 3)
 			{
 
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
 
 				b2Vec2 pos = pManBody->GetPosition();
 				delVec.push_back(bodyB);
@@ -1561,7 +1561,7 @@ void Stage1::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 5)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
 
 				delVec.push_back(bodyB);
 				doubleJump = 1;

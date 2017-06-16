@@ -1491,7 +1491,7 @@ void Stage2::BeginContact(b2Contact *contact)
 			{
 				if (shield == false)
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.mp3");
 					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
 
 					this->scheduleOnce(schedule_selector(Stage2::gameOver), 1);
@@ -1504,7 +1504,7 @@ void Stage2::BeginContact(b2Contact *contact)
 				}
 				else
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.mp3");
 
 					if (shieldNum == 2)
 					{
@@ -1524,7 +1524,7 @@ void Stage2::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 2)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
 
 				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
 
@@ -1533,7 +1533,7 @@ void Stage2::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 3)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
 				b2Vec2 pos = pManBody->GetPosition();
 				delVec.push_back(bodyB);
 				shieldNum = 2;
@@ -1545,7 +1545,7 @@ void Stage2::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 5)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
 
 				delVec.push_back(bodyB);
 				doubleJump = 1;
@@ -1553,7 +1553,7 @@ void Stage2::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 7)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
 
 				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
 

@@ -30,10 +30,9 @@ public:
 	Sprite* play;
 	Sprite* score;
 	Sprite* background;
+	Sprite* home;
 	Sprite* effect;
 	Sprite* bgm;
-	Sprite* home;
-
 	Sprite* stageBord;
 	Sprite* stage[9];
 
@@ -54,6 +53,7 @@ public:
 	void createScore();
 	void selectStage();
 
+	// 리더보드
 	cocos2d::ui::EditBox* _editNum;
 	std::string txtNum;
 
@@ -70,6 +70,12 @@ public:
 	void editBoxEditingDidEnd(cocos2d::ui::EditBox* editBox);
 	void editBoxTextChanged(cocos2d::ui::EditBox* editBox, const std::string& text);
 	void editBoxReturn(cocos2d::ui::EditBox* editBox);
+
+	// 사운드
+	float _soundVolume;
+
+	int audioId1;
+	int audioId2;
 
 
 };

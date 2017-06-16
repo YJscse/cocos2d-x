@@ -109,7 +109,6 @@ public:
 	void createStar();
 	void createScore();
 	void createMeteor(float f);
-	void createExplosion();
 
 	int num = 0;
 	int swichNum = 0;

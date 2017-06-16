@@ -38,6 +38,11 @@ bool Stage3::init()
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
 
+	cover = Sprite::create("Images/cover3.png");
+	cover->setAnchorPoint(Vec2(0, 1));
+	cover->setPosition(Vec2(0, winSize.height));
+	this->addChild(cover, 2);
+
 	ready = Sprite::create("Images/ready.png");
 	ready->setPosition(Vec2(winSize.width * 0.5, winSize.height * 2 / 3));
 	ready->setScale(2);
@@ -123,7 +128,9 @@ bool Stage3::createBox2dWorld(bool debug)
 
 	// 월드 생성 끝 -----------------------------------------------------------
 
-	pManBody = this->addNewSprite(Vec2(winSize.width * 6.8, 60), Size(40, 80), b2_dynamicBody, "test", 0);
+	pManBody = this->addNewSprite(Vec2(100, 60), Size(40, 80), b2_dynamicBody, "test", 0);
+
+	this->addNewSprite(Vec2(winSize.width * 6.5, winSize.height * 7 - 300), Size(100, 100), b2_kinematicBody, "planet", 1);
 
 	this->createWall();
 	this->waySwich();
@@ -203,12 +210,56 @@ void Stage3::createStar()
 			this->addNewSprite(Vec2(winSize.width * 7 - 40, winSize.height * 6 + (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
 		}
 	}
+
+	// 위쪽 별
+	for (int i = 0; i < 10; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 6 - (i * 64), winSize.height * 7 - 40), Size(32, 32), b2_staticBody, "star", 2);
+	}
+
+	this->addNewSprite(Vec2(winSize.width * 5, winSize.height * 7 - 400), Size(128, 128), b2_staticBody, "100star", 2);
+
+	for (int i = -2; i < 25; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 4.5 - (i * 64), winSize.height * 7 - 180), Size(32, 32), b2_staticBody, "star", 2);
+	}
+
+	// 왼쪽 별
+	for (int i = 3; i < 25; i++)
+	{
+		if (i < 11)
+		{
+			this->addNewSprite(Vec2(40, winSize.height * 6.6 - (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		}
+		else if (i > 11 && i < 15)
+		{
+			this->addNewSprite(Vec2(180, winSize.height * 6.6 - (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		}
+		else if (i > 15 && i < 25)
+		{
+			this->addNewSprite(Vec2(40, winSize.height * 6.6 - (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		}
+	}
+
+	for (int i = 0; i < 25; i++)
+	{
+		this->addNewSprite(Vec2(180, winSize.height * 5 - (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(240, winSize.height * 5 - (i * 64)), Size(32, 32), b2_staticBody, "-star", 2);
+	}
+
+	for (int i = -2; i < 25; i++)
+	{
+		this->addNewSprite(Vec2(40, winSize.height * 1.8 - (i * 64)), Size(32, 32), b2_staticBody, "star", 2);
+		this->addNewSprite(Vec2(220, winSize.height * 1.8 - (i * 64)), Size(32, 32), b2_staticBody, "-star", 2);
+	}
+
+	this->addNewSprite(Vec2(370, winSize.height * 1.2), Size(128, 128), b2_staticBody, "100star", 2);
 }
 
 void Stage3::createFire(float f)
 {
 	// 아래 장애물
-	if (fireNum == 0 && pManBody->GetPosition().x * 32 > winSize.width * 2.3) // 스케쥴로 불렀을때 계속해서 만들어지기 때문에 조건을 담
+	if (fireNum == 0 ) // 스케쥴로 불렀을때 계속해서 만들어지기 때문에 조건을 담 && pManBody->GetPosition().x * 32 > winSize.width * 2.3
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -259,12 +310,86 @@ void Stage3::createFire(float f)
 		fireNum = 2;
 	}
 
+	// 위쪽 장애물
+	else if (fireNum == 2)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 6.5 - (40.8 * i), winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
+
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(180 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+
+		for (int i = -2; i < 40; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 4.6 - (40.8 * i), winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
+
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(180 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 1.5 - (40.8 * i), winSize.height * 7 - 43.5), Size(40, 87), b2_staticBody, "fire", 0);
+
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(180 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+		fireNum = 3;
+	}
+
+	// 왼쪽 장애물
+	else if (fireNum == 3)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 6 - (40.8 * i)), Size(40, 87), b2_staticBody, "fire", 0);
+
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(270 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+
+		for (int i = 0; i < 35; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 5 - (40.8 * i)), Size(40, 87), b2_staticBody, "fire", 0);
+
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(270 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+
+		for (int i = 0; i < 35; i++)
+		{
+			b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 5 - (40.8 * i)), Size(40, 87), b2_staticBody, "fire", 0);
+
+			b2Vec2 pos = pFire->GetPosition();
+			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+			float angle = (float)(270 * DEGREES_TO_RADIANS);
+			pFire->SetTransform(pos, angle);
+		}
+
+		for (int i = 0; i < 9; i++)
+		{
+			this->addNewSprite(Vec2(40.8 * i, winSize.height * 2.6 + 43.5), Size(40, 87), b2_staticBody, "fire", 0);
+		}
+		fireNum = 4;
+	}
 }
 
 void Stage3::createMeteor(float f)
 {
 	// 아래 메테오
-	if (meteorNum == 0 && pManBody->GetPosition().x * 32 > winSize.width * 1.7)
+	if (meteorNum == 0 && pManBody->GetPosition().x * 32 >= winSize.width * 1.7)
 	{
 		this->addNewSprite(Vec2(winSize.width * 3.5, winSize.height), Size(60, 60), b2_dynamicBody, "meteor", 1);
 		meteor = 1;
@@ -272,7 +397,7 @@ void Stage3::createMeteor(float f)
 	}
 
 	// 오른쪽 메테오
-	else if (meteorNum == 1 && uBool && pManBody->GetPosition().y * 32 > winSize.height * 0.4)
+	else if (meteorNum == 1 && uBool && pManBody->GetPosition().y * 32 >= winSize.height * 0.4)
 	{
 		for (int i = 0; i < 1; i++)
 		{
@@ -285,15 +410,17 @@ void Stage3::createMeteor(float f)
 		}
 		meteorNum = 2;
 	}
-	else if (meteorNum == 2 && uBool && pManBody->GetPosition().y * 32 > winSize.height * 3.5)
+
+	// 왼쪽 메테오
+	else if (meteorNum == 2 && dBool && pManBody->GetPosition().y * 32 < winSize.height * 6.8)
 	{
 		for (int i = 0; i < 1; i++)
 		{
-			b2Body* pMeteor = this->addNewSprite(Vec2(winSize.width * 5, winSize.height * 5), Size(60, 60), b2_dynamicBody, "meteor", 1);
+			b2Body* pMeteor = this->addNewSprite(Vec2(winSize.width * 1.8, winSize.height * 6.7), Size(60, 60), b2_dynamicBody, "meteor", 1);
 
 			b2Vec2 pos = pMeteor->GetPosition();
 			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
-			float angle = (float)(90 * DEGREES_TO_RADIANS);
+			float angle = (float)(270 * DEGREES_TO_RADIANS);
 			pMeteor->SetTransform(pos, angle);
 		}
 		meteorNum = 3;
@@ -355,13 +482,53 @@ void Stage3::createWall()
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
 		pWall->SetTransform(pos, angle);
 	}
+
+	// 위쪽 벽
+	this->addNewSprite(Vec2(winSize.width * 5, winSize.height * 7 - 200), Size(50, 200), b2_staticBody, "wallV", 0);
+
+	for (int i = 0; i < 5; i++)
+	{
+		this->addNewSprite(Vec2(winSize.width * 4.5 - (336 * i), winSize.height * 7 - 120), Size(336, 50), b2_staticBody, "wall", 0);
+	}
+
+	// 왼쪽 벽
+	for (int i = 1; i < 3; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(100 * i, winSize.height * 2.6), Size(50, 200), b2_staticBody, "wallV", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(winSize.width * 0.7 + (i * 100), winSize.height * 2), Size(50, 200), b2_staticBody, "wallV", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		b2Body* pWall = this->addNewSprite(Vec2(120, winSize.height * 1.8 - (336 * i)), Size(336, 50), b2_staticBody, "wall", 0);
+
+		b2Vec2 pos = pWall->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
+		pWall->SetTransform(pos, angle);
+	}
 }
+
+
 
 void Stage3::createItem()
 {
 	// 아래 아이템
-	shieldItem = this->addNewSprite(Vec2(winSize.width * 2.6, 180),
-		Size(72, 72), b2_staticBody, "shield", 2);
+	this->addNewSprite(Vec2(winSize.width * 2.6, 180), Size(72, 72), b2_staticBody, "shield", 2);
 
 	// 오른쪽 아이템
 	for (int i = 0; i < 1; i++)
@@ -384,6 +551,52 @@ void Stage3::createItem()
 		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 		float angle = (float)(90 * DEGREES_TO_RADIANS);
 		shieldItem->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 1; i++)
+	{
+		jumpItem = this->addNewSprite(Vec2(winSize.width * 7 - 100, winSize.height * 6.5),
+			Size(72, 72), b2_staticBody, "jump", 2);
+
+		b2Vec2 pos = jumpItem->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(90 * DEGREES_TO_RADIANS);
+		jumpItem->SetTransform(pos, angle);
+	}
+
+	// 위쪽 아이템
+	for (int i = 0; i < 1; i++)
+	{
+		shieldItem = this->addNewSprite(Vec2(winSize.width, winSize.height * 7 - 180),
+			Size(72, 72), b2_staticBody, "shield", 2);
+
+		b2Vec2 pos = shieldItem->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(180 * DEGREES_TO_RADIANS);
+		shieldItem->SetTransform(pos, angle);
+	}
+
+	// 왼쪽 아이템
+	for (int i = 0; i < 1; i++)
+	{
+		jumpItem = this->addNewSprite(Vec2(100, winSize.height * 5.5),
+			Size(72, 72), b2_staticBody, "jump", 2);
+
+		b2Vec2 pos = jumpItem->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
+		jumpItem->SetTransform(pos, angle);
+	}
+
+	for (int i = 0; i < 1; i++)
+	{
+		jumpItem = this->addNewSprite(Vec2(100, winSize.height * 3.6),
+			Size(72, 72), b2_staticBody, "jump", 2);
+
+		b2Vec2 pos = jumpItem->GetPosition();
+		double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
+		float angle = (float)(270 * DEGREES_TO_RADIANS);
+		jumpItem->SetTransform(pos, angle);
 	}
 }
 
@@ -659,17 +872,17 @@ void Stage3::tick(float dt)
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 		}
 
-		//if (b->GetType() == b2_kinematicBody)
-		//{
-		//	if (b->GetPosition().y * 32 > winSize.height * 6.5)
-		//	{
-		//		b->SetLinearVelocity(b2Vec2(0, -10.0f));
-		//	}
-		//	else if (b->GetPosition().y * 32 < winSize.height * 6)
-		//	{
-		//		b->SetLinearVelocity(b2Vec2(0, 10.0f));
-		//	}
-		//}
+		if (b->GetType() == b2_kinematicBody)
+		{
+			if (b->GetPosition().x * 32 > winSize.width * 6.6)
+			{
+				b->SetLinearVelocity(b2Vec2(-10.0f, 0));
+			}
+			else if (b->GetPosition().x * 32 < winSize.width * 5.5)
+			{
+				b->SetLinearVelocity(b2Vec2(10.0f, 0));
+			}
+		}
 	}
 
 	// 쉴드
@@ -691,7 +904,10 @@ void Stage3::tick(float dt)
 		this->addChild(barrier);
 
 	}
-
+	else if (shield = false && shieldNum == 0)
+	{
+		sum = 0;
+	}
 
 	if (rBool)
 	{
@@ -882,7 +1098,7 @@ void Stage3::tick(float dt)
 
 	if (pManBody->GetPosition().x * 32 > winSize.width * 2)
 	{
-		//removeChild(cover);
+		removeChild(cover);
 	}
 
 	this->createScore();
@@ -1105,13 +1321,24 @@ b2Body* Stage3::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			auto meteor_animate = Animate::create(meteor_animation);
 			auto rep = RepeatForever::create(meteor_animate);
 			meteor->setAnchorPoint(Vec2(0.5, 0.3));
-			meteor->setScale(0.5);
+			meteor->setScale(0.5f);
 			meteor->runAction(rep);
 			meteor->setPosition(Vec2(point));
 			this->addChild(meteor);
 
 			meteor->setTag(8);
 			bodyDef.userData = meteor;
+		}
+		else if (strcmp(spriteName, "planet") == 0)
+		{
+			auto sprite = Sprite::create("Images/planet.png");
+			sprite->setPosition(Vec2(point));
+			sprite->setScale(0.25f);
+			this->addChild(sprite);
+
+			sprite->setTag(1);
+			bodyDef.linearVelocity = b2Vec2(-10.0f, 0);
+			bodyDef.userData = sprite;
 		}
 	}
 	// 월드에 바디데프의 정보로 바디를 만든다.
@@ -1357,7 +1584,7 @@ void Stage3::BeginContact(b2Contact *contact)
 			{
 				if (shield == false)
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.mp3");
 					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
 
 					this->scheduleOnce(schedule_selector(Stage3::gameOver), 1);
@@ -1370,7 +1597,7 @@ void Stage3::BeginContact(b2Contact *contact)
 				}
 				else
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.mp3");
 
 					if (shieldNum == 2)
 					{
@@ -1390,7 +1617,7 @@ void Stage3::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 2)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
 
 				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
 
@@ -1399,7 +1626,7 @@ void Stage3::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 3)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
 				b2Vec2 pos = pManBody->GetPosition();
 				delVec.push_back(bodyB);
 				shieldNum = 2;
@@ -1411,7 +1638,7 @@ void Stage3::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 5)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
 
 				delVec.push_back(bodyB);
 				doubleJump = 1;
@@ -1419,7 +1646,7 @@ void Stage3::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 7)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
 
 				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
 
@@ -1454,7 +1681,7 @@ void Stage3::BeginContact(b2Contact *contact)
 					delVec.push_back(bodyA);
 					delVec.push_back(bodyB);
 
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.mp3");
 					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.mp3");
 					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
 
@@ -1490,7 +1717,7 @@ void Stage3::BeginContact(b2Contact *contact)
 					explosion->setPosition(Vec2(bodyB->GetPosition().x * 32, bodyB->GetPosition().y * 32));
 					this->addChild(explosion);
 
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.wav");
+					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.mp3");
 					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.mp3");
 
 					delVec.push_back(bodyB);
@@ -1513,7 +1740,7 @@ void Stage3::BeginContact(b2Contact *contact)
 			}
 			else if (nTag == 9)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.wav");
+				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
 
 				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
 
@@ -1532,7 +1759,7 @@ void Stage3::BeginContact(b2Contact *contact)
 
 			// 폭발 애니메이션
 			auto explosion_animation = Animation::create();
-			explosion_animation->setDelayPerUnit(0.1f);
+			explosion_animation->setDelayPerUnit(0.07f);
 
 			for (int i = 0; i < 24; i++)
 			{
@@ -1556,32 +1783,6 @@ void Stage3::BeginContact(b2Contact *contact)
 			log("meteor");
 		}	
 	}
-}
-
-void Stage3::createExplosion()
-{
-	auto meteor_animation = Animation::create();
-	meteor_animation->setDelayPerUnit(0.05f);
-
-	for (int i = 0; i < 11; i++)
-	{
-		int column = i % 4;
-		int row = i / 4;
-
-		meteor_animation->addSpriteFrameWithTexture(
-			texture4,
-			Rect(column * 232.25, row * 396.6, 232.25, 396.6));
-	}
-
-	Sprite* meteor = Sprite::createWithTexture(texture3, Rect(0, 0, 232.25, 396.6));
-
-	auto meteor_animate = Animate::create(meteor_animation);
-	auto rep = RepeatForever::create(meteor_animate);
-	meteor->setAnchorPoint(Vec2(0.5, 0.3));
-	meteor->setScale(0.5);
-	meteor->runAction(rep);
-	meteor->setPosition(Vec2());
-	this->addChild(meteor);
 }
 
 void Stage3::waySwich()

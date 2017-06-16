@@ -3,24 +3,7 @@
 #include "Stage1.h"
 #include "Stage2.h"
 #include "Stage3.h"
-#include "SimpleAudioEngine.h"
-
-//ansroid dffect only support ogg
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-#define EFFECT_FILE    "sounds/click.ogg"
-#elif(CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE)
-#define EFFECT_FILE    "sounds/click.raw"
-#else
-#define EFFECT_FILE    "sounds/click.wav"
-#endif // CC_PLATFORM_ANDROID
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-#define MUSIC_FILE    "sounds/BGM2.mid"
-#elif(CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
-#define MUSIC_FILE    "sounds/BGM2.ogg"
-#else
-#define MUSIC_FILE    "sounds/BGM2.wav"
-#endif // CC_PLATFORM_WIN32
+#include "AudioEngine.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -47,7 +30,11 @@ void callJavaMethod(std::string func, std::string arg0)
 }
 #endif
 
-using namespace CocosDenshion;
+using namespace experimental;
+
+const std::string BGM_1_PATH = "sounds/Game_Main_BGM.mp3";
+const std::string BGM_2_PATH = "sounds/click.mp3";
+
 
 Scene* GameMain::createScene()
 {
@@ -68,23 +55,17 @@ bool GameMain::init()
 
 
 	effect = Sprite::create("Images/sound_on.png");
-	effect->setScale(0.7f);
-	effect->setPosition(Vec2(winSize.width * 14/15, winSize.height * 14/15));
+	effect->setPosition(Vec2(winSize.width * 0.9, winSize.height * 0.9));
 	this->addChild(effect, 2);
 
 	bgm = Sprite::create("Images/bgm_on.png");
-	bgm->setScale(0.7f);
-	bgm->setPosition(Vec2(winSize.width * 12/15, winSize.height * 14/15));
+	bgm->setPosition(Vec2(winSize.width * 0.75, winSize.height * 0.9));
 	this->addChild(bgm, 2);
 
 	this->createBackground();
 	this->createTitle();
 	this->createPlay();
 	this->createScore();
-
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Main_BGM.mp3");
-	SimpleAudioEngine::getInstance()->setEffectsVolume(0.5);
-	SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.5);
 
 	auto wlayer = LayerColor::create(Color4B(255, 255, 255, 255));
 	wlayer->setOpacity(0);
@@ -155,6 +136,18 @@ bool GameMain::init()
 	_editNum->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
 	_editNum->setDelegate(this);
 	this->addChild(_editNum);
+
+	// »ç¿îµå
+
+	AudioEngine::preload(BGM_1_PATH);
+	AudioEngine::preload(BGM_2_PATH);
+
+	if (AudioEngine::getState(audioId1) != AudioEngine::AudioState::PLAYING)
+		audioId1 = AudioEngine::play2d(BGM_1_PATH, true);
+
+
+	if (AudioEngine::getState(audioId2) != AudioEngine::AudioState::PLAYING)
+		audioId2 = AudioEngine::play2d(BGM_2_PATH, true);
 
 
 	return true;
@@ -336,47 +329,40 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 	auto touchPoint = touch->getLocation();
 
 	Rect rect = play->getBoundingBox();
-	Rect rect3 = effect->getBoundingBox();
-	Rect rect4 = bgm->getBoundingBox();
+	Rect rect2 = effect->getBoundingBox();
+	Rect rect3 = bgm->getBoundingBox();
 
 	if (rect.containsPoint(touchPoint) && sselect == false)
 	{
-		
 		if (effectBool)
 		{
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+			if (AudioEngine::getState(audioId2) != AudioEngine::AudioState::PLAYING)
+				audioId2 = AudioEngine::play2d(BGM_2_PATH, true);
 		}
 		auto playMove = MoveBy::create(0.1f, Vec2(0, -10));
 		play->runAction(playMove);	
 		
 	}
 
-	else if (rect3.containsPoint(touchPoint))
+	else if (rect2.containsPoint(touchPoint))
 	{
+		effect->setOpacity(50);
+
 		if (effectBool)
 		{
-			SimpleAudioEngine::getInstance()->stopEffect(m_nSoundId);
-			effectBool = false;
-
-		}
-		else if (effectBool == false)
-		{
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
-			effectBool = true;
+			if (AudioEngine::getState(audioId2) != AudioEngine::AudioState::PLAYING)
+				audioId2 = AudioEngine::play2d(BGM_2_PATH, true);
 		}
 	}
 
-	else if (rect4.containsPoint(touchPoint))
+	else if (rect3.containsPoint(touchPoint))
 	{
-		if (bgmBool)
+		bgm->setOpacity(50);
+
+		if (effectBool)
 		{
-			SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-			bgmBool = false;
-		}
-		else if (bgmBool == false)
-		{
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(MUSIC_FILE);
-			bgmBool = true;
+			if (AudioEngine::getState(audioId2) != AudioEngine::AudioState::PLAYING)
+				audioId2 = AudioEngine::play2d(BGM_2_PATH, true);
 		}
 	}
 
@@ -384,7 +370,8 @@ bool GameMain::onTouchBegan(Touch* touch, Event* event)
 	{
 		if (effectBool)
 		{
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+			if (AudioEngine::getState(audioId2) != AudioEngine::AudioState::PLAYING)
+				audioId2 = AudioEngine::play2d(BGM_2_PATH, true);
 		}
 
 		Rect homeButton = home->getBoundingBox();
@@ -410,6 +397,8 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 
 	Rect rect = play->getBoundingBox();
 	Rect rect2 = score->getBoundingBox();
+	Rect rect3 = effect->getBoundingBox();
+	Rect rect4 = bgm->getBoundingBox();
 	
 
 	if (rect.containsPoint(touchPoint) && sselect == false)
@@ -420,11 +409,57 @@ void GameMain::onTouchEnded(Touch* touch, Event* event)
 		sselect = true;
 		this->selectStage();
 	}
+	else if (rect3.containsPoint(touchPoint))
+	{
+		if (effectBool)
+		{
+			effectBool = false;
+			//removeChild(effect);	
+
+			//effect = Sprite::create("Images/sound_off.png");
+			//effect->setPosition(Vec2(winSize.width * 0.9, winSize.height * 0.9));
+			//this->addChild(effect, 2);
+
+		}
+		else if (effectBool == false)
+		{
+			effectBool = true;
+			//removeChild(effect);
+
+		//	effect = Sprite::create("Images/sound_on.png");
+		//	effect->setPosition(Vec2(winSize.width * 0.9, winSize.height * 0.9));
+		//	this->addChild(effect, 2);
+		}
+	}
+	else if (rect4.containsPoint(touchPoint))
+	{
+		if (bgmBool)
+		{
+			if (AudioEngine::getState(audioId1) == AudioEngine::AudioState::PLAYING)
+				AudioEngine::pause(audioId1);
+			bgmBool = false;
+
+			bgm = Sprite::create("Images/bgm_off.png");
+			bgm->setPosition(Vec2(winSize.width * 0.75, winSize.height * 0.9));
+			this->addChild(bgm, 2);
+		}
+		else if (bgmBool == false)
+		{
+			if (AudioEngine::getState(audioId1) != AudioEngine::AudioState::PLAYING)
+				audioId1 = AudioEngine::play2d(BGM_1_PATH, true);
+			bgmBool = true;
+
+			bgm = Sprite::create("Images/bgm_on.png");
+			bgm->setPosition(Vec2(winSize.width * 0.75, winSize.height * 0.9));
+			this->addChild(bgm, 2);
+		}
+	}
 	else if (sselect)
 	{
 		if (effectBool)
 		{
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect(EFFECT_FILE);
+			if (AudioEngine::getState(audioId2) != AudioEngine::AudioState::PLAYING)
+				audioId2 = AudioEngine::play2d(BGM_2_PATH, true);
 		}
 
 		Rect stage1 = stage[0]->getBoundingBox();
@@ -501,10 +536,6 @@ void GameMain::onExit()
 {
 	//_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
 	
-	if (bgmBool == false)
-	{
-		SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-		//SimpleAudioEngine::getInstance()->end();
-	}
+	
 	Layer::onExit();
 }
