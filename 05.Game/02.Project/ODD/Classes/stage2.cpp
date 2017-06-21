@@ -2,11 +2,46 @@
 #include "Stage2.h"
 #include "Stage3.h"
 #include "GameMain.h"
-#include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
+#include "soundManager.h"
+
+using namespace experimental;
+
+const std::string PLAY_PATH = "sounds/Game_Play_BGM.ogg";
+const std::string OVER_PATH = "sounds/Game_Over.ogg";
+const std::string CLEAR_PATH = "sounds/Stage_Clear.ogg";
+const std::string COIN_PATH = "sounds/Coin1.ogg";
+const std::string JUMP_PATH = "sounds/Jump.ogg";
+const std::string ITEM_PATH = "sounds/Item.ogg";
+const std::string DEAD_PATH = "sounds/dead.ogg";
+const std::string SHIELD_PATH = "sounds/Shield.ogg";
 
 USING_NS_CC;
 
-using namespace CocosDenshion;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "platform/android/jni/JniHelper.h"
+
+void callJavaMethod3(std::string func, std::string arg0)
+{
+	JniMethodInfo t;
+
+	/**
+	JniHelper를 통해 org/cocos2dx/cpp/에 있는
+	AppActivity class의 파라미터로 들어온 스트링 이름의 함수 정보를 가져온다.
+	*/
+	if (JniHelper::getStaticMethodInfo(t
+		, "org/cocos2dx/cpp/AppActivity"
+		, func.c_str()
+		, "(Ljava/lang/String;)V"))
+	{
+		jstring stringArg0 = t.env->NewStringUTF(arg0.c_str());
+		// 함수 호출
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg0);
+		// Release
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+#endif
 
 int bScore2 = 0;
 
@@ -25,6 +60,7 @@ bool Stage2::init()
 		return false;
 	}
 	/////////////////////////////////////////////
+
 	winSize = Director::getInstance()->getWinSize();
 
 	texture = Director::getInstance()->getTextureCache()->addImage("Images/Punk_Run.png");
@@ -37,8 +73,13 @@ bool Stage2::init()
 	bg->setPosition(Vec2(0, 0));
 	this->addChild(bg);
 
+	howTo = Sprite::create("Images/stage2HowTo.png");
+	howTo->setAnchorPoint(Vec2(0, 0));
+	howTo->setPosition(Vec2(0, 0));
+	this->addChild(howTo, 3);
+
 	ready = Sprite::create("Images/ready.png");
-	ready->setPosition(Vec2(winSize.width * 0.5, winSize.height * 2 / 3));
+	ready->setPosition(Vec2(winSize.width * 0.5, winSize.height * 0.75));
 	ready->setScale(2);
 	this->addChild(ready, 3);
 
@@ -51,9 +92,19 @@ bool Stage2::init()
 
 	this->createPlayer();
 
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Play_BGM.mp3");
-
 	delVec.clear();
+
+	// 사운드
+	bool b = UserDefault::getInstance()->getBoolForKey("bgm");
+
+	if (b)
+	{
+		CSoundManager::getInstance()->playBgm(PLAY_PATH);
+	}
+	else
+	{
+		CSoundManager::getInstance()->pauseBgm(PLAY_PATH);
+	}
 
 	return true;
 }
@@ -78,7 +129,7 @@ bool Stage2::createBox2dWorld(bool debug)
 		_world->SetDebugDraw(m_debugDraw);
 
 		uint32 flags = 0;
-		flags += b2Draw::e_shapeBit;
+		//flags += b2Draw::e_shapeBit;
 		//flags += b2Draw::e_jointBit;
 		//flags += b2Draw::e_aabbBit;
 		//flags += b2Draw::e_pairBit;
@@ -139,6 +190,98 @@ Stage2::~Stage2()
 	// 월드를 C++의 new로 생성했으므로 여기서 지워준다.
 	delete _world;
 	_world = nullptr;
+	AudioEngine::end();
+}
+
+void Stage2::soundOnoff(int i)
+{
+	bool e = UserDefault::getInstance()->getBoolForKey("effect");
+	bool b = UserDefault::getInstance()->getBoolForKey("bgm");
+
+	// 게임오버
+	if (i == 0)
+	{
+		if (b)
+		{
+			CSoundManager::getInstance()->playBgm(OVER_PATH, false, true);
+		}
+		else
+		{
+			CSoundManager::getInstance()->pauseBgm(OVER_PATH);
+		}
+	}
+	// 게임 클리어
+	else if (i == 1)
+	{
+		if (b)
+		{
+			CSoundManager::getInstance()->playBgm(CLEAR_PATH, false, true);
+		}
+		else
+		{
+			CSoundManager::getInstance()->pauseBgm(CLEAR_PATH);
+		}
+	}
+	// 별 먹는 소리
+	else if (i == 2)
+	{
+		if (e)
+		{
+			CSoundManager::getInstance()->playEffect(COIN_PATH);
+		}
+		else
+		{
+			CSoundManager::getInstance()->stopEffect(COIN_PATH);
+		}
+	}
+	// 점프 소리
+	else if (i == 3)
+	{
+		if (e)
+		{
+			CSoundManager::getInstance()->playEffect(JUMP_PATH);
+		}
+		else
+		{
+			CSoundManager::getInstance()->stopEffect(JUMP_PATH);
+		}
+	}
+	// 아이템 먹는 소리
+	else if (i == 4)
+	{
+		if (e)
+		{
+			CSoundManager::getInstance()->playEffect(ITEM_PATH);
+		}
+		else
+		{
+			CSoundManager::getInstance()->stopEffect(ITEM_PATH);
+		}
+	}
+	// 죽는 소리
+	else if (i == 5)
+	{
+		if (e)
+		{
+			CSoundManager::getInstance()->playEffect(DEAD_PATH);
+		}
+		else
+		{
+			CSoundManager::getInstance()->stopEffect(DEAD_PATH);
+		}
+	}
+	// 방패가 막는 소리
+	else if (i == 6)
+	{
+		if (e)
+		{
+			CSoundManager::getInstance()->playEffect(SHIELD_PATH);
+		}
+		else
+		{
+			CSoundManager::getInstance()->stopEffect(SHIELD_PATH);
+		}
+	}
 }
 
 void Stage2::createStar()
@@ -305,9 +448,9 @@ void Stage2::createFire(float f)
 		}
 	
 
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < 8; i++)
 		{
-			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 1.6 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
+			b2Body* pFire = this->addNewSprite(Vec2(winSize.width * 7 - 43.5, winSize.height * 1.58 + 40.8 * i), Size(40, 87), b2_staticBody, "fire", 0);
 			b2Vec2 pos = pFire->GetPosition();
 			double DEGREES_TO_RADIANS = (double)(3.141592 / 180);
 			float angle = (float)(90 * DEGREES_TO_RADIANS);
@@ -378,7 +521,7 @@ void Stage2::createFire(float f)
 			pFire->SetTransform(pos, angle);
 		}
 
-		for (int i = -3; i < 5; i++)
+		for (int i = -4; i < 5; i++)
 		{
 			b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 4.5 - (40.8 * i)), Size(40, 87), b2_staticBody, "fire", 0);
 			b2Vec2 pos = pFire->GetPosition();
@@ -387,7 +530,7 @@ void Stage2::createFire(float f)
 			pFire->SetTransform(pos, angle);
 		}
 
-		for (int i = -3; i < 5; i++)
+		for (int i = -4; i < 5; i++)
 		{
 			b2Body* pFire = this->addNewSprite(Vec2(43.5, winSize.height * 3.2 - (40.8 * i)), Size(40, 87), b2_staticBody, "fire", 0);
 			b2Vec2 pos = pFire->GetPosition();
@@ -572,7 +715,6 @@ void Stage2::createPlayer()
 	pMan->setScale(0.5f);
 	this->addChild(pMan);
 }
-
 
 void Stage2::createScore()
 {
@@ -768,6 +910,9 @@ void Stage2::overBestScore(float f)
 			BestScore->setScale(2);
 			bord->addChild(BestScore, 3);
 
+			#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+				callJavaMethod3("SendStage2", str);
+			#endif
 		}
 		this->unschedule(schedule_selector(Stage2::overBestScore));
 
@@ -791,6 +936,11 @@ void Stage2::onEnter()
 void Stage2::onExit()
 {
 	//_eventDispatcher->removeAllEventListeners();
+
+	CSoundManager::getInstance()->pauseBgm(OVER_PATH);
+
+	CSoundManager::getInstance()->pauseBgm(CLEAR_PATH);
+
 	Layer::onExit();
 }
 
@@ -1058,11 +1208,6 @@ void Stage2::tick(float dt)
 		}
 	}
 
-	if (pManBody->GetPosition().x * 32 > winSize.width * 2)
-	{
-		//removeChild(cover);
-	}
-
 	this->createScore();
 }
 
@@ -1292,8 +1437,8 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 
 	if (!_world)
 	{
-		removeChild(ready);
 		removeChild(pMan);
+		removeChild(ready);
 
 		go = Sprite::create("Images/go.png");
 		go->setPosition(Vec2(winSize.width * 0.5, winSize.height * 2 / 3));
@@ -1301,8 +1446,10 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 		this->addChild(go, 3);
 
 		auto action = FadeOut::create(1);
+		auto action2 = FadeOut::create(0.5f);
 
 		go->runAction(action);
+		howTo->runAction(action2);
 
 		playerVelocity = 0.0f;
 		// 월드 생성
@@ -1313,7 +1460,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			log("%f .. %f", winSize.width, winSize.height);
 		}
 	}
-	else if (jumpBool)  // 점프 한번만 가능하게끔
+	else if (num == 0 && jumpBool)  // 점프 한번만 가능하게끔
 	{
 		if (rBool && (pManBody->GetPosition().y * 32 < 50 || jump || dJump)) 
 		{
@@ -1321,7 +1468,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerIsFlying = true;
 			jump = false;
 
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+			this->soundOnoff(3);
 
 			if (pManBody->GetPosition().y * 32 > 50 && dJump)
 			{
@@ -1330,6 +1477,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 				{
 					dJump = false;
 				}
+				this->soundOnoff(3);
 			}
 		}
 		else if (uBool && (pManBody->GetPosition().x * 32 > winSize.width * 7 - 50 || jump || dJump)) 
@@ -1338,7 +1486,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerIsFlying = true;
 			jump = false;
 
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+			this->soundOnoff(3);
 
 			if (pManBody->GetPosition().x * 32 < winSize.width * 7 - 50 && dJump)
 			{
@@ -1347,6 +1495,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 				{
 					dJump = false;
 				}
+				this->soundOnoff(3);
 			}
 		}
 		else if (lBool && (pManBody->GetPosition().y * 32 > winSize.height * 7 - 50 || jump || dJump)) 
@@ -1355,7 +1504,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerIsFlying = true;
 			jump = false;
 
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+			this->soundOnoff(3);
 
 			if (pManBody->GetPosition().y * 32 < winSize.height * 7 - 50 && dJump)
 			{
@@ -1364,6 +1513,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 				{
 					dJump = false;
 				}
+				this->soundOnoff(3);
 			}
 		}
 		else if (dBool && (pManBody->GetPosition().x * 32 < 50 || jump || dJump)) // jump = 발판위에서도 점프가 가능하게끔 설정
@@ -1372,7 +1522,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 			playerIsFlying = true;
 			jump = false;
 
-			m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Jump.mp3");
+			this->soundOnoff(3);
 
 			if (pManBody->GetPosition().x * 32 > 50 && dJump)
 			{
@@ -1381,6 +1531,7 @@ b2Body* Stage2::addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const c
 				{
 					dJump = false;
 				}
+				this->soundOnoff(3);
 			}
 		}
 	}
@@ -1473,6 +1624,20 @@ void Stage2::BeginContact(b2Contact *contact)
 			dBool = false;
 			rBool = true;
 
+			CSoundManager::getInstance()->pauseBgm(PLAY_PATH);
+
+			UserDefault::getInstance()->setIntegerForKey("stage", 3);
+
+			bool b = UserDefault::getInstance()->getBoolForKey("bgm");
+
+			if (b)
+			{
+				this->soundOnoff(1);
+			}
+			else if (b == false)
+			{
+			}
+
 			gameClear = 1;
 			Director::getInstance()->getActionManager()->pauseAllRunningActions();
 			this->unschedule(schedule_selector(Stage2::tick));
@@ -1482,17 +1647,34 @@ void Stage2::BeginContact(b2Contact *contact)
 	}
 	else if (bodyA->GetType() == b2_dynamicBody && (bodyB->GetType() == b2_staticBody || bodyB->GetType() == b2_kinematicBody))
 	{
+		bool e = UserDefault::getInstance()->getBoolForKey("effect");
+		bool b = UserDefault::getInstance()->getBoolForKey("bgm");
+
 		if (bodyB->GetUserData() != nullptr)
 		{
 			Sprite* spriteData = (Sprite *)bodyB->GetUserData();
 			int nTag = spriteData->getTag();
 
+			// 장애물
 			if (nTag == 1)
 			{
 				if (shield == false)
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/dead.mp3");
-					SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
+					if (e)
+					{
+						this->soundOnoff(5);
+					}
+					else if (e == false)
+					{
+					}
+
+					if (b)
+					{
+						this->soundOnoff(0);
+					}
+					else if (b == false)
+					{
+					}
 
 					this->scheduleOnce(schedule_selector(Stage2::gameOver), 1);
 					// 애니메이션 액션 멈추기
@@ -1504,7 +1686,11 @@ void Stage2::BeginContact(b2Contact *contact)
 				}
 				else
 				{
-					m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Shield.mp3");
+					if (e)
+					{
+						this->soundOnoff(6);
+					}
+					else {}
 
 					if (shieldNum == 2)
 					{
@@ -1522,43 +1708,65 @@ void Stage2::BeginContact(b2Contact *contact)
 					}
 				}
 			}
+
+			// 별 (점수)
 			else if (nTag == 2)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
-
-				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
+				if (e)
+				{
+					this->soundOnoff(2);
+				}
 
 				delVec.push_back(bodyB);
 				nowScore++;
 			}
+
+			// 쉴드 아이템
 			else if (nTag == 3)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
+				if (e)
+				{
+					this->soundOnoff(4);
+				}
+				else {}
+
 				b2Vec2 pos = pManBody->GetPosition();
 				delVec.push_back(bodyB);
 				shieldNum = 2;
 				shield = true;
 			}
+
+			// 점프
 			else if (nTag == 4)
 			{
 				jump = true;
 			}
+
+			// 점프 아이템
 			else if (nTag == 5)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Item.mp3");
+				if (e)
+				{
+					this->soundOnoff(4);
+				}
+				else {}
 
 				delVec.push_back(bodyB);
 				doubleJump = 1;
 				dJump = true;
 			}
+
+			// 왕 별 (100 점수)
 			else if (nTag == 7)
 			{
-				m_nSoundId = SimpleAudioEngine::getInstance()->playEffect("sounds/Coin1.mp3");
-
-				SimpleAudioEngine::getInstance()->setEffectsVolume(2.0f);
+				if (e)
+				{
+					this->soundOnoff(2);
+				}
 
 				delVec.push_back(bodyB);
 				nowScore = nowScore + 100;
+				bigStar = 1;
 			}
 		}
 
@@ -1681,7 +1889,13 @@ void Stage2::gameOver(float f)
 	this->scheduleOnce(schedule_selector(Stage2::overScore), 1);
 
 	num = 1; // 게임이 끝났는데도 클릭하면 점프효과음이 계속나서 num에게 1을 줌
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/Game_Over.mp3");
+
+	if (bigStar > 0)
+	{
+		#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+			callJavaMethod3("SendBigStar", "");
+		#endif
+	}
 }
 
 void Stage2::createReplay(Ref* pSender)
@@ -1698,7 +1912,7 @@ void Stage2::createHome(Ref* pSender)
 
 void Stage2::createNext(Ref* pSender)
 {
-	auto pScene = GameMain::createScene();
+	auto pScene = Stage3::createScene();
 	Director::getInstance()->pushScene(TransitionProgressRadialCW::create(1, pScene));
 }
 

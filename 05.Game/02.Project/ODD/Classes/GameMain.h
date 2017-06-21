@@ -31,27 +31,35 @@ public:
 	Sprite* score;
 	Sprite* background;
 	Sprite* home;
+	Sprite* soundBack;
 	Sprite* effect;
 	Sprite* bgm;
+	Sprite* sound;
 	Sprite* stageBord;
 	Sprite* stage[9];
+	Sprite* stage_clear[9];
+	Sprite* soundBord;
+	Sprite* effect_bgm;
+	Sprite* effect_on;
+	Sprite* effect_off;
+	Sprite* bgm_on;
+	Sprite* bgm_off;
 
 	bool sselect = false;
-	bool effectBool = true;
-	bool bgmBool = true;
-	unsigned int m_nSoundId;
+	bool soundSetting = false;
 
 	virtual void onEnter();
 	virtual void onExit();
 	virtual bool onTouchBegan(Touch* touch, Event* event);
 	virtual void onTouchEnded(Touch* touch, Event* event);
 
-	//void SceneTrans(float dt);
 	void createBackground();
 	void createTitle();
 	void createPlay();
-	void createScore();
+	void createMenu();
 	void selectStage();
+	void createSound();
+	void soundOnoff();
 
 	// 리더보드
 	cocos2d::ui::EditBox* _editNum;
@@ -80,4 +88,4 @@ public:
 
 };
 
-#endif  __GAMEMAIN__ //  __GAMEMAIN__
+#endif  //  __GAMEMAIN__

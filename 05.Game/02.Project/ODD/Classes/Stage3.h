@@ -67,6 +67,7 @@ public:
 	Sprite* bord;
 	Sprite* score;
 	Sprite* best;
+	Sprite* howTo;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
@@ -109,6 +110,7 @@ public:
 	void createStar();
 	void createScore();
 	void createMeteor(float f);
+	void soundOnoff(int i);
 
 	int num = 0;
 	int swichNum = 0;
@@ -126,12 +128,26 @@ public:
 	int meteorNum = 0;
 	int meteor = 0;
 
+	int bigStars = 0;
+
 	unsigned int m_nSoundId;
 
 	char str[500] = { 0 };
 
 	std::vector<b2Body*> delVec;
 
+	// »ç¿îµå
+	float _soundVolume;
+
+	int audioId1;
+	int audioId2;
+	int audioId3;
+	int audioId4;
+	int audioId5;
+	int audioId6;
+	int audioId7;
+	int audioId8;
+	int autioId9;
 
 
 

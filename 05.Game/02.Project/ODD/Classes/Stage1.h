@@ -35,7 +35,6 @@ public:
 	void tick(float dt);
 	b2Body* addNewSprite(Vec2 point, Size size, b2BodyType bodytype, const char* spriteName, int type);
 
-	b2Body* getBodyAtTab(Vec2 p);
 	virtual bool onTouchBegan(Touch *touch, Event* event);
 //	virtual void onTouchMoved(Touch *touch, Event* event);
 	virtual void onTouchEnded(Touch *touch, Event* event);
@@ -46,8 +45,6 @@ public:
 	Texture2D* texture3;
 	b2World* _world;
 	GLESDebugDraw* m_debugDraw;
-
-
 
 	/////////////////////////////
 
@@ -67,12 +64,11 @@ public:
 	Sprite* bord;
 	Sprite* score;
 	Sprite* best;
+	Sprite* howTo;
 
 	b2Body* pManBody;
 	b2Body* shieldItem;
 	b2Body* jumpItem;
-
-	RenderTexture* miniMap;
 
 	LabelAtlas* Score;
 	LabelAtlas* NowScore;
@@ -108,6 +104,7 @@ public:
 	void createNext(Ref* pSender);
 	void createStar();
 	void createScore();
+	void soundOnoff(int i);
 
 	int num = 0;
 	int swichNum = 0;
@@ -122,14 +119,24 @@ public:
 	int nowScore = 0;
 	int nScore = 0;
 
-	unsigned int m_nSoundId;
+	int sendJump = 0;
+	int sendShield = 0;
 
 	char str[500] = { 0 };
 
 	std::vector<b2Body*> delVec;
 
-	
+	// »ç¿îµå
+	float _soundVolume;
 
+	int audioId1;
+	int audioId2;
+	int audioId3;
+	int audioId4;
+	int audioId5;
+	int audioId6;
+	int audioId7;
+	int audioId8;
 
 protected:
 	void onDraw(const Mat4& transform, uint32_t flags);
